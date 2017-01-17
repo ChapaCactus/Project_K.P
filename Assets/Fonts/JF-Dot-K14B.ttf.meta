@@ -1,0 +1,22 @@
+fileFormatVersion: 2
+guid: 8f59785d7b8bc41dd8b015968ebc4653
+timeCreated: 1481170827
+licenseType: Free
+TrueTypeFontImporter:
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: JF Dot K14
+  fontNames:
+  - JF Dot K14
+  fallbackFontReferences:
+  - {fileID: 12800000, guid: 075d61152c0304d76a8cede127b53d06, type: 3}
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
