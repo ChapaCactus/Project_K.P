@@ -5,7 +5,7 @@ using UnityEngine;
 /// <summary>
 /// Npcの会話ダイアログ表示・管理クラス
 /// </summary>
-public class NpcTalk : MonoBehaviour
+public class NpcTalk : SingletonMonoBehaviour<NpcTalk>
 {
 	#region variables
 	private string[] m_TempMessages = null;
