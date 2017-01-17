@@ -2,15 +2,37 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class NpcTalk : MonoBehaviour {
+/// <summary>
+/// Npcの会話ダイアログ表示・管理クラス
+/// </summary>
+public class NpcTalk : MonoBehaviour
+{
+	#region variables
+	private string[] m_TempMessages = null;
+	#endregion// variables
 
-	// Use this for initialization
-	void Start () {
-		
+	#region public methods
+	public void Init()
+	{
+		m_TempMessages = null;
 	}
-	
-	// Update is called once per frame
-	void Update () {
-		
+
+	/// <summary>
+	/// 会話内容をセットする
+	/// </summary>
+	public void SetMessages(string[] _messages)
+	{
+		// 配列のコピー
+		_messages.CopyTo (m_TempMessages, 0);
 	}
-}
+
+	/// <summary>
+	/// 会話を開始する
+	/// </summary>
+	public void StartTalking()
+	{
+		// Start Talking
+	}
+	#endregion// public methods
+
+}// NpcTalk
