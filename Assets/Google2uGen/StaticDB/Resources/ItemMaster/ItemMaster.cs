@@ -107,28 +107,28 @@ namespace Google2u
 			var ret = System.String.Empty;
 			switch( colID )
 			{
-				case "_Name":
+				case "Name":
 					ret = _Name.ToString();
 					break;
-				case "_Type":
+				case "Type":
 					ret = _Type.ToString();
 					break;
-				case "_Price":
+				case "Price":
 					ret = _Price.ToString();
 					break;
-				case "_Rarity":
+				case "Rarity":
 					ret = _Rarity.ToString();
 					break;
-				case "_Health":
+				case "Health":
 					ret = _Health.ToString();
 					break;
-				case "_Resource":
+				case "Resource":
 					ret = _Resource.ToString();
 					break;
-				case "_Prefab":
+				case "Prefab":
 					ret = _Prefab.ToString();
 					break;
-				case "_Exp":
+				case "Exp":
 					ret = _Exp.ToString();
 					break;
 			}
@@ -138,18 +138,18 @@ namespace Google2u
 		public override string ToString()
 		{
 			string ret = System.String.Empty;
-			ret += "{" + "_Name" + " : " + _Name.ToString() + "} ";
-			ret += "{" + "_Type" + " : " + _Type.ToString() + "} ";
-			ret += "{" + "_Price" + " : " + _Price.ToString() + "} ";
-			ret += "{" + "_Rarity" + " : " + _Rarity.ToString() + "} ";
-			ret += "{" + "_Health" + " : " + _Health.ToString() + "} ";
-			ret += "{" + "_Resource" + " : " + _Resource.ToString() + "} ";
-			ret += "{" + "_Prefab" + " : " + _Prefab.ToString() + "} ";
-			ret += "{" + "_Exp" + " : " + _Exp.ToString() + "} ";
+			ret += "{" + "Name" + " : " + _Name.ToString() + "} ";
+			ret += "{" + "Type" + " : " + _Type.ToString() + "} ";
+			ret += "{" + "Price" + " : " + _Price.ToString() + "} ";
+			ret += "{" + "Rarity" + " : " + _Rarity.ToString() + "} ";
+			ret += "{" + "Health" + " : " + _Health.ToString() + "} ";
+			ret += "{" + "Resource" + " : " + _Resource.ToString() + "} ";
+			ret += "{" + "Prefab" + " : " + _Prefab.ToString() + "} ";
+			ret += "{" + "Exp" + " : " + _Exp.ToString() + "} ";
 			return ret;
 		}
 	}
-	public class ItemMaster :  Google2uComponentBase, IGoogle2uDB
+	public sealed class ItemMaster : IGoogle2uDB
 	{
 		public enum rowIds {
 			ID_000, ID_001, ID_002, ID_003, ID_004, ID_005, ID_006, ID_007, ID_008, ID_009, ID_010
@@ -158,13 +158,31 @@ namespace Google2u
 			"ID_000", "ID_001", "ID_002", "ID_003", "ID_004", "ID_005", "ID_006", "ID_007", "ID_008", "ID_009", "ID_010"
 		};
 		public System.Collections.Generic.List<ItemMasterRow> Rows = new System.Collections.Generic.List<ItemMasterRow>();
-		public override void AddRowGeneric (System.Collections.Generic.List<string> input)
+
+		public static ItemMaster Instance
 		{
-			Rows.Add(new ItemMasterRow(input[0],input[1],input[2],input[3],input[4],input[5],input[6],input[7],input[8]));
+			get { return NestedItemMaster.instance; }
 		}
-		public override void Clear ()
+
+		private class NestedItemMaster
 		{
-			Rows.Clear();
+			static NestedItemMaster() { }
+			internal static readonly ItemMaster instance = new ItemMaster();
+		}
+
+		private ItemMaster()
+		{
+			Rows.Add( new ItemMasterRow("ID_000", "Dummy", "Dummy", "1", "1", "1", "Dummy", "Dummy", "1"));
+			Rows.Add( new ItemMasterRow("ID_001", "ダイコン01", "Crop", "1", "1", "1", "Daikon", "Prefabs/Items/Daikon", "1"));
+			Rows.Add( new ItemMasterRow("ID_002", "ダイコン02", "Crop", "1", "1", "1", "Daikon", "Prefabs/Items/Daikon", "1"));
+			Rows.Add( new ItemMasterRow("ID_003", "ダイコン03", "Crop", "1", "1", "1", "Daikon", "Prefabs/Items/Daikon", "1"));
+			Rows.Add( new ItemMasterRow("ID_004", "ダイコン04", "Crop", "1", "1", "1", "Daikon", "Prefabs/Items/Daikon", "1"));
+			Rows.Add( new ItemMasterRow("ID_005", "ダイコン05", "Crop", "1", "1", "1", "Daikon", "Prefabs/Items/Daikon", "1"));
+			Rows.Add( new ItemMasterRow("ID_006", "ダイコン06", "Crop", "1", "1", "1", "Daikon", "Prefabs/Items/Daikon", "1"));
+			Rows.Add( new ItemMasterRow("ID_007", "ダイコン07", "Crop", "1", "1", "1", "Daikon", "Prefabs/Items/Daikon", "1"));
+			Rows.Add( new ItemMasterRow("ID_008", "ダイコン08", "Crop", "1", "1", "1", "Daikon", "Prefabs/Items/Daikon", "1"));
+			Rows.Add( new ItemMasterRow("ID_009", "ダイコン09", "Crop", "1", "1", "1", "Daikon", "Prefabs/Items/Daikon", "1"));
+			Rows.Add( new ItemMasterRow("ID_010", "ダイコン10", "Crop", "1", "1", "1", "Daikon", "Prefabs/Items/Daikon", "1"));
 		}
 		public IGoogle2uRow GetGenRow(string in_RowString)
 		{

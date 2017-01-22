@@ -114,7 +114,8 @@ public class Platform : MonoBehaviour
     {
         Debug.Log ("Getting Item [" + _id.ToString() + "].....");
         BaseItem baseItem = null;
-        ItemMaster master = GameObject.FindWithTag ("Google2u").GetComponent<ItemMaster> ();
+        //ItemMaster master = GameObject.FindWithTag ("Google2u").GetComponent<ItemMaster> ();
+		ItemMaster master = ItemMaster.Instance;
 
         string key = "ID_00" + _id.ToString();
         ItemMasterRow row = master.GetRow(key);
