@@ -110,6 +110,22 @@ public class NpcTalk : SingletonMonoBehaviour<NpcTalk>
 	#endregion// unity callbacks
 
 	#region public methods
+	/// <summary>
+	/// (static)NpcTalkを生成し、そのコンポーネントを返す
+	/// </summary>
+	public static NpcTalk Create()
+	{
+		var prefab = Resources.Load ("Prefabs/UI/NpcTalk/TalkWindow") as GameObject;
+		var parent = UIManager.Instance.GetCanvas ().transform;
+		var go = Instantiate (prefab, parent, false);
+		go.name = prefab.name;
+		// 参照・初期化
+		var npcTalk = go.GetComponent<NpcTalk> ();
+		npcTalk.Init ();
+
+		return npcTalk;
+	}
+
 	public void Init()
 	{
 		m_IsTalking = false;
@@ -195,13 +211,11 @@ public class NpcTalk : SingletonMonoBehaviour<NpcTalk>
 			// 会話開始
 			yield return SetText (messages[i]);
 
-			Debug.Log ("Check1");
 			// 表示完了後、タップ待機
 			callbackTap = false;
 			var waitTap = new WaitWhile (() => callbackTap == false);
 			yield return waitTap;
 			callbackTap = false;
-			Debug.Log ("Check2");
 		}
 
 		Hide ();
@@ -235,20 +249,16 @@ public class NpcTalk : SingletonMonoBehaviour<NpcTalk>
 	#region private methods
 	private IEnumerator SetText(string _str)
 	{
-		Debug.Log ("会話開始");
 		// 初期化
 		nameText.text = "";
 		bodyText.text = "";
 		faceImage.sprite = null;
 		// テキストを流し込む(自動的に表示が終了後、タップ扱いにする)
 		bodyTextTween = bodyText.DOText (_str, 1f, true);
-		Debug.Log ("End Check0 : " + (bodyTextTween.IsPlaying()).ToString());
 		// 表示完了するまで待機
 		var wait = new WaitWhile (() => bodyTextTween.IsPlaying());
 		yield return wait;
-		Debug.Log ("End Check1 : " + (bodyTextTween.IsPlaying()).ToString());
 		callbackTap = false;
-		Debug.Log ("End Check2 : " + (bodyTextTween.IsPlaying()).ToString());
 
 		yield break;
 	}

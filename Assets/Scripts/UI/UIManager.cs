@@ -14,11 +14,16 @@ public class UIManager : SingletonMonoBehaviour<UIManager>
     [Serializable]
     public class UI
     {
+		private Canvas m_Canvas = null;
+		public Canvas canvas {
+			get { return m_Canvas ?? (m_Canvas = GameObject.Find ("Canvas").GetComponent<Canvas> ()); }
+		}
+
         // ステータステキスト
         public Text goldText = null;
         // メニュー
-        public Button menuButton;// 親
-        public Button itemButton;// 子
+		public Button menuButton = null;// 親
+		public Button itemButton = null;// 子
         [SerializeField, HeaderAttribute("__________Parents__________")]
         public Transform particlesParent = null;
     }
@@ -89,6 +94,14 @@ public class UIManager : SingletonMonoBehaviour<UIManager>
             Inventory.Instance.Show ();
         }
     }
+
+	/// <summary>
+	/// メインキャンバスを返す(null時自動取得)
+	/// </summary>
+	public Canvas GetCanvas()
+	{
+		return ui.canvas;
+	}
     #endregion// public methods
     #region private methods
     private IEnumerator PlayMenuAnimation(bool _IsReverse = false)
