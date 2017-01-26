@@ -88,20 +88,24 @@ public class Player : MonoBehaviour
     #region Private methods
     private void Attack(BaseItem _targetItem)
     {
-        Debug.Log ("_targetItem : " + _targetItem);
-        if (_targetItem.data.state != BaseItem.State.Ready || _targetItem == null) {
+		if (_targetItem == null) {
             return;
         }
 
-        int health = _targetItem.Damage (totalPower);
+		var state = _targetItem.GetState ();
+		int health = _targetItem.GetHealth ();
+		if (health > 0 && state == BaseItem.State.Ready) {
+			// ターゲットのHPが残っていれば
+			health = _targetItem.Damage (totalPower);
+			Debug.Log ("Target AfterHealth : " + health.ToString());
 
-        Debug.Log ("Attack power: " + totalPower + ", Damaged Health: " + health);
-        if (health <= 0) {
-            // HPが0になっていたら消す
-            Debug.Log("Destroying : " + _targetItem);
-            GlobalData.Instance.AddMoney (1);// Test money
-            Stage.Instance.platform.KillItem();
-        }
+			if (health <= 0) {
+				// HPが0になっていたら消す
+				Debug.Log("Destroying : " + _targetItem);
+				GlobalData.Instance.AddMoney (1);// Test money
+				Stage.Instance.platform.KillItem();
+			}
+		}
 
         Debug.Log ("Attacked.");
     }

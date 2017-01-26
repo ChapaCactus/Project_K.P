@@ -1,7 +1,9 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using System;
+using UnityEngine.UI;
+using DG.Tweening;
 
 public class GlobalData : SingletonMonoBehaviour<GlobalData>
 {
@@ -61,10 +63,19 @@ public class GlobalData : SingletonMonoBehaviour<GlobalData>
     public int gold {
         get { return m_Gold; }
         private set {
+			int addGold = (value - m_Gold);
             m_Gold = value;
             if (m_Gold < 0)
                 m_Gold = 0;
-            UIManager.Instance.ui.goldText.text = m_Gold.ToString ();
+			var goldText = UIManager.Instance.ui.goldText;
+			goldText.text = m_Gold.ToString ();
+			var text = FloatingText.Create ();
+			Debug.Log (text + " aaaa");
+			text.transform.SetParent (goldText.transform, false);
+			text.transform.localPosition += new Vector3 (40, 0, 0);
+			text.text = "+" + addGold.ToString ();
+
+			text.floatingText.DOFade (0, 0.5f);
         }
     }
 

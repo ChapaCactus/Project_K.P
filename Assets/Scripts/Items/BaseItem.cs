@@ -60,7 +60,10 @@ public class BaseItem : MonoBehaviour
         [SerializeField]
         private int m_Exp             = 0;// take exp.
         [SerializeField]
+		// Component系 //
         private Rigidbody2D m_Rigid2D = null;
+		[SerializeField]
+		private SpriteRenderer[] m_SpriteRenderersInChild = null;// 透過アニメーション用、子全てのレンダラー
 
         private Platform m_OwnerPlatform = null;// このアイテムの所有場所
         #endregion// variables
@@ -76,6 +79,7 @@ public class BaseItem : MonoBehaviour
         public int health { get { return m_Health; } set { m_Health = value; } }
         public int exp { get { return m_Exp; } set { m_Exp = value; } }
         public Rigidbody2D rigid2D { get { return m_Rigid2D; } set { m_Rigid2D = value; } }
+		public SpriteRenderer[] renderers { get { return m_SpriteRenderersInChild; } set { m_SpriteRenderersInChild = value; } }
         #endregion// properties
     }
 
@@ -83,7 +87,7 @@ public class BaseItem : MonoBehaviour
 	// ItemType.
 	public enum Type { Crop = 0, Plug, Num }
     // State.
-    public enum State { None, Ready }
+    public enum State { None, Ready, Dead }
     #endregion// enum
 
     #region variables
@@ -124,6 +128,21 @@ public class BaseItem : MonoBehaviour
 
         // Lock Rigidbody
         ChangeConstraints(true, true, true);
+		// 子のレンダラーを全て取得
+		data.renderers = GetComponentsInChildren<SpriteRenderer> ();
+	}
+
+	public int GetHealth()
+	{
+		return data.health;
+	}
+
+	/// <summary>
+	/// このアイテムの状態を返す
+	/// </summary>
+	public State GetState()
+	{
+		return data.state;
 	}
 
     public void StartPopCoroutine()
@@ -188,8 +207,9 @@ public class BaseItem : MonoBehaviour
             yield break;
         }
         m_IsRunningPopCoroutine = true;
-
-        //
+		// 出現待機
+		var wait = new WaitForSeconds (0.3f);
+		yield return wait;
 
         data.state = State.Ready;
 

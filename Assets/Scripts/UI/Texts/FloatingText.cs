@@ -23,9 +23,9 @@ public class FloatingText : MonoBehaviour
     #endregion// variables
 
     #region properties
-    public Text floatingText { get { return m_Text; } private set { m_Text = value; } }
+	public Text floatingText { get { return m_Text ?? (m_Text = GetComponent<Text>()); } private set { m_Text = value; } }
 
-    public string text { get { return m_Text.text; } set { m_Text.text = value; } }
+	public string text { get { return floatingText.text; } set { floatingText.text = value; } }
     #endregion// properties
 
     #region public methods
@@ -36,6 +36,7 @@ public class FloatingText : MonoBehaviour
     {
         var go = UIManager.Instance.floatingTextPooling.PickOut ();
         var floatingText = go.GetComponent<FloatingText> ();
+		Debug.Log ("floating " + floatingText);
 
         return floatingText;
     }

@@ -30,7 +30,8 @@ public class UIManager : SingletonMonoBehaviour<UIManager>
     #region variables
     [SerializeField] private UI m_UI;
 
-    private ObjectPooling m_FloatingTextPooling = null;
+	[SerializeField]
+	private ObjectPooling m_FloatingTextPooling = null;
 
     private bool isMenuAnimRunning = false;
     #endregion// variables
@@ -138,6 +139,7 @@ public class UIManager : SingletonMonoBehaviour<UIManager>
 /// <summary>
 /// オブジェクトプーリング管理を行う。UIの種類毎にインスタンス保持して扱う。
 /// </summary>
+[Serializable]
 public class ObjectPooling
 {
     #region variables
@@ -145,7 +147,8 @@ public class ObjectPooling
 
     private GameObject m_PoolingGO = null;// 複製元
 
-    private List<GameObject> m_PoolingList = null;
+	[SerializeField]
+	private List<GameObject> m_PoolingList = null;
 
     private int m_MaxCount = 0;// 最大プール数
     #endregion// variables

@@ -7,7 +7,7 @@ using UnityEngine.UI;
 /// 手に入れたアイテムを表示するウィンドウUI
 /// </summary>
 [RequireComponent(typeof(CanvasGroup))]
-public class ShowGotItem : MonoBehaviour 
+public class ShowGetItem : MonoBehaviour 
 {
     #region variables
     [SerializeField] private Text m_ItemNameText = null;
@@ -28,6 +28,18 @@ public class ShowGotItem : MonoBehaviour
     #endregion// properties
 
     #region public methods
+	public static ShowGetItem Create()
+	{
+		var prefab = Resources.Load ("Prefabs/UI/Notice/ShowGetItem") as GameObject;
+		var parent = UIManager.Instance.GetCanvas ().transform;
+		var go = Instantiate (prefab, parent, false);
+		var showGetItem = go.GetComponent<ShowGetItem> ();
+
+		showGetItem.Init ();
+
+		return showGetItem;
+	}
+
     public void Init()
     {
         canvasGroup = GetComponent<CanvasGroup> ();
