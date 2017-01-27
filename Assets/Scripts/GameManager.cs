@@ -20,6 +20,11 @@ public class GameManager : MonoBehaviour
 	{
 		return m_CurrentGameState;
 	}
+
+	public void SetGameState(GameState _next)
+	{
+		Debug.Log("Set GameState.");
+	}
 	#endregion// public methods
 }// GameManager
 

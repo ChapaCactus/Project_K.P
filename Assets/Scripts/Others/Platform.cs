@@ -5,9 +5,9 @@ using System;
 using DG.Tweening;
 using Google2u;
 
-// プーリングとかしたい
-
-// Kakusen Plant Field.
+/// <summary>
+/// 苗床っぽい何か
+/// </summary>
 public class Platform : MonoBehaviour
 {
 	// (最終)回転角度
@@ -62,7 +62,7 @@ public class Platform : MonoBehaviour
     }        
         
     private void Update()
-    {
+    { 
         if (m_IsCreatingItem && m_GeneratingTimer <= 0) {
             item = GetItem ();
             m_IsCreatingItem = false;
