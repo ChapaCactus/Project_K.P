@@ -43,7 +43,6 @@ public class UIManager : SingletonMonoBehaviour<UIManager>
             get { return m_MainCamera ?? (m_MainCamera = Camera.main); } 
         }
 
-        // ステータステキスト
         public Text goldText = null;
         // メニュー
 		public Button menuButton = null;// 親
