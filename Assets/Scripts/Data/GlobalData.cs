@@ -13,16 +13,33 @@ public class GlobalData : SingletonMonoBehaviour<GlobalData>
     public class PlayerStatus
     {
         #region variables
-        [SerializeField] private int m_Power = 0;
+        [SerializeField]
+        private int m_Level = 0;
+        [SerializeField]
+        private int m_Exp = 0;
+        [SerializeField]
+        private int m_Power = 0;
         #endregion// variables
 
         #region properties
+        public int level
+        {
+            get { return m_Level; }
+            private set { m_Level = value; }
+        }
+
+        public int exp
+        {
+            get { return m_Exp; }
+            private set { m_Exp = value; }
+        }
+
         public int power { get { return m_Power; } set { m_Power = value; } }
         #endregion// properties
     }
 
     #region variables
-    public PlayerStatus playerStatus = new PlayerStatus ();
+    public PlayerStatus playerStatus = new PlayerStatus();
 
     public string playerName { get; private set; }
     public string globalID { get; private set; }
@@ -30,7 +47,7 @@ public class GlobalData : SingletonMonoBehaviour<GlobalData>
     public int days { get; set; }
 
     public int score { get; set; }
-    public int level { get; set; }
+    public int level { get; set; }// Stage Level
 
     private int m_Exp = 0;
     private int m_Gold = 0;
@@ -49,9 +66,11 @@ public class GlobalData : SingletonMonoBehaviour<GlobalData>
     private static readonly string POWER_KEY = "POWER";
     #endregion// variables
     #region properties
-    public int exp {
+    public int exp
+    {
         get { return m_Exp; }
-        private set {
+        private set
+        {
             m_Exp = value;
             if (m_Exp < 0)
                 m_Exp = 0;
@@ -60,22 +79,24 @@ public class GlobalData : SingletonMonoBehaviour<GlobalData>
     /// <summary>
     /// 所持金(ReadOnly)
     /// </summary>
-    public int gold {
+    public int gold
+    {
         get { return m_Gold; }
-        private set {
-			int addGold = (value - m_Gold);
+        private set
+        {
+            int addGold = (value - m_Gold);
             m_Gold = value;
             if (m_Gold < 0)
                 m_Gold = 0;
-			var goldText = UIManager.Instance.ui.goldText;
-			goldText.text = m_Gold.ToString ();
-			var text = FloatingText.Create ();
-			Debug.Log (text + " aaaa");
-			text.transform.SetParent (goldText.transform, false);
-			text.transform.localPosition += new Vector3 (40, 0, 0);
-			text.text = "+" + addGold.ToString ();
+            var goldText = UIManager.Instance.ui.goldText;
+            goldText.text = m_Gold.ToString();
+            var text = FloatingText.Create();
+            Debug.Log(text + " aaaa");
+            text.transform.SetParent(goldText.transform, false);
+            text.transform.localPosition += new Vector3(40, 0, 0);
+            text.text = "+" + addGold.ToString();
 
-			text.floatingText.DOFade (0, 0.5f);
+            text.floatingText.DOFade(0, 0.5f);
         }
     }
 
@@ -87,14 +108,14 @@ public class GlobalData : SingletonMonoBehaviour<GlobalData>
     #region unity callbacks
     private void Awake()
     {
-        Init ();
+        Init();
     }
     #endregion// unity callbacks
 
-    #region public methods
+    #region PublicMethods
     public void Init()
     {
-        Load ();
+        Load();
         // ステート初期化
         gameState = GameState.Title;
         // フラグ初期化
@@ -109,9 +130,9 @@ public class GlobalData : SingletonMonoBehaviour<GlobalData>
         playerStatus = new PlayerStatus();// 実際はセーブデータから読み込む
         playerName = PlayerPrefs.GetString("playerName", "NO NAME");
         score = PlayerPrefs.GetInt("score", 0);
-        gold = PlayerPrefs.GetInt (GOLD_KEY, 0);
-        playerStatus.power = PlayerPrefs.GetInt (POWER_KEY, 1);
-        exp = PlayerPrefs.GetInt (EXP_KEY, 0);
+        gold = PlayerPrefs.GetInt(GOLD_KEY, 0);
+        playerStatus.power = PlayerPrefs.GetInt(POWER_KEY, 1);
+        exp = PlayerPrefs.GetInt(EXP_KEY, 0);
     }
 
     public void Save()
@@ -119,8 +140,8 @@ public class GlobalData : SingletonMonoBehaviour<GlobalData>
         PlayerPrefs.SetString("playerName", playerName);
         PlayerPrefs.SetInt("score", score);
 
-        PlayerPrefs.SetInt (GOLD_KEY, gold);
-        PlayerPrefs.SetInt (EXP_KEY, exp);
+        PlayerPrefs.SetInt(GOLD_KEY, gold);
+        PlayerPrefs.SetInt(EXP_KEY, exp);
 
 
         PlayerPrefs.Save();
@@ -134,15 +155,42 @@ public class GlobalData : SingletonMonoBehaviour<GlobalData>
         return days;
     }
 
-    public int AddMoney(int _point) { return gold += _point; }
-
-    public int AddExp(int _point)
+    public int AddMoney(int _point)
     {
-        var floatingText = FloatingText.Create ();
-        floatingText.Show (_point.ToString());
-
-        return exp += _point;
+       return gold += _point;
     }
-    #endregion// public methods
+
+    /// <summary>
+    /// 経験値取得
+    /// </summary>
+    public void GainExp(int _gainExp)
+    {
+        // 経験値加算
+        exp += _gainExp;
+        var maxExp = (10 * level * level);
+        // 最大EXPを超えていればレベルアップ処理
+        if (exp >= maxExp)
+        {
+            // 超過分を計算
+            var remain = (maxExp - exp);
+            LevelUp(remain);
+        }
+    }
+
+    #endregion// PublicMethods
+    #region PrivateMethods
+    /// <summary>
+    /// レベルアップ処理
+    /// </summary>
+    private void LevelUp(int _remainExp)
+    {
+        Debug.Log("Level UP !!! " + level.ToString() + " => " + (level + 1).ToString());
+        level++;
+        exp = _remainExp;
+
+        // 超過分でレベルアップチェック(再帰的呼び出し)
+        GainExp(0);
+    }
+    #endregion// PrivateMethods
 
 }// Class.

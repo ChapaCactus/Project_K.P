@@ -116,7 +116,7 @@ public class NpcTalk : SingletonMonoBehaviour<NpcTalk>
 	public static NpcTalk Create()
 	{
 		var prefab = Resources.Load ("Prefabs/UI/NpcTalk/TalkWindow") as GameObject;
-		var parent = UIManager.Instance.GetCanvas ().transform;
+		var parent = UIManager.Instance.GetMainCanvas ().transform;
 		var go = Instantiate (prefab, parent, false);
 		go.name = prefab.name;
 		// 参照・初期化

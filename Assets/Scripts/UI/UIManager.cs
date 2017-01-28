@@ -14,10 +14,34 @@ public class UIManager : SingletonMonoBehaviour<UIManager>
     [Serializable]
     public class UI
     {
-		private Canvas m_Canvas = null;
-		public Canvas canvas {
-			get { return m_Canvas ?? (m_Canvas = GameObject.Find ("Canvas").GetComponent<Canvas> ()); }
+		private Canvas m_MainCanvas = null;
+		public Canvas mainCanvas {
+			get { return m_MainCanvas ?? (m_MainCanvas = GameObject.FindWithTag ("MainCanvas").GetComponent<Canvas> ()); }
 		}
+
+        private RectTransform m_MainCanvasRect = null;
+        public RectTransform mainCanvasRect
+        {
+            get
+            {
+                return m_MainCanvasRect ?? (m_MainCanvasRect = mainCanvas.GetComponent<RectTransform>());
+            }
+        }
+
+        private Camera m_UICamera = null;
+        public Camera uiCamera
+        {
+            get
+            {
+                return m_UICamera ?? (m_UICamera = GameObject.FindWithTag("UICamera").GetComponent<Camera>());
+            }
+        }
+
+        private Camera m_MainCamera = null;
+        public Camera mainCamera
+        {
+            get { return m_MainCamera ?? (m_MainCamera = Camera.main); } 
+        }
 
         // ステータステキスト
         public Text goldText = null;
@@ -99,10 +123,25 @@ public class UIManager : SingletonMonoBehaviour<UIManager>
 	/// <summary>
 	/// メインキャンバスを返す(null時自動取得)
 	/// </summary>
-	public Canvas GetCanvas()
+	public Canvas GetMainCanvas()
 	{
-		return ui.canvas;
+		return ui.mainCanvas;
 	}
+
+    public RectTransform GetMainCanvasRect()
+    {
+        return ui.mainCanvasRect;
+    }
+
+    public Camera GetMainCamera()
+    {
+        return ui.mainCamera;
+    }
+
+    public Camera GetUICamera()
+    {
+        return ui.uiCamera;
+    }
     #endregion// public methods
     #region private methods
     private IEnumerator PlayMenuAnimation(bool _IsReverse = false)
@@ -179,9 +218,11 @@ public class ObjectPooling
                 return go;
             }
         }
+
+        var parentTF = UIManager.Instance.GetMainCanvas().transform;
         // 全て使用中で、かつ最大生成数を超えていないとき
         if (count < m_MaxCount) {
-            var go = GameObject.Instantiate (m_Prefab);
+            var go = UnityEngine.Object.Instantiate(m_Prefab, parentTF, false);
             go.SetActive (true);
             m_PoolingList.Add (go);
 

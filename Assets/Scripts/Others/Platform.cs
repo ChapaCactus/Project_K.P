@@ -151,7 +151,7 @@ public class Platform : MonoBehaviour
     {
     }
         
-    #region Private methods
+    #region PrivatMethods
 	/// <summary>
     /// Setup field and items. (and player?)
     /// </summary>

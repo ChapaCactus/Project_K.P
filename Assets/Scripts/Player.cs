@@ -24,18 +24,18 @@ public class Player : MonoBehaviour
     private const int   MAX_CHARGE_VALUE = 1;
     private const int   MIN_CHARGE_VALUE = 0;
     private const float CHARGE_BUFF      = 0.1f;
-    #endregion
+    #endregion// Variables
 
-    #region properties
+    #region Properties
     /// <summary>
     /// プレイヤーの補正後最終攻撃力(能力上昇や、ステータスダウンも含める)
     /// </summary>
     public int totalPower { get { return GlobalData.Instance.playerStatus.power; } }
 
     public int exp { get { return GlobalData.Instance.exp; } }
-    #endregion// properties
+    #endregion// Properties
 
-    #region unity callbacks
+    #region UnityCallbacks
     private void Update()
     {
         if (Input.GetMouseButtonDown (0)) {
@@ -50,15 +50,10 @@ public class Player : MonoBehaviour
             // Charging
             Charge ();
         }
-
-//        if (Input.GetMouseButtonUp (0)) {
-//            // アニメーション再生
-//            PlayAnimTypeA ();
-//        }
     }
-    #endregion// unity callbacks
+    #endregion// UnityCallbacks
 
-    #region public methods
+    #region PublicMethods
     public void Init()
     {
         m_Transform = gameObject.transform;
@@ -67,6 +62,24 @@ public class Player : MonoBehaviour
     public Transform GetTransform()
     {
         return m_Transform ?? (m_Transform = gameObject.transform);
+    }
+
+    /// <summary>
+    /// このPlayerのスクリーン座標をUI用に変換して返す
+    /// </summary>
+    public Vector2 GetScreenPosition()
+    {
+        var pos = Vector2.zero;
+
+        var mainCanvasRect = UIManager.Instance.GetMainCanvasRect();
+        var mainCamera = UIManager.Instance.GetMainCamera();
+        var uiCamera = UIManager.Instance.GetUICamera();
+
+        var screenPos = RectTransformUtility.WorldToScreenPoint(mainCamera, transform.position);
+        RectTransformUtility.ScreenPointToLocalPointInRectangle(
+            mainCanvasRect, screenPos, uiCamera, out pos);
+
+        return pos;
     }
 
     public BaseItem GetTarget()
@@ -103,6 +116,14 @@ public class Player : MonoBehaviour
 				// HPが0になっていたら消す
 				Debug.Log("Destroying : " + _targetItem);
 				GlobalData.Instance.AddMoney (1);// Test money
+                GlobalData.Instance.GainExp(1);
+
+                var message = ("+" + 1.ToString());
+                var floatingText = FloatingText.Create();
+                floatingText.transform.localPosition = GetScreenPosition();
+                floatingText.Show(message, 1f);
+                Debug.Log("Check expText : " + floatingText);
+
 				Stage.Instance.platform.KillItem();
 			}
 		}

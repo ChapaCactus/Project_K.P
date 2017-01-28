@@ -31,7 +31,7 @@ public class ShowGetItem : MonoBehaviour
 	public static ShowGetItem Create()
 	{
 		var prefab = Resources.Load ("Prefabs/UI/Notice/ShowGetItem") as GameObject;
-		var parent = UIManager.Instance.GetCanvas ().transform;
+		var parent = UIManager.Instance.GetMainCanvas ().transform;
 		var go = Instantiate (prefab, parent, false);
 		var showGetItem = go.GetComponent<ShowGetItem> ();
 
