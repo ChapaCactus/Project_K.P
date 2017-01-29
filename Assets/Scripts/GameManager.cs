@@ -7,12 +7,15 @@ using UnityEngine;
 /// </summary>
 public class GameManager : MonoBehaviour
 {
-	#region variables
+	#region Variables
 	// 現在の遷移状態
 	private GameState m_CurrentGameState;
-	#endregion// variables
+	#endregion// Variables
 
-	#region public methods
+	#region Properties
+	#endregion// Properties
+
+	#region PublicMethods
 	/// <summary>
 	/// 現在のゲーム全体の遷移状態を取得
 	/// </summary>
@@ -23,9 +26,16 @@ public class GameManager : MonoBehaviour
 
 	public void SetGameState(GameState _next)
 	{
-		Debug.Log("Set GameState.");
+		m_CurrentGameState = _next;
+
+		switch (m_CurrentGameState)
+		{
+			default:
+				break;
+		}
 	}
-	#endregion// public methods
+	#endregion// PublicMethods
+
 }// GameManager
 
 /// <summary>

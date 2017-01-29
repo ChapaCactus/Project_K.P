@@ -64,8 +64,6 @@ public class BaseItem : MonoBehaviour
         private Rigidbody2D m_Rigid2D = null;
 		[SerializeField]
 		private SpriteRenderer[] m_SpriteRenderersInChild = null;// 透過アニメーション用、子全てのレンダラー
-
-        private Platform m_OwnerPlatform = null;// このアイテムの所有場所
         #endregion// variables
 
         #region properties

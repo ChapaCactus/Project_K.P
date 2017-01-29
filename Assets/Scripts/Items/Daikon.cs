@@ -55,9 +55,9 @@ public class Daikon : BaseItem
         return result;
     }
 
-    public override void Init()
+	public override void Init()
     {
-        base.Init ();
+		base.Init ();
 		m_SwingSequence = null;
 	}
 

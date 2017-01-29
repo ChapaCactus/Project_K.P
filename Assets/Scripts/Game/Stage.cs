@@ -1,7 +1,8 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using System;
+using Google2u;
 
 public class Stage : SingletonMonoBehaviour<Stage>
 {
@@ -51,9 +52,10 @@ public class Stage : SingletonMonoBehaviour<Stage>
     #endregion
 
     #region private methods
-    private void GetStageDataOnMaster ()
+	private StageMasterRow GetStageDataOnMaster ()
     {
         int id = setting.StageID;
+		return StageMaster.Instance.GetRow(id.ToString());
     }
     #endregion// private methods
 

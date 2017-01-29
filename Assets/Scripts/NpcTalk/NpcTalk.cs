@@ -33,13 +33,8 @@ public class NpcTalk : SingletonMonoBehaviour<NpcTalk>
 	private string[] m_Messages = null;// 会話内容
 	// ページを捲ったか？
 	[SerializeField] private bool m_CallbackTap = false;
-	// DOTextを完了したか？
-	private bool m_CallbackDrawnText = false;
-
-	private bool m_TextDrawing = false;
 
 	private CanvasGroup m_CanvasGroup = null;
-	private CanvasGroup m_TapMarkCanvasGroup = null;
 
 	private Text m_NameText = null;
 	private Text m_BodyText = null;
@@ -201,9 +196,6 @@ public class NpcTalk : SingletonMonoBehaviour<NpcTalk>
 			yield break;
 		}
 		isTalking = true;
-
-		// 会話開始前の初期化
-		m_CallbackDrawnText = false;
 		callbackTap = false;
 
 		// 会話用一時リスト
