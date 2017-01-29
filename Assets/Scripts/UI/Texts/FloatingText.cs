@@ -8,27 +8,34 @@ using DG.Tweening;
 /// <summary>
 /// レベルアップ時など、テキストのみで情報を表示するUIクラス
 /// </summary>
-public class FloatingText : MonoBehaviour
+[RequireComponent(typeof(CanvasGroup))]
+public class FloatingText : PoolingBaseClass
 {
-    #region enums
+    #region Enums
     public enum AnimationType
     {
         None,
         Fade,
     }
-    #endregion// enums
+	#endregion// Enums
 
-    #region variables
-    private Text m_Text = null;
-    #endregion// variables
+	#region Variables
+    private Text m_BodyText = null;
 
-    #region properties
-	public Text floatingText { get { return m_Text ?? (m_Text = GetComponent<Text>()); } private set { m_Text = value; } }
+	private CanvasGroup m_CanvasGroup = null;
+    #endregion// Variables
 
-	public string text { get { return floatingText.text; } set { floatingText.text = value; } }
-    #endregion// properties
+    #region Properties
+	public Text bodyText {
+		get { return m_BodyText ?? (m_BodyText = transform.FindChild("Text").GetComponent<Text>()); }
+	}
 
-    #region public methods
+	public CanvasGroup canvasGroup {
+		get { return m_CanvasGroup ?? (m_CanvasGroup = GetComponent<CanvasGroup>()); }
+	}
+    #endregion// Properties
+
+    #region PublicMethods
     /// <summary>
     /// Pickout in Pooling
     /// </summary>
@@ -38,29 +45,64 @@ public class FloatingText : MonoBehaviour
         var floatingText = go.GetComponent<FloatingText> ();
 		Debug.Log ("floating " + floatingText);
 
+		floatingText.Init();
+
         return floatingText;
     }
 
-    public void Show(string _message, float _duration = 1.0f)
-    {
-        floatingText.text = _message;
-        floatingText.enabled = true;
-        gameObject.SetActive (true);
+	public override void Init()
+	{
+		Hide();
+		SetText("");
+	}
+
+	/// <summary>
+	/// 表示 => 一定時間後に非表示
+	/// SetText()で初期化してから呼び出すこと
+	/// </summary>
+	public override void Show(float _duration = 1.0f)
+	{
+		StartCoroutine(ShowCoroutine(_duration));
+	}
+
+	public IEnumerator ShowCoroutine(float _duration)
+	{
+		if (isActive) {
+			yield break;
+		}
+		isActive = true;
+
+		var cg = canvasGroup;
+		cg.alpha = 1;
+		cg.interactable = true;
+		cg.blocksRaycasts = true;
+
+		// 指定時間、待機
+		var wait = new WaitForSeconds(_duration);
+		yield return wait;
+		// 一定時間後、非表示
+		Hide();
     }
 
     public void Hide()
     {
-        floatingText.enabled = false;
-        gameObject.SetActive (false);
+		isActive = false;
+
+		var cg = canvasGroup;
+		cg.alpha = 0;
+		cg.interactable = false;
+		cg.blocksRaycasts = false;
     }
 
-    /// <summary>
-    /// Get floating text strings
-    /// </summary>
     public string GetText()
     {
-        return floatingText.text;
+		return bodyText.text;
     }
-    #endregion// public methods
+
+	public void SetText(string _str)
+	{
+		bodyText.text = _str;
+	}
+    #endregion// PublicMethods
 
 }// class

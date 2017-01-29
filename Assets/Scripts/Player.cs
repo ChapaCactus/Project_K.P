@@ -121,7 +121,8 @@ public class Player : MonoBehaviour
                 var message = ("+" + 1.ToString());
                 var floatingText = FloatingText.Create();
                 floatingText.transform.localPosition = GetScreenPosition();
-                floatingText.Show(message, 1f);
+				floatingText.SetText(message);
+                floatingText.Show(1f);
                 Debug.Log("Check expText : " + floatingText);
 
 				Stage.Instance.platform.KillItem();

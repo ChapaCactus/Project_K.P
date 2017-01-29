@@ -180,41 +180,38 @@ public class UIManager : SingletonMonoBehaviour<UIManager>
 [Serializable]
 public class ObjectPooling
 {
-    #region variables
+    #region Variables
     private GameObject m_Prefab = null;
 
-    private GameObject m_PoolingGO = null;// 複製元
-
 	[SerializeField]
-	private List<GameObject> m_PoolingList = null;
+	private List<PoolingBaseClass> m_PoolingList = null;
 
     private int m_MaxCount = 0;// 最大プール数
-    #endregion// variables
-    public List<GameObject> poolingList { get { return m_PoolingList; } private set { m_PoolingList = value; } }
-    #region properties
+    #endregion// Variables
+	public List<PoolingBaseClass> poolingList { get { return m_PoolingList; } private set { m_PoolingList = value; } }
+    #region Properties
 
     #endregion// properties
 
     #region public methods
     public void Init(string _prefabPath, int _maxCount)
     {
-        m_PoolingList = new List<GameObject> ();
+		m_PoolingList = new List<PoolingBaseClass> ();
 
         m_Prefab = Resources.Load ("Prefabs/UI/Texts/FloatingText") as GameObject;
         m_MaxCount = _maxCount;
     }
 
-    public GameObject PickOut()
+	public PoolingBaseClass PickOut()
     {
         int count = poolingList.Count;
-        // 未使用のプールがあればそれを返す
+        // 未使用のプールObjectがあればそれを返す
         for (int i = 0; i < count; i++) {
-            if (poolingList [i].gameObject.activeSelf == false) {
-                // 非アクティブなら
-                var go = poolingList [i].gameObject;
-                go.SetActive (true);
+			var pooling = poolingList[i].GetComponent<PoolingBaseClass>();
+			if (pooling.isActive == false) {
+				pooling.Init();
 
-                return go;
+				return pooling;
             }
         }
 
@@ -222,12 +219,14 @@ public class ObjectPooling
         // 全て使用中で、かつ最大生成数を超えていないとき
         if (count < m_MaxCount) {
             var go = UnityEngine.Object.Instantiate(m_Prefab, parentTF, false);
-            go.SetActive (true);
-            m_PoolingList.Add (go);
+			var pooling = go.GetComponent<PoolingBaseClass>();
+			m_PoolingList.Add (pooling);
+			pooling.Init();
 
-            return go;
+			return pooling;
         }
 
+		// 全て使用中の場合
         return null;
     }
     #endregion// public methods

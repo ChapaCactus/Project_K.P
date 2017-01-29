@@ -79,28 +79,28 @@ public class GlobalData : SingletonMonoBehaviour<GlobalData>
     /// <summary>
     /// 所持金(ReadOnly)
     /// </summary>
-    public int gold
-    {
+    public int gold {
         get { return m_Gold; }
-        private set
-        {
+        private set {
             int addGold = (value - m_Gold);
             m_Gold = value;
             if (m_Gold < 0)
                 m_Gold = 0;
             var goldText = UIManager.Instance.ui.goldText;
             goldText.text = m_Gold.ToString();
+
             var text = FloatingText.Create();
-            Debug.Log(text + " aaaa");
             text.transform.SetParent(goldText.transform, false);
             text.transform.localPosition += new Vector3(40, 0, 0);
-            text.text = "+" + addGold.ToString();
-
-            text.floatingText.DOFade(0, 0.5f);
+			text.SetText("+" + addGold.ToString());
+			text.Show(1f);
         }
     }
 
-    public bool isMenu { get { return m_IsMenu; } set { m_IsMenu = value; } }// メニューを開いているか
+    public bool isMenu {
+		get { return m_IsMenu; }
+		set { m_IsMenu = value; }
+	}// メニューを開いているか
 
     public Inventory.Item[] bag { get { return m_Bag; } set { m_Bag = value; } }
     #endregion// properties
