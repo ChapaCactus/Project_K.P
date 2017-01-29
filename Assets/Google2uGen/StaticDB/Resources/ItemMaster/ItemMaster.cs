@@ -173,10 +173,10 @@ namespace Google2u
 		private ItemMaster()
 		{
 			Rows.Add( new ItemMasterRow("ID_000", "Dummy", "Dummy", "1", "1", "1", "Dummy", "Dummy", "1"));
-			Rows.Add( new ItemMasterRow("ID_001", "ダイコン01", "Crop", "1", "1", "1", "Daikon", "Prefabs/Items/Daikon", "1"));
-			Rows.Add( new ItemMasterRow("ID_002", "ダイコン02", "Crop", "1", "1", "1", "Daikon", "Prefabs/Items/Daikon", "1"));
-			Rows.Add( new ItemMasterRow("ID_003", "ダイコン03", "Crop", "1", "1", "1", "Daikon", "Prefabs/Items/Daikon", "1"));
-			Rows.Add( new ItemMasterRow("ID_004", "ダイコン04", "Crop", "1", "1", "1", "Daikon", "Prefabs/Items/Daikon", "1"));
+			Rows.Add( new ItemMasterRow("ID_001", "たべかけスイカ", "Crop", "1", "1", "1", "Item/Suica/Suica_D", "Prefabs/Items/Suica", "1"));
+			Rows.Add( new ItemMasterRow("ID_002", "ひとくちスイカ", "Crop", "1", "1", "1", "Item/Suica/Suica_C", "Prefabs/Items/Suica", "2"));
+			Rows.Add( new ItemMasterRow("ID_003", "たっぷりスイカ", "Crop", "1", "1", "1", "Item/Suica/Suica_B", "Prefabs/Items/Suica", "3"));
+			Rows.Add( new ItemMasterRow("ID_004", "ぜいたくスイカ", "Crop", "1", "1", "1", "Item/Suica/Suica_A", "Prefabs/Items/Suica", "15"));
 			Rows.Add( new ItemMasterRow("ID_005", "ダイコン05", "Crop", "1", "1", "1", "Daikon", "Prefabs/Items/Daikon", "1"));
 			Rows.Add( new ItemMasterRow("ID_006", "ダイコン06", "Crop", "1", "1", "1", "Daikon", "Prefabs/Items/Daikon", "1"));
 			Rows.Add( new ItemMasterRow("ID_007", "ダイコン07", "Crop", "1", "1", "1", "Daikon", "Prefabs/Items/Daikon", "1"));
