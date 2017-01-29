@@ -178,19 +178,7 @@ public class Platform : MonoBehaviour
 
         // Get GameItem (1) Remove
         ItemListRemoveAt(0);
-
-
-        // Tweening
-        m_RotateTween = transform.DORotate (new Vector3 (0, 0, -45), 1f, RotateMode.LocalAxisAdd).SetRelative ().
-            SetEase (Ease.Linear).OnComplete (() => OnMoveComplete ());
 	}
-
-    protected void OnMoveComplete()
-    {
-        m_RotateTween = null;
-        Stage.Instance.OnReady (TestCallback);
-        // Callback
-    }
 
     protected void DequeueLastItem()
     {
