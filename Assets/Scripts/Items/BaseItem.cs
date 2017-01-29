@@ -103,7 +103,7 @@ public class BaseItem : MonoBehaviour
 	{
         Debug.Log (_prefabPath);
         var prefab = Resources.Load(_prefabPath) as GameObject;
-        var go = Instantiate (prefab, _parent);
+        var go = Instantiate (prefab, _parent, false);
         go.SetActive (false);
         go.transform.localPosition = _localPos;
         go.name = _params.name;
