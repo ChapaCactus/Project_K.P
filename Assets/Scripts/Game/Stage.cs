@@ -9,34 +9,17 @@ using Google2u;
 /// </summary>
 public class Stage : SingletonMonoBehaviour<Stage>
 {
-	public enum State
-	{
-		None,
-		Moving,
-		Already,
-		Clear,
-		Result
-	}
-
-	[Serializable]
-	public class Setting
-	{
-		[SerializeField, HeaderAttribute("ステージID")]
-		public int StageID = 0;
-	}
+	#region Enums
+	#endregion// Enums
 
 	#region Variables
-	[SerializeField]
+	[SerializeField, HeaderAttribute("StageID => Inspectorから設定する")]
+	private int m_StageID = 0;
+	[SerializeField, HeaderAttribute("ステージデータ")]
 	private StageMasterRow m_StageData = null;
 
 	[SerializeField, HeaderAttribute("苗床")]
 	private Platform m_Platform = null;
-	[SerializeField]
-	private Setting m_Setting = null;
-
-	// アイテム生成位置 Items generate position(Local offsets).
-	[SerializeField]
-	private Vector3[] m_CreateOffsets = new Vector3[0];
 	#endregion// Variables
 
 	#region Properties
@@ -45,21 +28,28 @@ public class Stage : SingletonMonoBehaviour<Stage>
 			?? (m_Platform = GameObject.Find("Platform").GetComponent<Platform>()); }
         private set { m_Platform = value; }
     }
-    public Setting setting {get { return m_Setting; } private set { m_Setting = value; } }
+	#endregion// Properties
 
-    public Vector3[] createOffsets { get { return m_CreateOffsets; } private set { m_CreateOffsets = value; } }
-    #endregion// Properties
+	#region UnityCallbacks
+	private void Awake()
+	{
+		Init();
+	}
+	#endregion UnityCallbacks
 
-    public delegate void OnComplete (string _Message);
 	#region PublicMethods
-	public void Init(int _stageID)
+	/// <summary>
+	/// 初期化(IDはInspectorから手動設定)
+	/// </summary>
+	public void Init()
 	{
 		// IDを0埋めして、ID_000の形に整形する
-		var idPadLeft = _stageID.ToString().PadLeft(3, '0');
+		var idPadLeft = m_StageID.ToString().PadLeft(3, '0');
 		var id = ("ID_" + idPadLeft);
 		var stageData = StageMaster.Instance.GetRow(id);
-
 		SetStageData(stageData);
+		// 苗床を初期化
+		platform.Init();
 	}
 	#endregion// PublicMethods
 

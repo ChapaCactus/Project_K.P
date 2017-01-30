@@ -55,12 +55,7 @@ public class Platform : MonoBehaviour
 
     #endregion
 
-    #region Unity callbacks
-    private void Awake()
-    {
-        Init ();
-    }        
-        
+    #region UnityCallbacks        
     private void Update()
     { 
         if (m_IsCreatingItem && m_GeneratingTimer <= 0) {
