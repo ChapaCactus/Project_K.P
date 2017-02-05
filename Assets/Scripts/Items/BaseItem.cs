@@ -100,19 +100,19 @@ public class BaseItem : MonoBehaviour
     #endregion// properties
 
     #region public methods
-	public static BaseItem Create(int _id, ItemMasterRow _row, Transform _parent, Vector3 _localPos)
-	{
-		var prefab = Resources.Load(_row._Prefab) as GameObject;
-		GameObject go = Instantiate (prefab, _parent, false);
-        go.transform.localPosition = _localPos;
-		go.name = "Item[" + _row._Name + "]";
+	//public static BaseItem Create(int _id, ItemMasterRow _row, Transform _parent, Vector3 _localPos)
+	//{
+	//	var prefab = Resources.Load(_row._Prefab) as GameObject;
+	//	GameObject go = Instantiate (prefab, _parent, false);
+ //       go.transform.localPosition = _localPos;
+	//	go.name = "Item[" + _row._Name + "]";
 
-		BaseItem baseItem = go.GetComponent<BaseItem> ();
-        baseItem.Init ();
-		baseItem.SetParams(_id, _row);
+	//	BaseItem baseItem = go.GetComponent<BaseItem> ();
+ //       baseItem.Init ();
+	//	baseItem.SetParams(_id, _row);
 
-        return baseItem;
-	}
+ //       return baseItem;
+	//}
 
     public virtual void Init()
 	{
@@ -167,7 +167,24 @@ public class BaseItem : MonoBehaviour
 
     public int Damage(int _point)
     {
-        return data.health -= _point;
+		data.health -= _point;
+
+		// HPが0になっていたら消す
+		if (data.health <= 0)
+		{
+			GlobalData.Instance.AddMoney(data.exp);// Test money
+			GlobalData.Instance.GainExp(data.exp);
+
+			var message = ("+" + data.exp.ToString());
+			var floatingText = FloatingText.Create();
+			floatingText.transform.localPosition = Player.Instance.GetScreenPosition();
+			floatingText.SetText(message);
+			floatingText.Show(1f);
+
+			Stage.Instance.platforms[0].KillItem();
+		}
+
+		return data.health;
     }
     #endregion// public methods
 

@@ -6,7 +6,7 @@ using DG.Tweening;
 /// <summary>
 /// Controll player character.
 /// </summary>
-public class Player : MonoBehaviour
+public class Player : SingletonMonoBehaviour<Player>
 {
     #region Variables
     private Transform m_Transform = null;
@@ -39,11 +39,7 @@ public class Player : MonoBehaviour
     private void Update()
     {
         if (Input.GetMouseButtonDown (0)) {
-            BaseItem item = Stage.Instance.platforms[0].GetItem();
-            if (item != null) {
-                // アイテムがあれば
-                Attack(item);
-            }
+			Attack();
         }
 
         if (m_ChargeTrigger) {
@@ -71,9 +67,10 @@ public class Player : MonoBehaviour
     {
         var pos = Vector2.zero;
 
-        var mainCanvasRect = UIManager.Instance.GetMainCanvasRect();
-        var mainCamera = UIManager.Instance.GetMainCamera();
-        var uiCamera = UIManager.Instance.GetUICamera();
+		var uiManager = UIManager.Instance;
+        var mainCanvasRect = uiManager.GetMainCanvasRect();
+        var mainCamera = uiManager.GetMainCamera();
+        var uiCamera = uiManager.GetUICamera();
 
         var screenPos = RectTransformUtility.WorldToScreenPoint(mainCamera, transform.position);
         RectTransformUtility.ScreenPointToLocalPointInRectangle(
@@ -99,37 +96,27 @@ public class Player : MonoBehaviour
     #endregion// public methods
 
     #region Private methods
-    private void Attack(BaseItem _targetItem)
+    private void Attack()
     {
-		if (_targetItem == null) {
-            return;
-        }
+		BaseItem item = Stage.Instance.platforms[0].GetItem();
 
-		var state = _targetItem.GetState ();
-		int health = _targetItem.GetHealth ();
-		if (health > 0 && state == BaseItem.State.Ready) {
-			// ターゲットのHPが残っていれば
-			health = _targetItem.Damage (totalPower);
-			Debug.Log ("Target AfterHealth : " + health.ToString());
-
-			if (health <= 0) {
-				// HPが0になっていたら消す
-				Debug.Log("Destroying : " + _targetItem);
-				GlobalData.Instance.AddMoney (1);// Test money
-                GlobalData.Instance.GainExp(1);
-
-                var message = ("+" + 1.ToString());
-                var floatingText = FloatingText.Create();
-                floatingText.transform.localPosition = GetScreenPosition();
-				floatingText.SetText(message);
-                floatingText.Show(1f);
-                Debug.Log("Check expText : " + floatingText);
-
-				Stage.Instance.platforms[0].KillItem();
-			}
+		if (item == null)
+		{
+			return;
 		}
+		else
+		{
+			var state = item.GetState();// 状態
+			int health = item.GetHealth();// 体力
+			// 体力があって、かつ準備完了状態なら
+			if (health > 0 && state == BaseItem.State.Ready)
+			{
+				// ターゲットのHPが残っていれば
+				item.Damage(totalPower);
+			}
 
-        Debug.Log ("Attacked.");
+			Debug.Log("Attacked.");
+		}
     }
 
     private float Charge()

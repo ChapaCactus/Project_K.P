@@ -71,14 +71,15 @@ public class Stage : SingletonMonoBehaviour<Stage>
 	{
 		// このステージの生成枠内でランダムにIDを返す
 		var itemID = GetRandomItemIDInStage();
+		// アイテムデータ初期化
+		var id = ("ID_" + itemID.ToString().PadLeft(3, '0'));
+		var masterData = ItemMaster.Instance.GetRow(id);
 		// ゲームオブジェクト生成
 		var prefab = GetPrefabInDic(itemID);
 		var parent = platforms[0].transform;
 		var go = GameObject.Instantiate(prefab, parent, false);
-		go.transform.localPosition = new Vector3(0, 1.8f, 0);
-		// アイテムデータ初期化
-		var id = ("ID_" + itemID.ToString().PadLeft(3, '0'));
-		var masterData = ItemMaster.Instance.GetRow(id);
+		go.transform.localPosition = masterData._Offset;
+
 		BaseItem baseItem = go.GetComponent<BaseItem>();
 		baseItem.Init();
 		baseItem.SetParams(itemID, masterData);

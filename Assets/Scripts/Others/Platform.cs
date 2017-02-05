@@ -112,7 +112,7 @@ public class Platform : MonoBehaviour
 
     public void KillItem()
     {
-        Destroy (item.gameObject);
+		Destroy(item.gameObject);
         item = null;
     }
 
