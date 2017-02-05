@@ -1,5 +1,6 @@
 /*! \cond PRIVATE */
 using UnityEngine;
+using System.Collections.Generic;
 
 // ReSharper disable once CheckNamespace
 namespace DarkTonic.MasterAudio {
@@ -21,6 +22,24 @@ namespace DarkTonic.MasterAudio {
         /// <param name="isActive">True to set the object to active, false to set it to inactive.</param>
         public static void SetActive(GameObject go, bool isActive) {
             go.SetActive(isActive);
+        }
+
+        public static void DestroyAllChildren(this Transform tran) {
+            var children = new List<GameObject>();
+
+            for (var i = 0; i < tran.childCount; i++) { 
+                children.Add(tran.GetChild(i).gameObject);
+            }
+
+            var failsafe = 0;
+            while (children.Count > 0 && failsafe < 200) {
+                var child = children[0];
+                GameObject.Destroy(child);
+                if (children[0] == child) {
+                    children.RemoveAt(0);
+                }
+                failsafe++;
+            }
         }
 
     }

@@ -13,16 +13,16 @@ namespace DarkTonic.MasterAudio {
 
         private const float SemitonePitchChangeAmt = 1.0594635f;
 
-        private static float CutoffRange {
-            get { return MasterAudio.Instance.occlusionMinCutoffFreq - MasterAudio.Instance.occlusionMaxCutoffFreq; }
+        private static float CutoffRange(SoundGroupVariationUpdater updater) {
+            return updater.MinOcclusionFreq - updater.MaxOcclusionFreq;
         }
 
-        private static float MaxCutoffFreq {
-            get { return MasterAudio.Instance.occlusionMaxCutoffFreq; }
+        private static float MaxCutoffFreq(SoundGroupVariationUpdater updater) {
+            return updater.MaxOcclusionFreq;
         }
 
-        public static float MinCutoffFreq {
-            get { return MasterAudio.Instance.occlusionMinCutoffFreq; }
+        public static float MinCutoffFreq(SoundGroupVariationUpdater updater) {
+            return updater.MinOcclusionFreq;
         }
 
         public static float FixedDeltaTime {
@@ -41,8 +41,8 @@ namespace DarkTonic.MasterAudio {
             get { return UnityEngine.Time.frameCount; }
         }
 
-        public static float GetOcclusionCutoffFrequencyByDistanceRatio(float distRatio) {
-            return MaxCutoffFreq + (distRatio * CutoffRange);
+        public static float GetOcclusionCutoffFrequencyByDistanceRatio(float distRatio, SoundGroupVariationUpdater updater) {
+            return MaxCutoffFreq(updater) + (distRatio * CutoffRange(updater));
         }
 
         public static float GetSemitonesFromPitch(float pitch) {

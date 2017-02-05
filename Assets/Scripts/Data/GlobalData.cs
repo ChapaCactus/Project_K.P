@@ -12,14 +12,14 @@ public class GlobalData : SingletonMonoBehaviour<GlobalData>
     [Serializable]
     public class PlayerStatus
     {
-        #region variables
+        #region Variables
         [SerializeField]
         private int m_Level = 0;
         [SerializeField]
         private int m_Exp = 0;
         [SerializeField]
         private int m_Power = 0;
-        #endregion// variables
+        #endregion// Variables
 
         #region properties
         public int level
@@ -116,6 +116,7 @@ public class GlobalData : SingletonMonoBehaviour<GlobalData>
     public void Init()
     {
         Load();
+		Refresh();
         // ステート初期化
         gameState = GameState.Title;
         // フラグ初期化
@@ -148,6 +149,11 @@ public class GlobalData : SingletonMonoBehaviour<GlobalData>
         Debug.Log("Saved.");
     }
 
+	public void Refresh()
+	{
+		UIManager.Instance.ui.goldText.text = gold.ToString();
+	}
+
     public int ToNextDay()
     {
         days++;
@@ -157,7 +163,9 @@ public class GlobalData : SingletonMonoBehaviour<GlobalData>
 
     public int AddMoney(int _point)
     {
-       return gold += _point;
+		gold += _point;
+		PlayerPrefs.SetInt(GOLD_KEY, gold);
+		return gold;
     }
 
     /// <summary>

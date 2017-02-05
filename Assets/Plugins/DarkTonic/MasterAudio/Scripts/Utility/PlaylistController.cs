@@ -1049,12 +1049,20 @@ namespace DarkTonic.MasterAudio {
 
             InitControllerIfNot();
 
-            if (_activeAudio != null && _currentSong != null && !IsCrossFading) {
-                _activeAudio.volume = _currentSong.volume * PlaylistVolume;
-            }
-
             if (_currentSong != null) {
-                _activeAudioEndVolume = _currentSong.volume * PlaylistVolume;
+                var newVolume = _currentSong.volume * PlaylistVolume;
+
+                if (!IsCrossFading) {
+                    if (_activeAudio != null) {
+                        _activeAudio.volume = newVolume;
+                    }
+
+                    if (_transitioningAudio != null) {
+                        _transitioningAudio.volume = newVolume;
+                    }
+                }
+
+                _activeAudioEndVolume = newVolume;
             }
 
             SetDuckProperties();
@@ -1313,7 +1321,8 @@ namespace DarkTonic.MasterAudio {
         public void FinishLoadingNewSong(AudioClip clipToPlay, AudioPlayType playType) {
             _nextSongRequested = false;
 
-            var shouldPopulateClip = playType == AudioPlayType.PlayNow || playType == AudioPlayType.Schedule;
+            var isScheduledPlay = playType == AudioPlayType.Schedule;
+            var shouldPopulateClip = playType == AudioPlayType.PlayNow || isScheduledPlay;
             var clipWillBeAudibleNow = playType == AudioPlayType.PlayNow || playType == AudioPlayType.AlreadyScheduled;
 
             if (shouldPopulateClip) {
@@ -1408,7 +1417,7 @@ namespace DarkTonic.MasterAudio {
                                     _transitioningAudio.timeSamples = newTimeSamples;
                                 } else {
                                     if (ShouldNotSwitchEarly) {
-                                        // DO NOT set _activeAudio.timeSamples = 0, because it will "skip"
+                                        // DO NOT set _transitioningAudio.timeSamples = 0, because it will "skip"
                                     } else {
                                         _transitioningAudio.timeSamples = 0;
                                     }
@@ -1430,7 +1439,11 @@ namespace DarkTonic.MasterAudio {
                             }
                             break;
                         case MasterAudio.SongFadeInPosition.NewClipFromBeginning:
-                            _audioClip.timeSamples = 0; // new song will start at beginning
+                            if (ShouldNotSwitchEarly) {
+                                // DO NOT set _audioClip.timeSamples = 0, because it will "skip"
+                            } else {
+                                _audioClip.timeSamples = 0; // new song will start at beginning
+                            }
                             break;
                     }
                 }
@@ -1443,6 +1456,10 @@ namespace DarkTonic.MasterAudio {
                         _audioClip.timeSamples = (int)(customStartTime * _audioClip.clip.frequency);
                     }
                 }
+            }
+
+            if (isScheduledPlay) {
+                UpdateMasterVolume(); // fix the volume of other Audio Source for scheduled song, to avoid "pop" when it starts.
             }
 
             if (clipWillBeAudibleNow) {

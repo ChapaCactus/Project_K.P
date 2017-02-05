@@ -3,7 +3,8 @@ using System.IO;
 using DarkTonic.MasterAudio;
 using UnityEditor;
 using UnityEngine;
-
+using Object = UnityEngine.Object;
+using Random = UnityEngine.Random;
 #if UNITY_5
 using UnityEngine.Audio;
 #endif
@@ -630,20 +631,6 @@ public class MasterAudioInspector : Editor {
                     _sounds.occlusionSelectType = newGrpSelType;
                 }
 
-                var reevalIndex = _sounds.reOccludeEverySecIndex;
-
-                var evalTimes = new List<string>();
-                // ReSharper disable once LoopCanBeConvertedToQuery
-                foreach (var t in _reevaluatePriorityTimes) {
-                    evalTimes.Add(t + " seconds");
-                }
-
-                var newRepri = EditorGUILayout.Popup("Occlusion Check Time Gap", reevalIndex, evalTimes.ToArray());
-                if (newRepri != reevalIndex) {
-                    AudioUndoHelper.RecordObjectPropertyForUndo(ref _isDirty, _sounds, "change Occlusion Check Time Gap");
-                    _sounds.reOccludeEverySecIndex = newRepri;
-                }
-
                 var newMaxCutoff = EditorGUILayout.Slider(new GUIContent("Max Occl. Cutoff Freq.", "This frequency will be used for cutoff for maximum occlusion (occluded nearest to sound emitter)"),
                     _sounds.occlusionMaxCutoffFreq, AudioUtil.DefaultMaxOcclusionCutoffFrequency, _sounds.occlusionMinCutoffFreq);
                 if (newMaxCutoff != _sounds.occlusionMaxCutoffFreq) {
@@ -658,10 +645,28 @@ public class MasterAudioInspector : Editor {
                     _sounds.occlusionMinCutoffFreq = newMinCutoff;
                 }
 
+                var newSpeedFrames = EditorGUILayout.Slider(new GUIContent("Freq. Change Time (sec)", "The number of seconds changing to the new occlusion cutoff frequency will take."), _sounds.occlusionFreqChangeSeconds, 0f, 5f);
+                if (newSpeedFrames != _sounds.occlusionFreqChangeSeconds) {
+                    AudioUndoHelper.RecordObjectPropertyForUndo(ref _isDirty, _sounds, "change Freq. Change Time (sec)");
+                    _sounds.occlusionFreqChangeSeconds = newSpeedFrames;
+                }
+
                 var newRayMode = (MasterAudio.RaycastMode)EditorGUILayout.EnumPopup("Ray Cast Mode", _sounds.occlusionRaycastMode);
                 if (newRayMode != _sounds.occlusionRaycastMode) {
                     AudioUndoHelper.RecordObjectPropertyForUndo(ref _isDirty, _sounds, "change Ray Cast Mode");
                     _sounds.occlusionRaycastMode = newRayMode;
+                }
+
+                var newMaxRayCasts = EditorGUILayout.IntSlider("Max Ray Casts Per Frame", _sounds.occlusionMaxRayCastsPerFrame, 1, 32);
+                if (newMaxRayCasts != _sounds.occlusionMaxRayCastsPerFrame) {
+                    AudioUndoHelper.RecordObjectPropertyForUndo(ref _isDirty, _sounds, "change Max Ray Casts Per Frame");
+                    _sounds.occlusionMaxRayCastsPerFrame = newMaxRayCasts;
+                }
+
+                var newOffset = EditorGUILayout.Slider(new GUIContent("Ray Cast Origin Offset", "Adjust how much closer to the Audio Listener the Ray Cast starts instead of exactly at the Audio Source position."), _sounds.occlusionRayCastOffset, 0f, 500f);
+                if (newOffset != _sounds.occlusionRayCastOffset) {
+                    AudioUndoHelper.RecordObjectPropertyForUndo(ref _isDirty, _sounds, "change Ray Cast Origin Offset");
+                    _sounds.occlusionRayCastOffset = newOffset;
                 }
 
 #if UNITY_4_5 || UNITY_4_6 || UNITY_4_7 || UNITY_5_0 || UNITY_5_1
@@ -1114,6 +1119,7 @@ public class MasterAudioInspector : Editor {
         }
 
         GUI.color = Color.white;
+
         DTGUIHelper.AddHelpIcon("https://dl.dropboxusercontent.com/u/40293802/DarkTonic/MA_OnlineDocs/GroupMixer.htm");
 
         EditorGUILayout.EndHorizontal();
@@ -1414,6 +1420,7 @@ public class MasterAudioInspector : Editor {
             EditorGUILayout.BeginHorizontal();
 
             EditorGUILayout.LabelField("Group Control");
+
             DTGUIHelper.AddHelpIcon("https://dl.dropboxusercontent.com/u/40293802/DarkTonic/MA_OnlineDocs/GroupMixer.htm#GroupControl");
             EditorGUILayout.EndHorizontal();
 
@@ -1746,8 +1753,12 @@ public class MasterAudioInspector : Editor {
                         GUI.color = Color.white;
 
                         if (selectedBusIndex != busIndex) {
-                            if (busIndex == 0 && Application.isPlaying) {
-                                MasterAudio.RouteGroupToBus(sType, null);
+                            if (busIndex == 0) {
+                                if (Application.isPlaying) {
+                                    MasterAudio.RouteGroupToBus(sType, null);
+                                } else {
+                                    aGroup.busIndex = busIndex;
+                                }
                             } else if (busIndex == 1) {
                                 if (isBulkEdit) {
                                     bulkBusToCreate = l;
@@ -3961,7 +3972,9 @@ public class MasterAudioInspector : Editor {
             var aGroup = aChild.GetComponent<MasterAudioGroup>();
 
             if (aGroup == null) {
-                Debug.LogError("No MasterAudioGroup script found on Group '" + aChild.name + "'. This should never happen. Please delete and recreate this Group.");
+                if (!ArrayListUtil.IsExcludedChildName(aChild.name)) {
+                    Debug.LogError("No MasterAudioGroup script found on Group '" + aChild.name + "'. This should never happen. Please delete and recreate this Group.");
+                }
                 continue;
             }
 

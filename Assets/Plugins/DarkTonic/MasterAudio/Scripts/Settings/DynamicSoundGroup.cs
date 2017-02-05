@@ -56,6 +56,11 @@ namespace DarkTonic.MasterAudio {
         public float despawnFadeTime = .3f;
 
         public bool isUsingOcclusion;
+        public bool willOcclusionOverrideRaycastOffset;
+        public float occlusionRayCastOffset = 0f;
+        public bool willOcclusionOverrideFrequencies;
+        public float occlusionMaxCutoffFreq = AudioUtil.DefaultMaxOcclusionCutoffFrequency;
+        public float occlusionMinCutoffFreq = AudioUtil.DefaultMinOcclusionCutoffFrequency;
 
         public bool copySettingsExpanded = false;
         public int selectedVariationIndex = 0;

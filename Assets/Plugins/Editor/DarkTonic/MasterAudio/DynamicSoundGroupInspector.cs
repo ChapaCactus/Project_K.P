@@ -1,4 +1,4 @@
- using System.Collections.Generic;
+using System.Collections.Generic;
 using DarkTonic.MasterAudio;
 using UnityEditor;
 using UnityEngine;
@@ -83,7 +83,7 @@ public class DynamicSoundGroupInspector : Editor {
                 _customEventNames.Insert(0, _customEventNames[1]);
             }
         }
-    
+
         var isInProjectView = DTGUIHelper.IsPrefabInProjectView(_group);
 
         if (MasterAudioInspectorResources.LogoTexture != null) {
@@ -107,6 +107,29 @@ public class DynamicSoundGroupInspector : Editor {
             _group.groupMasterVolume = newVol;
         }
 
+#if UNITY_5
+        DTGUIHelper.ShowLargeBarAlert("The Spatial Blend Rule below will only be used if the Master Audio prefab allows.");
+
+        var newSpatialType = (MasterAudio.ItemSpatialBlendType)EditorGUILayout.EnumPopup("Spatial Blend Rule", _group.spatialBlendType);
+        if (newSpatialType != _group.spatialBlendType) {
+            AudioUndoHelper.RecordObjectPropertyForUndo(ref isDirty, _group, "change Spatial Blend Rule");
+            _group.spatialBlendType = newSpatialType;
+        }
+
+        switch (_group.spatialBlendType) {
+            case MasterAudio.ItemSpatialBlendType.ForceToCustom:
+                EditorGUI.indentLevel = 1;
+                DTGUIHelper.ShowLargeBarAlert(MasterAudioInspector.SpatialBlendSliderText);
+                var newBlend = EditorGUILayout.Slider("Spatial Blend", _group.spatialBlend, 0f, 1f);
+                if (newBlend != _group.spatialBlend) {
+                    AudioUndoHelper.RecordObjectPropertyForUndo(ref isDirty, _group, "change Spatial Blend");
+                    _group.spatialBlend = newBlend;
+                }
+                break;
+        }
+#endif
+
+        EditorGUI.indentLevel = 0;
         EditorGUILayout.BeginHorizontal();
         var newTargetGone = (MasterAudioGroup.TargetDespawnedBehavior)EditorGUILayout.EnumPopup("Caller Despawned Mode", _group.targetDespawnedBehavior);
         DTGUIHelper.AddHelpIcon("https://dl.dropboxusercontent.com/u/40293802/DarkTonic/MA_OnlineDocs/SoundGroups.htm#CallerDespawned");
@@ -124,6 +147,8 @@ public class DynamicSoundGroupInspector : Editor {
                 _group.despawnFadeTime = newFade;
             }
         }
+
+        EditorGUI.indentLevel = 0;
 
         var groupHasResource = false;
         foreach (var t in _group.groupVariations) {
@@ -153,19 +178,6 @@ public class DynamicSoundGroupInspector : Editor {
             }
         }
 
-        if (!maInScene || (MasterAudio.Instance.useOcclusion && MasterAudio.Instance.occlusionSelectType == MasterAudio.OcclusionSelectionType.TurnOnPerBusOrGroup)) {
-#if UNITY_5
-            if (!maInScene) {
-                DTGUIHelper.ShowLargeBarAlert("The Occlusion setting below will only be used if the Master Audio prefab is set to allow Occlusion.");
-            }
-#endif
-            var newOcc = EditorGUILayout.Toggle("Use Occlusion", _group.isUsingOcclusion);
-            if (newOcc != _group.isUsingOcclusion) {
-                AudioUndoHelper.RecordObjectPropertyForUndo(ref isDirty, _group, "toggle Use Occlusion");
-                _group.isUsingOcclusion = newOcc;
-            }
-        }
-
         var newLog = EditorGUILayout.Toggle("Log Sounds", _group.logSound);
         if (newLog != _group.logSound) {
             AudioUndoHelper.RecordObjectPropertyForUndo(ref isDirty, _group, "toggle Log Sounds");
@@ -173,28 +185,98 @@ public class DynamicSoundGroupInspector : Editor {
         }
 
 #if UNITY_5
-        DTGUIHelper.ShowLargeBarAlert("The Spatial Blend Rule below will only be used if the Master Audio prefab allows.");
+        var showOcclusionSettings = false;
 
-        DTGUIHelper.StartGroupHeader();
-        var newSpatialType = (MasterAudio.ItemSpatialBlendType)EditorGUILayout.EnumPopup("Spatial Blend Rule", _group.spatialBlendType);
-        if (newSpatialType != _group.spatialBlendType) {
-            AudioUndoHelper.RecordObjectPropertyForUndo(ref isDirty, _group, "change Spatial Blend Rule");
-            _group.spatialBlendType = newSpatialType;
+        if (!maInScene || (MasterAudio.Instance.useOcclusion && MasterAudio.Instance.occlusionSelectType == MasterAudio.OcclusionSelectionType.TurnOnPerBusOrGroup)) {
+            DTGUIHelper.ShowLargeBarAlert("The Occlusion settings below will only be used if the Master Audio prefab is set to allow Occlusion.");
+            showOcclusionSettings = true;
+        } else if (MasterAudio.Instance.useOcclusion) {
+            showOcclusionSettings = true;
         }
-        EditorGUILayout.EndVertical();
 
-        switch (_group.spatialBlendType) {
-            case MasterAudio.ItemSpatialBlendType.ForceToCustom:
-                EditorGUI.indentLevel = 0;
-                DTGUIHelper.ShowLargeBarAlert(MasterAudioInspector.SpatialBlendSliderText);
-                var newBlend = EditorGUILayout.Slider("Spatial Blend", _group.spatialBlend, 0f, 1f);
-                if (newBlend != _group.spatialBlend) {
-                    AudioUndoHelper.RecordObjectPropertyForUndo(ref isDirty, _group, "change Spatial Blend");
-                    _group.spatialBlend = newBlend;
+        if (showOcclusionSettings) {
+            DTGUIHelper.StartGroupHeader();
+            EditorGUILayout.BeginHorizontal();
+
+            var showActivateOcclusion = false;
+
+            var showOverrides = false;
+
+            if (maInScene) {
+                switch (MasterAudio.Instance.occlusionSelectType) {
+                    case MasterAudio.OcclusionSelectionType.TurnOnPerBusOrGroup:
+                        showActivateOcclusion = true;
+                        break;
+                    default:
+                    case MasterAudio.OcclusionSelectionType.AllGroups:
+                        GUILayout.Label("Occlusion: On");
+                        GUILayout.Label(new GUIContent(MasterAudioInspectorResources.ReadyTexture,
+                            "Occlusion turned on for all Groups"), EditorStyles.toolbarButton, GUILayout.Width(24));
+                        showOverrides = true;
+                        break;
                 }
-                break;
+            } else {
+                showActivateOcclusion = true;
+            }
+
+            if (showActivateOcclusion) {
+                var newOcc = GUILayout.Toggle(_group.isUsingOcclusion, " Use Occlusion");
+                if (newOcc != _group.isUsingOcclusion) {
+                    AudioUndoHelper.RecordObjectPropertyForUndo(ref isDirty, _group, "toggle Use Occlusion");
+                    _group.isUsingOcclusion = newOcc;
+                }
+
+                if (_group.isUsingOcclusion) {
+                    showOverrides = true;
+                }
+            }
+
+            EditorGUILayout.EndHorizontal();
+            EditorGUILayout.EndVertical();
+
+            if (showOverrides) {
+                var newOverride = EditorGUILayout.Toggle("Override Ray Cast Offset", _group.willOcclusionOverrideRaycastOffset);
+                if (newOverride != _group.willOcclusionOverrideRaycastOffset) {
+                    AudioUndoHelper.RecordObjectPropertyForUndo(ref isDirty, _group, "toggle Override Ray Cast Offset");
+                    _group.willOcclusionOverrideRaycastOffset = newOverride;
+                }
+
+                EditorGUI.indentLevel = 1;
+                if (_group.willOcclusionOverrideRaycastOffset) {
+                    var newOffset = EditorGUILayout.Slider("Ray Cast Origin Offset", _group.occlusionRayCastOffset, 0f, 500f);
+                    if (newOffset != _group.occlusionRayCastOffset) {
+                        AudioUndoHelper.RecordObjectPropertyForUndo(ref isDirty, _group, "toggle Override Ray Cast Origin Offset");
+                        _group.occlusionRayCastOffset = newOffset;
+                    }
+                }
+
+                EditorGUI.indentLevel = 0;
+                newOverride = EditorGUILayout.Toggle("Override Frequencies", _group.willOcclusionOverrideFrequencies);
+                if (newOverride != _group.willOcclusionOverrideFrequencies) {
+                    AudioUndoHelper.RecordObjectPropertyForUndo(ref isDirty, _group, "toggle Override Frequencies");
+                    _group.willOcclusionOverrideFrequencies = newOverride;
+                }
+
+                if (_group.willOcclusionOverrideFrequencies) {
+                    EditorGUI.indentLevel = 1;
+                    var newMaxCutoff = EditorGUILayout.Slider(new GUIContent("Max Occl. Cutoff Freq.", "This frequency will be used for cutoff for maximum occlusion (occluded nearest to sound emitter)"),
+                        _group.occlusionMaxCutoffFreq, AudioUtil.DefaultMaxOcclusionCutoffFrequency, _group.occlusionMinCutoffFreq);
+                    if (newMaxCutoff != _group.occlusionMaxCutoffFreq) {
+                        AudioUndoHelper.RecordObjectPropertyForUndo(ref isDirty, _group, "change Max Occl. Cutoff Freq.");
+                        _group.occlusionMaxCutoffFreq = newMaxCutoff;
+                    }
+
+                    var newMinCutoff = EditorGUILayout.Slider(new GUIContent("Min Occl. Cutoff Freq.", "This frequency will be used for no occlusion (nothing blocking the sound emitter from the AudioListener)"),
+                        _group.occlusionMinCutoffFreq, _group.occlusionMaxCutoffFreq, AudioUtil.DefaultMinOcclusionCutoffFrequency);
+                    if (newMinCutoff != _group.occlusionMinCutoffFreq) {
+                        AudioUndoHelper.RecordObjectPropertyForUndo(ref isDirty, _group, "change Min Occl. Cutoff Freq.");
+                        _group.occlusionMinCutoffFreq = newMinCutoff;
+                    }
+                }
+            }
+
+            EditorGUILayout.EndVertical();
         }
-        EditorGUILayout.EndVertical();
 #endif
 
         EditorGUI.indentLevel = 0;

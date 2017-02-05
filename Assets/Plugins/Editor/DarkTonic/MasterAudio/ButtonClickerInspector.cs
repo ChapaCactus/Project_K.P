@@ -4,7 +4,6 @@ using UnityEngine;
 using DarkTonic.MasterAudio;
 
 [CustomEditor(typeof(ButtonClicker))]
-[CanEditMultipleObjects]
 // ReSharper disable once CheckNamespace
 public class ButtonClickerInspector : Editor {
     private List<string> _groupNames;

@@ -14,7 +14,6 @@ using UnityEngine.Audio;
 #endif
 
 [CustomEditor(typeof(EventSounds))]
-[CanEditMultipleObjects]
 // ReSharper disable once CheckNamespace
 public class AudioEventInspector : Editor {
     private List<string> _groupNames;

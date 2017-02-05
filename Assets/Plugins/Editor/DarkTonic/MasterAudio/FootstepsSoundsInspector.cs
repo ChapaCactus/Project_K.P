@@ -4,7 +4,6 @@ using UnityEngine;
 using DarkTonic.MasterAudio;
 
 [CustomEditor(typeof(FootstepSounds))]
-[CanEditMultipleObjects]
 // ReSharper disable once CheckNamespace
 public class FootstepsSoundsInspector : Editor {
     private bool _isDirty;

@@ -1,8 +1,9 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using System;
+using Google2u;
 
 [RequireComponent(typeof(Rigidbody2D))]
 public class BaseItem : MonoBehaviour
@@ -99,20 +100,16 @@ public class BaseItem : MonoBehaviour
     #endregion// properties
 
     #region public methods
-    public static BaseItem Create(Params _params, Vector2 _localPos, Transform _parent = null, string _prefabPath = "Prefabs/Items/Dummy")
+	public static BaseItem Create(int _id, ItemMasterRow _row, Transform _parent, Vector3 _localPos)
 	{
-        Debug.Log (_prefabPath);
-        var prefab = Resources.Load(_prefabPath) as GameObject;
-        var go = Instantiate (prefab, _parent, false);
-        go.SetActive (false);
+		var prefab = Resources.Load(_row._Prefab) as GameObject;
+		GameObject go = Instantiate (prefab, _parent, false);
         go.transform.localPosition = _localPos;
-        go.name = _params.name;
+		go.name = "Item[" + _row._Name + "]";
 
-        var baseItem = go.GetComponent<BaseItem> ();
+		BaseItem baseItem = go.GetComponent<BaseItem> ();
         baseItem.Init ();
-        baseItem.SetParams (_params);
-
-        go.SetActive (true);
+		baseItem.SetParams(_id, _row);
 
         return baseItem;
 	}
@@ -128,6 +125,11 @@ public class BaseItem : MonoBehaviour
         ChangeConstraints(true, true, true);
 		// 子のレンダラーを全て取得
 		data.renderers = GetComponentsInChildren<SpriteRenderer> ();
+
+		if (!gameObject.activeSelf)
+		{
+			gameObject.SetActive(true);
+		}
 	}
 
 	public int GetHealth()
@@ -151,16 +153,16 @@ public class BaseItem : MonoBehaviour
     /// <summary>
     /// パラメータ設定
     /// </summary>
-    public virtual void SetParams(Params _params)
+	public virtual void SetParams(int _id, ItemMasterRow _row)
     {
-        data.id = _params.id;
-        data.name = _params.name;
-        data.type = _params.type;
-        data.price = _params.price;
-        data.rarity = _params.rarity;
+		data.id = _id;// 割り出し用
+		data.name = _row._Name;
+		//data.type = _row._Type;
+		data.price = _row._Price;
+		data.rarity = _row._Rarity;
 
-        data.health = _params.health;
-        data.exp = _params.exp;
+		data.health = _row._Health;
+		data.exp = _row._Exp;
     }
 
     public int Damage(int _point)

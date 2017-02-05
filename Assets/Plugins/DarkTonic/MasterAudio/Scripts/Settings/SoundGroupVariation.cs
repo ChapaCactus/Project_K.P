@@ -1,5 +1,4 @@
 using UnityEngine;
-using System.Collections.Generic;
 
 // ReSharper disable once CheckNamespace
 namespace DarkTonic.MasterAudio {
@@ -61,11 +60,6 @@ namespace DarkTonic.MasterAudio {
         private readonly PlaySoundParams _playSndParam = new PlaySoundParams(string.Empty, 1f, 1f, 1f, null, false, 0f,
             false, false);
 
-		private List<MasterAudio.AudioLocation> _audioOriginsThatCanUnload = new List<MasterAudio.AudioLocation> {
-			MasterAudio.AudioLocation.ResourceFile,
-			MasterAudio.AudioLocation.Clip
-		};
-
         private AudioDistortionFilter _distFilter;
         private AudioEchoFilter _echoFilter;
         private AudioHighPassFilter _hpFilter;
@@ -89,7 +83,6 @@ namespace DarkTonic.MasterAudio {
 
         private Transform _trans;
         private GameObject _go;
-        private AudioSource _aud;
         private Transform _objectToFollow;
         private Transform _objectToTriggerFrom;
         private MasterAudioGroup _parentGroupScript;
@@ -233,7 +226,7 @@ namespace DarkTonic.MasterAudio {
             }
 
             // ReSharper disable once PossibleNullReferenceException
-            LowPassFilter.cutoffFrequency = AudioUtil.MinCutoffFreq;
+            LowPassFilter.cutoffFrequency = AudioUtil.MinCutoffFreq(VariationUpdater);
         }
         /*! \endcond */
 
@@ -299,7 +292,7 @@ namespace DarkTonic.MasterAudio {
                         return;
                     case MasterAudio.InternetFileLoadStatus.Failed:
                         if (MasterAudio.Instance.LogSounds) {
-                            MasterAudio.LogWarning("Cannot play Variation '" + name +
+                            MasterAudio.LogWarning("Cannot play Variation '" + name +	
                                                    "' because its Internet file failed downloading.");
                         }
                         return;
@@ -468,22 +461,45 @@ namespace DarkTonic.MasterAudio {
             VarAudio.volume = newVol;
 
             _playSndParam.VolumePercentage = volumePercentage;
+
+			// SET LastVolumePercentage for the AudioInfo so a bus fade will work with respect to this value.
+			var grpInfo = MasterAudio.GetAllVariationsOfGroup(ParentGroup.name);
+			for (var i = 0; i < grpInfo.Count; i++) {
+				var aVar = grpInfo[i];
+				if (aVar.Variation != this) {
+					continue;
+				}
+
+				aVar.LastPercentageVolume = volumePercentage;
+				break;
+			}
         }
 
         /// <summary>
         /// This method allows you to pause the audio being played by this Variation. This is automatically called by MasterAudio.PauseSoundGroup and MasterAudio.PauseBus.
         /// </summary>
         public void Pause() {
-			if (_audioOriginsThatCanUnload.Contains(audLocation) && !MasterAudio.Instance.resourceClipsPauseDoNotUnload) {
-                Stop();
-                return;
+            if (!MasterAudio.Instance.resourceClipsPauseDoNotUnload) {
+                switch (audLocation) {
+                    case MasterAudio.AudioLocation.ResourceFile:
+                        Stop();
+                        return;
+                    case MasterAudio.AudioLocation.Clip:
+                        if (!AudioUtil.AudioClipWillPreload(VarAudio.clip)) {
+                            Stop();
+                            return;
+                        }
+                        break;
+                }
             }
 
             VarAudio.Pause();
             curFadeMode = FadeMode.None;
-            if (VariationUpdater != null) {
-                VariationUpdater.StopWaitingForFinish(); // necessary so that the clip can be unpaused.
-            }
+
+            // 12/26/2016 found the below code to actually mess things up. Taking it out unless we find something it's needed for later.
+            //if (VariationUpdater != null) {
+            //    VariationUpdater.StopWaitingForFinish();  // necessary so that the clip can be unpaused.
+            //}
         }
 
         private void MaybeUnloadClip() {
@@ -940,19 +956,21 @@ namespace DarkTonic.MasterAudio {
                 }
 
                 switch (VariationUpdater.MAThisFrame.occlusionSelectType) {
+                    default:
                     case MasterAudio.OcclusionSelectionType.AllGroups:
                         return true;
                     case MasterAudio.OcclusionSelectionType.TurnOnPerBusOrGroup:
+                        if (ParentGroup.isUsingOcclusion) {
+                            return true;
+                        }
+
                         var theBus = ParentGroup.BusForGroup;
                         if (theBus != null && theBus.isUsingOcclusion) {
                             return true;
                         }
-                        
-                        return ParentGroup.isUsingOcclusion;
-                }
 
-                // unreachable, but wanted by compiler
-                return false;
+                        return false;
+                }
             }
         }
 

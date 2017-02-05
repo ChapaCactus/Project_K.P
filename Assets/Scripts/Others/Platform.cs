@@ -105,35 +105,9 @@ public class Platform : MonoBehaviour
         return item;
     }
 
-    public BaseItem CreateItem(int _id = 1)
+    public BaseItem CreateItem()
     {
-        Debug.Log ("Getting Item [" + _id.ToString() + "].....");
-        BaseItem baseItem = null;
-        //ItemMaster master = GameObject.FindWithTag ("Google2u").GetComponent<ItemMaster> ();
-		ItemMaster master = ItemMaster.Instance;
-
-        string key = "ID_00" + _id.ToString();
-        ItemMasterRow row = master.GetRow(key);
-
-        int id = 1;// Test
-        string name = row._Name + UnityEngine.Random.Range(0, 10f).ToString();
-        var type = (BaseItem.Type)Enum.Parse(typeof(BaseItem.Type), row._Type);
-        int price = row._Price;
-        int rarity = row._Rarity;
-        int health = row._Health;
-        int exp = row._Exp;// Dummy
-
-        string resource = row._Resource;
-        string prefab = row._Prefab;
-
-        var _params = new BaseItem.Params (id, name, type, price, rarity, health, exp, resource, prefab);
-
-        baseItem = BaseItem.Create (_params, new Vector2(UnityEngine.Random.Range(0, 1f), 2), transform, prefab);
-        baseItem.Init ();
-        baseItem.SetParams(_params);
-        baseItem.StartPopCoroutine ();
-
-        return baseItem;
+		return Stage.Instance.GenerateItem();
     }
 
     public void KillItem()

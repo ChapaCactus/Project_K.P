@@ -22,7 +22,10 @@ namespace Google2u
 		public string _Resource;
 		public string _Prefab;
 		public int _Exp;
-		public ItemMasterRow(string __ID, string __Name, string __Type, string __Price, string __Rarity, string __Health, string __Resource, string __Prefab, string __Exp) 
+		public float _OffsetX;
+		public float _OffsetY;
+		public float _RotationZ;
+		public ItemMasterRow(string __ID, string __Name, string __Type, string __Price, string __Rarity, string __Health, string __Resource, string __Prefab, string __Exp, string __OffsetX, string __OffsetY, string __RotationZ) 
 		{
 			_Name = __Name.Trim();
 			_Type = __Type.Trim();
@@ -56,9 +59,30 @@ namespace Google2u
 				else
 					Debug.LogError("Failed To Convert _Exp string: "+ __Exp +" to int");
 			}
+			{
+			float res;
+				if(float.TryParse(__OffsetX, NumberStyles.Any, CultureInfo.InvariantCulture, out res))
+					_OffsetX = res;
+				else
+					Debug.LogError("Failed To Convert _OffsetX string: "+ __OffsetX +" to float");
+			}
+			{
+			float res;
+				if(float.TryParse(__OffsetY, NumberStyles.Any, CultureInfo.InvariantCulture, out res))
+					_OffsetY = res;
+				else
+					Debug.LogError("Failed To Convert _OffsetY string: "+ __OffsetY +" to float");
+			}
+			{
+			float res;
+				if(float.TryParse(__RotationZ, NumberStyles.Any, CultureInfo.InvariantCulture, out res))
+					_RotationZ = res;
+				else
+					Debug.LogError("Failed To Convert _RotationZ string: "+ __RotationZ +" to float");
+			}
 		}
 
-		public int Length { get { return 8; } }
+		public int Length { get { return 11; } }
 
 		public string this[int i]
 		{
@@ -97,6 +121,15 @@ namespace Google2u
 				case 7:
 					ret = _Exp.ToString();
 					break;
+				case 8:
+					ret = _OffsetX.ToString();
+					break;
+				case 9:
+					ret = _OffsetY.ToString();
+					break;
+				case 10:
+					ret = _RotationZ.ToString();
+					break;
 			}
 
 			return ret;
@@ -131,6 +164,15 @@ namespace Google2u
 				case "Exp":
 					ret = _Exp.ToString();
 					break;
+				case "OffsetX":
+					ret = _OffsetX.ToString();
+					break;
+				case "OffsetY":
+					ret = _OffsetY.ToString();
+					break;
+				case "RotationZ":
+					ret = _RotationZ.ToString();
+					break;
 			}
 
 			return ret;
@@ -146,6 +188,9 @@ namespace Google2u
 			ret += "{" + "Resource" + " : " + _Resource.ToString() + "} ";
 			ret += "{" + "Prefab" + " : " + _Prefab.ToString() + "} ";
 			ret += "{" + "Exp" + " : " + _Exp.ToString() + "} ";
+			ret += "{" + "OffsetX" + " : " + _OffsetX.ToString() + "} ";
+			ret += "{" + "OffsetY" + " : " + _OffsetY.ToString() + "} ";
+			ret += "{" + "RotationZ" + " : " + _RotationZ.ToString() + "} ";
 			return ret;
 		}
 	}
@@ -172,17 +217,17 @@ namespace Google2u
 
 		private ItemMaster()
 		{
-			Rows.Add( new ItemMasterRow("ID_000", "Dummy", "Dummy", "1", "1", "1", "Dummy", "Dummy", "1"));
-			Rows.Add( new ItemMasterRow("ID_001", "たべかけスイカ", "Crop", "1", "1", "1", "Item/Suica/Suica_D", "Prefabs/Items/Suica", "1"));
-			Rows.Add( new ItemMasterRow("ID_002", "ひとくちスイカ", "Crop", "1", "1", "1", "Item/Suica/Suica_C", "Prefabs/Items/Suica", "2"));
-			Rows.Add( new ItemMasterRow("ID_003", "たっぷりスイカ", "Crop", "1", "1", "1", "Item/Suica/Suica_B", "Prefabs/Items/Suica", "3"));
-			Rows.Add( new ItemMasterRow("ID_004", "ぜいたくスイカ", "Crop", "1", "1", "1", "Item/Suica/Suica_A", "Prefabs/Items/Suica", "15"));
-			Rows.Add( new ItemMasterRow("ID_005", "ダイコン05", "Crop", "1", "1", "1", "Daikon", "Prefabs/Items/Daikon", "1"));
-			Rows.Add( new ItemMasterRow("ID_006", "ダイコン06", "Crop", "1", "1", "1", "Daikon", "Prefabs/Items/Daikon", "1"));
-			Rows.Add( new ItemMasterRow("ID_007", "ダイコン07", "Crop", "1", "1", "1", "Daikon", "Prefabs/Items/Daikon", "1"));
-			Rows.Add( new ItemMasterRow("ID_008", "ダイコン08", "Crop", "1", "1", "1", "Daikon", "Prefabs/Items/Daikon", "1"));
-			Rows.Add( new ItemMasterRow("ID_009", "ダイコン09", "Crop", "1", "1", "1", "Daikon", "Prefabs/Items/Daikon", "1"));
-			Rows.Add( new ItemMasterRow("ID_010", "ダイコン10", "Crop", "1", "1", "1", "Daikon", "Prefabs/Items/Daikon", "1"));
+			Rows.Add( new ItemMasterRow("ID_000", "Dummy", "Dummy", "1", "1", "1", "Dummy", "Dummy", "1", "0", "1.8", "0"));
+			Rows.Add( new ItemMasterRow("ID_001", "たべかけスイカ", "Crop", "1", "1", "1", "Item/Suica/Suica_D", "Prefabs/Items/Suica1", "3", "0", "1.8", "0"));
+			Rows.Add( new ItemMasterRow("ID_002", "ひとくちスイカ", "Crop", "1", "1", "1", "Item/Suica/Suica_C", "Prefabs/Items/Suica2", "4", "0", "1.8", "0"));
+			Rows.Add( new ItemMasterRow("ID_003", "たっぷりスイカ", "Crop", "1", "1", "1", "Item/Suica/Suica_B", "Prefabs/Items/Suica3", "7", "0", "1.8", "0"));
+			Rows.Add( new ItemMasterRow("ID_004", "ぜいたくスイカ", "Crop", "1", "1", "1", "Item/Suica/Suica_A", "Prefabs/Items/Suica4", "15", "0", "1.8", "0"));
+			Rows.Add( new ItemMasterRow("ID_005", "かんぺきスイカ", "Crop", "1", "1", "1", "Daikon", "Prefabs/Items/Suica5", "1", "0", "1.8", "0"));
+			Rows.Add( new ItemMasterRow("ID_006", "ダイコン06", "Crop", "1", "1", "1", "Daikon", "Prefabs/Items/Daikon", "1", "0", "1.8", "0"));
+			Rows.Add( new ItemMasterRow("ID_007", "ダイコン07", "Crop", "1", "1", "1", "Daikon", "Prefabs/Items/Daikon", "1", "0", "1.8", "0"));
+			Rows.Add( new ItemMasterRow("ID_008", "ダイコン08", "Crop", "1", "1", "1", "Daikon", "Prefabs/Items/Daikon", "1", "0", "1.8", "0"));
+			Rows.Add( new ItemMasterRow("ID_009", "ダイコン09", "Crop", "1", "1", "1", "Daikon", "Prefabs/Items/Daikon", "1", "0", "1.8", "0"));
+			Rows.Add( new ItemMasterRow("ID_010", "ダイコン10", "Crop", "1", "1", "1", "Daikon", "Prefabs/Items/Daikon", "1", "0", "1.8", "0"));
 		}
 		public IGoogle2uRow GetGenRow(string in_RowString)
 		{

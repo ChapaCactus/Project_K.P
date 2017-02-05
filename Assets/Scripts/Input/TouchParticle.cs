@@ -59,7 +59,7 @@ public class TouchParticle : MonoBehaviour
     private void PlayParticle(Vector3 _pos)
     {
         particle.transform.position = _pos;
-        particle.Emit(8);
+        particle.Emit (10);
     }
     #endregion// private methods
 

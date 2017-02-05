@@ -6,6 +6,7 @@ namespace DarkTonic.MasterAudio {
     /// <summary>
     /// This class is used to configure and create temporary per-Scene Sound Groups and Buses
     /// </summary>
+    [AudioScriptOrder(-35)]
     // ReSharper disable once CheckNamespace
     public class DynamicSoundGroupCreator : MonoBehaviour {
         /*! \cond PRIVATE */

@@ -39,7 +39,7 @@ public class Player : MonoBehaviour
     private void Update()
     {
         if (Input.GetMouseButtonDown (0)) {
-            BaseItem item = Stage.Instance.platform.GetItem();
+            BaseItem item = Stage.Instance.platforms[0].GetItem();
             if (item != null) {
                 // アイテムがあれば
                 Attack(item);
@@ -125,7 +125,7 @@ public class Player : MonoBehaviour
                 floatingText.Show(1f);
                 Debug.Log("Check expText : " + floatingText);
 
-				Stage.Instance.platform.KillItem();
+				Stage.Instance.platforms[0].KillItem();
 			}
 		}
 

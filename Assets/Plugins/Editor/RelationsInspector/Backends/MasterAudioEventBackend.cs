@@ -1,3 +1,4 @@
+using System.Text;
 using UnityEngine;
 using RelationsInspector.Backend;
 using RelationsInspector;
@@ -11,6 +12,7 @@ using UnityEditor;
 using UnityEditor.Animations;
 #endif
 
+// ReSharper disable once CheckNamespace
 public class MasterAudioEventBackend : MinimalBackend<object, string> {
     public const string AllBusesOrGroupsWord = "All";
 
@@ -19,6 +21,14 @@ public class MasterAudioEventBackend : MinimalBackend<object, string> {
         public string name;
         public bool useGroup;
         public AudioEventGroup group;
+    }
+
+    public class AmbientSoundNode {
+        public string _groupName;
+
+        public AmbientSoundNode(string groupName) {
+            _groupName = groupName;
+        }
     }
 
     public class LinkedGroupNode {
@@ -46,53 +56,53 @@ public class MasterAudioEventBackend : MinimalBackend<object, string> {
     }
 
     public static List<EventGroupData> namedEventGroups = new List<EventGroupData>()
-	{
-		new EventGroupData() {type = EventSounds.EventType.OnStart, getGroup = es=> es.startSound, useGroup = es => es.useStartSound, name = "Start" },
-		new EventGroupData() {type = EventSounds.EventType.OnVisible, getGroup = es=> es.visibleSound, useGroup = es => es.useVisibleSound, name = "Visible" },
-		new EventGroupData() {type = EventSounds.EventType.OnInvisible, getGroup = es=> es.invisibleSound, useGroup = es => es.useInvisibleSound, name = "Invisible" },
-		new EventGroupData() {type = EventSounds.EventType.OnCollision, getGroup = es=> es.collisionSound, useGroup = es => es.useCollisionSound, name = "Collision Enter" },
-		new EventGroupData() {type = EventSounds.EventType.OnCollisionExit, getGroup = es=> es.collisionExitSound, useGroup = es => es.useCollisionExitSound, name = "Collision Exit" },
-		new EventGroupData() {type = EventSounds.EventType.OnTriggerEnter, getGroup = es=> es.triggerSound, useGroup = es => es.useTriggerEnterSound, name = "Trigger Enter" },
-		new EventGroupData() {type = EventSounds.EventType.OnTriggerExit, getGroup = es=> es.triggerExitSound, useGroup = es => es.useTriggerExitSound, name = "Trigger Exit" },
-		new EventGroupData() {type = EventSounds.EventType.OnMouseEnter, getGroup = es=> es.mouseEnterSound, useGroup = es => es.useMouseEnterSound, name = "Mouse Enter (Legacy)" },
-		new EventGroupData() {type = EventSounds.EventType.OnMouseExit, getGroup = es=> es.mouseExitSound, useGroup = es => es.useMouseExitSound, name = "Mouse Exit (Legacy)" },
-		new EventGroupData() {type = EventSounds.EventType.OnMouseClick, getGroup = es=> es.mouseClickSound, useGroup = es => es.useMouseClickSound, name = "Mouse Down (Legacy)" },
-		new EventGroupData() {type = EventSounds.EventType.OnMouseUp, getGroup = es=> es.mouseUpSound, useGroup = es => es.useMouseUpSound, name = "Mouse Up (Legacy)" },
-		new EventGroupData() {type = EventSounds.EventType.OnMouseDrag, getGroup = es=> es.mouseDragSound, useGroup = es => es.useMouseDragSound, name = "Mouse Drag (Legacy)" },
-		new EventGroupData() {type = EventSounds.EventType.OnSpawned, getGroup = es=> es.spawnedSound, useGroup = es => es.useSpawnedSound, name = "Spawned (Pooling)" },
-		new EventGroupData() {type = EventSounds.EventType.OnDespawned, getGroup = es=> es.despawnedSound, useGroup = es => es.useDespawnedSound, name = "Despawned (Pooling)" },
-		new EventGroupData() {type = EventSounds.EventType.OnEnable, getGroup = es=> es.enableSound, useGroup = es => es.useEnableSound, name = "Enable" },
-		new EventGroupData() {type = EventSounds.EventType.OnDisable, getGroup = es=> es.disableSound, useGroup = es => es.useDisableSound, name = "Disable" },
-		new EventGroupData() {type = EventSounds.EventType.OnCollision2D, getGroup = es=> es.collision2dSound, useGroup = es => es.useCollision2dSound, name = "2D Collision Enter" },
-		new EventGroupData() {type = EventSounds.EventType.OnCollisionExit2D, getGroup = es=> es.collisionExit2dSound, useGroup = es => es.useCollisionExit2dSound, name = "2D Collision Exit" },
-		new EventGroupData() {type = EventSounds.EventType.OnTriggerEnter2D, getGroup = es=> es.triggerEnter2dSound, useGroup = es => es.useTriggerEnter2dSound, name = "2D Trigger Enter" },
-		new EventGroupData() {type = EventSounds.EventType.OnTriggerExit2D, getGroup = es=> es.triggerExit2dSound, useGroup = es => es.useTriggerExit2dSound, name = "2D Trigger Exit" },
-		new EventGroupData() {type = EventSounds.EventType.OnParticleCollision, getGroup = es=> es.particleCollisionSound, useGroup = es => es.useParticleCollisionSound, name = "Particle Collision" },
-		new EventGroupData() {type = EventSounds.EventType.NGUIOnClick, getGroup = es=> es.nguiOnClickSound, useGroup = es => es.useNguiOnClickSound, name = "NGUI Mouse Click" },
-		new EventGroupData() {type = EventSounds.EventType.NGUIMouseDown, getGroup = es=> es.nguiMouseDownSound, useGroup = es => es.useNguiMouseDownSound, name = "NGUI Mouse Down" },
-		new EventGroupData() {type = EventSounds.EventType.NGUIMouseUp, getGroup = es=> es.nguiMouseUpSound, useGroup = es => es.useNguiMouseUpSound, name = "NGUI Mouse Up" },
-		new EventGroupData() {type = EventSounds.EventType.NGUIMouseEnter, getGroup = es=> es.nguiMouseEnterSound, useGroup = es => es.useNguiMouseEnterSound, name = "NGUI Mouse Enter" },
-		new EventGroupData() {type = EventSounds.EventType.NGUIMouseExit, getGroup = es=> es.nguiMouseExitSound, useGroup = es => es.useNguiMouseExitSound, name = "NGUI Mouse Exit" },
-		new EventGroupData() {type = EventSounds.EventType.UnitySliderChanged, getGroup = es=> es.unitySliderChangedSound, useGroup = es => es.useUnitySliderChangedSound, name = "Slider Changed (uGUI)" },
-		new EventGroupData() {type = EventSounds.EventType.UnityButtonClicked, getGroup = es=> es.unityButtonClickedSound, useGroup = es => es.useUnityButtonClickedSound, name = "Button Click (uGUI)" },
-		new EventGroupData() {type = EventSounds.EventType.UnityPointerDown, getGroup = es=> es.unityPointerDownSound, useGroup = es => es.useUnityPointerDownSound, name = "Pointer Down (uGUI)" },
-		new EventGroupData() {type = EventSounds.EventType.UnityDrag, getGroup = es=> es.unityDragSound, useGroup = es => es.useUnityDragSound, name = "Drag (uGUI)" },
-		new EventGroupData() {type = EventSounds.EventType.UnityPointerUp, getGroup = es=> es.unityPointerUpSound, useGroup = es => es.useUnityPointerUpSound, name = "Pointer Up (uGUI)" },
-		new EventGroupData() {type = EventSounds.EventType.UnityPointerEnter, getGroup = es=> es.unityPointerEnterSound, useGroup = es => es.useUnityPointerEnterSound, name = "Pointer Enter (uGUI)" },
-		new EventGroupData() {type = EventSounds.EventType.UnityPointerExit, getGroup = es=> es.unityPointerExitSound, useGroup = es => es.useUnityPointerExitSound, name = "Pointer Exit (uGUI)" },
-		new EventGroupData() {type = EventSounds.EventType.UnityDrop, getGroup = es=> es.unityDropSound, useGroup = es => es.useUnityDropSound, name = "Drop (uGUI)" },
-		new EventGroupData() {type = EventSounds.EventType.UnityScroll, getGroup = es=> es.unityScrollSound, useGroup = es => es.useUnityScrollSound, name = "Scroll (uGUI)" },
-		new EventGroupData() {type = EventSounds.EventType.UnityUpdateSelected, getGroup = es=> es.unityUpdateSelectedSound, useGroup = es => es.useUnityUpdateSelectedSound, name = "Update Slected (uGUI)" },
-		new EventGroupData() {type = EventSounds.EventType.UnitySelect, getGroup = es=> es.unitySelectSound, useGroup = es => es.useUnitySelectSound, name = "Select (uGUI)" },
-		new EventGroupData() {type = EventSounds.EventType.UnityDeselect, getGroup = es=> es.unityDeselectSound, useGroup = es => es.useUnityDeselectSound, name = "Deselect (uGUI)" },
-		new EventGroupData() {type = EventSounds.EventType.UnityMove, getGroup = es=> es.unityMoveSound, useGroup = es => es.useUnityMoveSound, name = "Move (uGUI)" },
-		new EventGroupData() {type = EventSounds.EventType.UnityInitializePotentialDrag, getGroup = es=> es.unityInitializePotentialDragSound, useGroup = es => es.useUnityInitializePotentialDragSound, name = "Initialize Potential Drag (uGUI)" },
-		new EventGroupData() {type = EventSounds.EventType.UnityBeginDrag, getGroup = es=> es.unityBeginDragSound, useGroup = es => es.useUnityBeginDragSound, name = "Begin Drag (uGUI)" },
-		new EventGroupData() {type = EventSounds.EventType.UnityEndDrag, getGroup = es=> es.unityEndDragSound, useGroup = es => es.useUnityEndDragSound, name = "End Drag (uGUI)" },
-		new EventGroupData() {type = EventSounds.EventType.UnitySubmit, getGroup = es=> es.unitySubmitSound, useGroup = es => es.useUnitySubmitSound, name = "Submit (uGUI)" },
-		new EventGroupData() {type = EventSounds.EventType.UnityCancel, getGroup = es=> es.unityCancelSound, useGroup = es => es.useUnityCancelSound, name = "Cancel (uGUI)" },
-		new EventGroupData() {type = EventSounds.EventType.UnityToggle, getGroup = es=> es.unityToggleSound, useGroup = es => es.useUnityToggleSound, name = "Toggle (uGUI)" }
-	};
+    {
+        new EventGroupData() {type = EventSounds.EventType.OnStart, getGroup = es=> es.startSound, useGroup = es => es.useStartSound, name = "Start" },
+        new EventGroupData() {type = EventSounds.EventType.OnVisible, getGroup = es=> es.visibleSound, useGroup = es => es.useVisibleSound, name = "Visible" },
+        new EventGroupData() {type = EventSounds.EventType.OnInvisible, getGroup = es=> es.invisibleSound, useGroup = es => es.useInvisibleSound, name = "Invisible" },
+        new EventGroupData() {type = EventSounds.EventType.OnCollision, getGroup = es=> es.collisionSound, useGroup = es => es.useCollisionSound, name = "Collision Enter" },
+        new EventGroupData() {type = EventSounds.EventType.OnCollisionExit, getGroup = es=> es.collisionExitSound, useGroup = es => es.useCollisionExitSound, name = "Collision Exit" },
+        new EventGroupData() {type = EventSounds.EventType.OnTriggerEnter, getGroup = es=> es.triggerSound, useGroup = es => es.useTriggerEnterSound, name = "Trigger Enter" },
+        new EventGroupData() {type = EventSounds.EventType.OnTriggerExit, getGroup = es=> es.triggerExitSound, useGroup = es => es.useTriggerExitSound, name = "Trigger Exit" },
+        new EventGroupData() {type = EventSounds.EventType.OnMouseEnter, getGroup = es=> es.mouseEnterSound, useGroup = es => es.useMouseEnterSound, name = "Mouse Enter (Legacy)" },
+        new EventGroupData() {type = EventSounds.EventType.OnMouseExit, getGroup = es=> es.mouseExitSound, useGroup = es => es.useMouseExitSound, name = "Mouse Exit (Legacy)" },
+        new EventGroupData() {type = EventSounds.EventType.OnMouseClick, getGroup = es=> es.mouseClickSound, useGroup = es => es.useMouseClickSound, name = "Mouse Down (Legacy)" },
+        new EventGroupData() {type = EventSounds.EventType.OnMouseUp, getGroup = es=> es.mouseUpSound, useGroup = es => es.useMouseUpSound, name = "Mouse Up (Legacy)" },
+        new EventGroupData() {type = EventSounds.EventType.OnMouseDrag, getGroup = es=> es.mouseDragSound, useGroup = es => es.useMouseDragSound, name = "Mouse Drag (Legacy)" },
+        new EventGroupData() {type = EventSounds.EventType.OnSpawned, getGroup = es=> es.spawnedSound, useGroup = es => es.useSpawnedSound, name = "Spawned (Pooling)" },
+        new EventGroupData() {type = EventSounds.EventType.OnDespawned, getGroup = es=> es.despawnedSound, useGroup = es => es.useDespawnedSound, name = "Despawned (Pooling)" },
+        new EventGroupData() {type = EventSounds.EventType.OnEnable, getGroup = es=> es.enableSound, useGroup = es => es.useEnableSound, name = "Enable" },
+        new EventGroupData() {type = EventSounds.EventType.OnDisable, getGroup = es=> es.disableSound, useGroup = es => es.useDisableSound, name = "Disable" },
+        new EventGroupData() {type = EventSounds.EventType.OnCollision2D, getGroup = es=> es.collision2dSound, useGroup = es => es.useCollision2dSound, name = "2D Collision Enter" },
+        new EventGroupData() {type = EventSounds.EventType.OnCollisionExit2D, getGroup = es=> es.collisionExit2dSound, useGroup = es => es.useCollisionExit2dSound, name = "2D Collision Exit" },
+        new EventGroupData() {type = EventSounds.EventType.OnTriggerEnter2D, getGroup = es=> es.triggerEnter2dSound, useGroup = es => es.useTriggerEnter2dSound, name = "2D Trigger Enter" },
+        new EventGroupData() {type = EventSounds.EventType.OnTriggerExit2D, getGroup = es=> es.triggerExit2dSound, useGroup = es => es.useTriggerExit2dSound, name = "2D Trigger Exit" },
+        new EventGroupData() {type = EventSounds.EventType.OnParticleCollision, getGroup = es=> es.particleCollisionSound, useGroup = es => es.useParticleCollisionSound, name = "Particle Collision" },
+        new EventGroupData() {type = EventSounds.EventType.NGUIOnClick, getGroup = es=> es.nguiOnClickSound, useGroup = es => es.useNguiOnClickSound, name = "NGUI Mouse Click" },
+        new EventGroupData() {type = EventSounds.EventType.NGUIMouseDown, getGroup = es=> es.nguiMouseDownSound, useGroup = es => es.useNguiMouseDownSound, name = "NGUI Mouse Down" },
+        new EventGroupData() {type = EventSounds.EventType.NGUIMouseUp, getGroup = es=> es.nguiMouseUpSound, useGroup = es => es.useNguiMouseUpSound, name = "NGUI Mouse Up" },
+        new EventGroupData() {type = EventSounds.EventType.NGUIMouseEnter, getGroup = es=> es.nguiMouseEnterSound, useGroup = es => es.useNguiMouseEnterSound, name = "NGUI Mouse Enter" },
+        new EventGroupData() {type = EventSounds.EventType.NGUIMouseExit, getGroup = es=> es.nguiMouseExitSound, useGroup = es => es.useNguiMouseExitSound, name = "NGUI Mouse Exit" },
+        new EventGroupData() {type = EventSounds.EventType.UnitySliderChanged, getGroup = es=> es.unitySliderChangedSound, useGroup = es => es.useUnitySliderChangedSound, name = "Slider Changed (uGUI)" },
+        new EventGroupData() {type = EventSounds.EventType.UnityButtonClicked, getGroup = es=> es.unityButtonClickedSound, useGroup = es => es.useUnityButtonClickedSound, name = "Button Click (uGUI)" },
+        new EventGroupData() {type = EventSounds.EventType.UnityPointerDown, getGroup = es=> es.unityPointerDownSound, useGroup = es => es.useUnityPointerDownSound, name = "Pointer Down (uGUI)" },
+        new EventGroupData() {type = EventSounds.EventType.UnityDrag, getGroup = es=> es.unityDragSound, useGroup = es => es.useUnityDragSound, name = "Drag (uGUI)" },
+        new EventGroupData() {type = EventSounds.EventType.UnityPointerUp, getGroup = es=> es.unityPointerUpSound, useGroup = es => es.useUnityPointerUpSound, name = "Pointer Up (uGUI)" },
+        new EventGroupData() {type = EventSounds.EventType.UnityPointerEnter, getGroup = es=> es.unityPointerEnterSound, useGroup = es => es.useUnityPointerEnterSound, name = "Pointer Enter (uGUI)" },
+        new EventGroupData() {type = EventSounds.EventType.UnityPointerExit, getGroup = es=> es.unityPointerExitSound, useGroup = es => es.useUnityPointerExitSound, name = "Pointer Exit (uGUI)" },
+        new EventGroupData() {type = EventSounds.EventType.UnityDrop, getGroup = es=> es.unityDropSound, useGroup = es => es.useUnityDropSound, name = "Drop (uGUI)" },
+        new EventGroupData() {type = EventSounds.EventType.UnityScroll, getGroup = es=> es.unityScrollSound, useGroup = es => es.useUnityScrollSound, name = "Scroll (uGUI)" },
+        new EventGroupData() {type = EventSounds.EventType.UnityUpdateSelected, getGroup = es=> es.unityUpdateSelectedSound, useGroup = es => es.useUnityUpdateSelectedSound, name = "Update Slected (uGUI)" },
+        new EventGroupData() {type = EventSounds.EventType.UnitySelect, getGroup = es=> es.unitySelectSound, useGroup = es => es.useUnitySelectSound, name = "Select (uGUI)" },
+        new EventGroupData() {type = EventSounds.EventType.UnityDeselect, getGroup = es=> es.unityDeselectSound, useGroup = es => es.useUnityDeselectSound, name = "Deselect (uGUI)" },
+        new EventGroupData() {type = EventSounds.EventType.UnityMove, getGroup = es=> es.unityMoveSound, useGroup = es => es.useUnityMoveSound, name = "Move (uGUI)" },
+        new EventGroupData() {type = EventSounds.EventType.UnityInitializePotentialDrag, getGroup = es=> es.unityInitializePotentialDragSound, useGroup = es => es.useUnityInitializePotentialDragSound, name = "Initialize Potential Drag (uGUI)" },
+        new EventGroupData() {type = EventSounds.EventType.UnityBeginDrag, getGroup = es=> es.unityBeginDragSound, useGroup = es => es.useUnityBeginDragSound, name = "Begin Drag (uGUI)" },
+        new EventGroupData() {type = EventSounds.EventType.UnityEndDrag, getGroup = es=> es.unityEndDragSound, useGroup = es => es.useUnityEndDragSound, name = "End Drag (uGUI)" },
+        new EventGroupData() {type = EventSounds.EventType.UnitySubmit, getGroup = es=> es.unitySubmitSound, useGroup = es => es.useUnitySubmitSound, name = "Submit (uGUI)" },
+        new EventGroupData() {type = EventSounds.EventType.UnityCancel, getGroup = es=> es.unityCancelSound, useGroup = es => es.useUnityCancelSound, name = "Cancel (uGUI)" },
+        new EventGroupData() {type = EventSounds.EventType.UnityToggle, getGroup = es=> es.unityToggleSound, useGroup = es => es.useUnityToggleSound, name = "Toggle (uGUI)" }
+    };
 
     const string busFilterPrefsKey = "MasterAudioEventBackend" + "busFilter";
     static string busFilter;
@@ -134,6 +144,21 @@ public class MasterAudioEventBackend : MinimalBackend<object, string> {
     }
 
     public override IEnumerable<Relation<object, string>> GetRelations(object entity) {
+        var asAmbientSound = entity as AmbientSound;
+        if (asAmbientSound != null) {
+            yield return new Relation<object, string>(asAmbientSound, new AmbientSoundNode(asAmbientSound.AmbientSoundGroup), "Ambient Sound");
+        }
+
+        var asAmbientSoundNode = entity as AmbientSoundNode;
+        if (asAmbientSoundNode != null) {
+            foreach (var linkedGroupName in GetLinkedGroups(asAmbientSoundNode._groupName)) {
+                yield return
+                    new Relation<object, string>(asAmbientSoundNode, new LinkedGroupNode(linkedGroupName),
+                        GetGroupLinkLabel(asAmbientSoundNode._groupName));
+            }
+            yield break; 
+        }
+
         // connect EventSounds components to their AudioEventGroups that contain actions
         var asEventSounds = entity as EventSounds;
         if (asEventSounds != null) {
@@ -197,37 +222,49 @@ public class MasterAudioEventBackend : MinimalBackend<object, string> {
                     if (!string.IsNullOrEmpty(asStateSounds.enterSoundGroup) && !FilterSoundGroup(asStateSounds.enterSoundGroup)) {
                         yield return new Relation<object, string>(
                             asAnimState,
-                            new MechanimEventSound("Play Sound Group\n" + asStateSounds.enterSoundGroup, "OnEnter"),
+                            new MechanimEventSound(asStateSounds.enterSoundGroup, "OnEnter"),
                             "plays on state entry");
                     }
 
                     if (!string.IsNullOrEmpty(asStateSounds.exitSoundGroup) && !FilterSoundGroup(asStateSounds.exitSoundGroup)) {
                         yield return new Relation<object, string>(
                             asAnimState,
-                            new MechanimEventSound("Play Sound Group\n" + asStateSounds.exitSoundGroup, "OnExit"),
+                            new MechanimEventSound(asStateSounds.exitSoundGroup, "OnExit"),
                             "plays on state exit");
                     }
                 }
 
                 var asStateEvents = behaviour as MechanimStateCustomEvents;
                 if (asStateEvents != null) {
-                    if (!string.IsNullOrEmpty(asStateEvents.enterCustomEvent) && !FilterCustomEvent()) {
+                    if (!string.IsNullOrEmpty(asStateEvents.enterCustomEvent) && !FilterCustomEvent(asStateEvents.enterCustomEvent)) {
                         yield return new Relation<object, string>(
                             asAnimState,
-                            new MechanimEventCustomEvent("Fire Custom Event\n" + asStateEvents.enterCustomEvent, "OnEnter"),
+                            new MechanimEventCustomEvent(asStateEvents.enterCustomEvent, "OnEnter"),
                             "plays on state entry");
                     }
 
-                    if (!string.IsNullOrEmpty(asStateEvents.exitCustomEvent) && !FilterCustomEvent()) {
+                    if (!string.IsNullOrEmpty(asStateEvents.exitCustomEvent) && !FilterCustomEvent(asStateEvents.exitCustomEvent)) {
                         yield return new Relation<object, string>(
                             asAnimState,
-                            new MechanimEventCustomEvent("Fire Custom Event\n" + asStateEvents.exitCustomEvent, "OnExit"),
+                            new MechanimEventCustomEvent(asStateEvents.exitCustomEvent, "OnExit"),
                             "plays on state exit");
                     }
                 }
             }
             yield break;
         }
+
+        var asMechanimEventSound = entity as MechanimEventSound;
+        if (asMechanimEventSound != null) {
+            foreach (var linkedGroupName in GetLinkedGroups(asMechanimEventSound.group)) {
+                yield return
+                    new Relation<object, string>(asMechanimEventSound, new LinkedGroupNode(linkedGroupName),
+                        GetGroupLinkLabel(asMechanimEventSound.group));
+            }
+
+            yield break;
+        }
+
 #endif
     }
 
@@ -304,6 +341,13 @@ public class MasterAudioEventBackend : MinimalBackend<object, string> {
 
         newTargets = newTargets.Concat(mechanimStateCustomEventObjects.Cast<object>());
 
+        var ambientSoundsComponents = UnityEngine.Object
+            .FindObjectsOfType<AmbientSound>()
+            .Where(f => IncludeAmbientSound(f))
+            .ToArray();
+
+        newTargets = newTargets.Concat(ambientSoundsComponents);
+
 #endif
         // put all components in an object array
 
@@ -314,44 +358,61 @@ public class MasterAudioEventBackend : MinimalBackend<object, string> {
 
     public override GUIContent GetContent(object entity) {
         var asEventSounds = entity as EventSounds;
-        if (asEventSounds != null)
+        if (asEventSounds != null) {
             return base.GetContent(asEventSounds.gameObject);
+        }
 
         var asGroupNode = entity as AudioEventGroupNode;
-        if (asGroupNode != null)
+        if (asGroupNode != null) {
             return new GUIContent(asGroupNode.name);
+        }
+
+        var asAmbientSound = entity as AmbientSound;
+        if (asAmbientSound != null) {
+            return base.GetContent(asAmbientSound.gameObject);
+        }
+
+        var asAmbientSoundNode = entity as AmbientSoundNode;
+        if (asAmbientSoundNode != null) {
+            return new GUIContent(GetAmbientSoundNodeLabel(asAmbientSoundNode));
+        }
 
         var asAudioEvent = entity as AudioEvent;
-        if (asAudioEvent != null)
+        if (asAudioEvent != null) {
             return new GUIContent(GetAudioEventLabel(asAudioEvent));
+        }
 
         var asLinkedGroupNode = entity as LinkedGroupNode;
-        if (asLinkedGroupNode != null)
+        if (asLinkedGroupNode != null) {
             return new GUIContent("Linked Group\n" + asLinkedGroupNode.groupName);
+        }
 
         var asAnimator = entity as Animator;
-        if (asAnimator != null)
+        if (asAnimator != null) {
             return base.GetContent(asAnimator.gameObject);
+        }
 
 #if UNITY_4_5 || UNITY_4_6 || UNITY_4_7
 #else
 
         var asLayer = entity as AnimatorControllerLayer;
-        if (asLayer != null)
+        if (asLayer != null) {
             return new GUIContent("Mechanim Layer\n" + asLayer.name);
+        }
 
         var asState = entity as AnimatorState;
-        if (asState != null)
+        if (asState != null) {
             return new GUIContent("State\n" + asState.name);
+        }
 
         var asMechanimEventSound = entity as MechanimEventSound;
         if (asMechanimEventSound != null) {
-            return new GUIContent(asMechanimEventSound.type + "\n" + asMechanimEventSound.group);
+            return new GUIContent(asMechanimEventSound.type + "\n" + "Play Sound Group\n" + asMechanimEventSound.group);
         }
 
         var asMechanimCustomEvent = entity as MechanimEventCustomEvent;
         if (asMechanimCustomEvent != null) {
-            return new GUIContent(asMechanimCustomEvent.type + "\n" + asMechanimCustomEvent.customEvent);
+            return new GUIContent(asMechanimCustomEvent.type + "\n" + "Fire Custom Event\n" + asMechanimCustomEvent.customEvent);
         }
 #endif
 
@@ -376,6 +437,15 @@ public class MasterAudioEventBackend : MinimalBackend<object, string> {
     public override void OnEntitySelectionChange(object[] selection) {
         if (selection.Count() == 1) {
             var single = selection.First();
+
+            var asAmbientSoundNode = single as AmbientSoundNode;
+            if (asAmbientSoundNode != null) {
+                var groupTransform = MasterAudio.FindGroupTransform(asAmbientSoundNode._groupName);
+                if (groupTransform != null) {
+                    Selection.activeObject = groupTransform.gameObject;
+                }
+                return;
+            }
 
             // action nodes are handled depending on their action type
             var asAudioEvent = single as AudioEvent;
@@ -413,7 +483,7 @@ public class MasterAudioEventBackend : MinimalBackend<object, string> {
                     case MasterAudio.EventSoundFunctionType.UnityMixerControl: {
                             if (asAudioEvent.currentMixerCommand == MasterAudio.UnityMixerCommand.TransitionToSnapshot) {
                                 if (asAudioEvent.snapshotToTransitionTo != null) {
-                                    // todo: run AudioMixerWindow.Create
+                                    // run AudioMixerWindow.Create
                                     // Selection.activeObject = asAudioEvent.snapshotToTransitionTo.audioMixer;
                                 }
                             }
@@ -441,11 +511,10 @@ public class MasterAudioEventBackend : MinimalBackend<object, string> {
 
             var asLinkedGroup = single as LinkedGroupNode;
             if (asLinkedGroup != null) {
-                var groupComponent = MasterAudio.GrabGroup(asLinkedGroup.groupName, false);
-                if (groupComponent != null)
-                    Selection.activeObject = groupComponent.gameObject;
-                else
-                    Debug.Log("no component for group " + asLinkedGroup.groupName);
+                var groupTransform = MasterAudio.FindGroupTransform(asLinkedGroup.groupName);
+                if (groupTransform != null) {
+                    Selection.activeObject = groupTransform;
+                }
                 return;
             }
 
@@ -460,8 +529,9 @@ public class MasterAudioEventBackend : MinimalBackend<object, string> {
             var asMechanimEventSound = single as MechanimEventSound;
             if (asMechanimEventSound != null) {
                 var groupTransform = MasterAudio.FindGroupTransform(asMechanimEventSound.group);
-                if (groupTransform != null)
+                if (groupTransform != null) {
                     Selection.activeObject = groupTransform;
+                }
                 return;
             }
 #endif
@@ -474,6 +544,18 @@ public class MasterAudioEventBackend : MinimalBackend<object, string> {
         return group.SoundEvents.Where(IncludeAudioEvent);
     }
 
+    static bool IncludeAmbientSound(AmbientSound ambient) {
+        if (MasterAudio.SoundGroupHardCodedNames.Contains(ambient.AmbientSoundGroup)) {
+            return false;
+        }
+
+        if (FilterSoundGroup(ambient.AmbientSoundGroup)) {
+            return false;
+        }
+
+        return true;
+    }
+
     static bool IncludeAudioEvent(AudioEvent ev) {
         switch (ev.currentSoundFunctionType) {
             case MasterAudio.EventSoundFunctionType.PlaySound:
@@ -481,10 +563,11 @@ public class MasterAudioEventBackend : MinimalBackend<object, string> {
                 return !FilterSoundGroup(ev.soundType);
 
             case MasterAudio.EventSoundFunctionType.BusControl:
-                if (!string.IsNullOrEmpty(groupFilter))
+                if (!string.IsNullOrEmpty(groupFilter)) {
                     return false;
-                else
-                    return ev.allSoundTypesForBusCmd || string.IsNullOrEmpty(busFilter) || ev.busName == busFilter;
+                }
+
+                return ev.allSoundTypesForBusCmd || string.IsNullOrEmpty(busFilter) || ev.busName == busFilter;
 
             case MasterAudio.EventSoundFunctionType.PlaylistControl:
 #if UNITY_4_5 || UNITY_4_6 || UNITY_4_7
@@ -546,13 +629,17 @@ public class MasterAudioEventBackend : MinimalBackend<object, string> {
 
     static IEnumerable<string> GetCustomEvents(MechanimStateCustomEvents behaviour) {
         var customEvents = new[] { behaviour.enterCustomEvent, behaviour.exitCustomEvent };
-        return customEvents.Where(name => !string.IsNullOrEmpty(name) && !FilterCustomEvent());
+        return customEvents.Where(name => !string.IsNullOrEmpty(name) && !FilterCustomEvent(name));
     }
 
 #endif
 
     static bool FilterSoundGroup(string name) {
         if (!string.IsNullOrEmpty(groupFilter) && groupFilter != name) {
+            return true;
+        }
+
+        if (MasterAudio.SoundGroupHardCodedNames.Contains(name)) {
             return true;
         }
 
@@ -566,7 +653,11 @@ public class MasterAudioEventBackend : MinimalBackend<object, string> {
         return false;
     }
 
-    static bool FilterCustomEvent() {
+    static bool FilterCustomEvent(string customEventName) {
+        if (MasterAudio.SoundGroupHardCodedNames.Contains(customEventName)) {
+            return true;
+        }
+
         return !string.IsNullOrEmpty(groupFilter) || !string.IsNullOrEmpty(busFilter);
     }
 
@@ -627,6 +718,12 @@ public class MasterAudioEventBackend : MinimalBackend<object, string> {
             return null;
 
         return MasterAudio.GroupBuses[index];
+    }
+
+    static string GetAmbientSoundNodeLabel(AmbientSoundNode node) {
+        var sb = new StringBuilder("Ambient Sound");
+        sb.Append("\nGroup: " + node._groupName);
+        return sb.ToString();
     }
 
     // returns a node label text for the given action
@@ -730,8 +827,7 @@ public class MasterAudioEventBackend : MinimalBackend<object, string> {
     }
 
     // returns the names of all groups that the given group links to
-    static IEnumerable<string> GetLinkedGroups(string groupName)
-    {
+    static IEnumerable<string> GetLinkedGroups(string groupName) {
         var grpTrans = MasterAudio.Instance.Trans.FindChild(groupName);
         if (grpTrans == null) {
             return Enumerable.Empty<string>();

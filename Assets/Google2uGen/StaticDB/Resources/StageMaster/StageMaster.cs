@@ -16,7 +16,12 @@ namespace Google2u
 	{
 		public string _Name;
 		public int _Distance;
-		public StageMasterRow(string __ID, string __Name, string __Distance) 
+		public int _Item1;
+		public int _Item2;
+		public int _Item3;
+		public int _Item4;
+		public int _Item5;
+		public StageMasterRow(string __ID, string __Name, string __Distance, string __Item1, string __Item2, string __Item3, string __Item4, string __Item5) 
 		{
 			_Name = __Name.Trim();
 			{
@@ -26,9 +31,44 @@ namespace Google2u
 				else
 					Debug.LogError("Failed To Convert _Distance string: "+ __Distance +" to int");
 			}
+			{
+			int res;
+				if(int.TryParse(__Item1, NumberStyles.Any, CultureInfo.InvariantCulture, out res))
+					_Item1 = res;
+				else
+					Debug.LogError("Failed To Convert _Item1 string: "+ __Item1 +" to int");
+			}
+			{
+			int res;
+				if(int.TryParse(__Item2, NumberStyles.Any, CultureInfo.InvariantCulture, out res))
+					_Item2 = res;
+				else
+					Debug.LogError("Failed To Convert _Item2 string: "+ __Item2 +" to int");
+			}
+			{
+			int res;
+				if(int.TryParse(__Item3, NumberStyles.Any, CultureInfo.InvariantCulture, out res))
+					_Item3 = res;
+				else
+					Debug.LogError("Failed To Convert _Item3 string: "+ __Item3 +" to int");
+			}
+			{
+			int res;
+				if(int.TryParse(__Item4, NumberStyles.Any, CultureInfo.InvariantCulture, out res))
+					_Item4 = res;
+				else
+					Debug.LogError("Failed To Convert _Item4 string: "+ __Item4 +" to int");
+			}
+			{
+			int res;
+				if(int.TryParse(__Item5, NumberStyles.Any, CultureInfo.InvariantCulture, out res))
+					_Item5 = res;
+				else
+					Debug.LogError("Failed To Convert _Item5 string: "+ __Item5 +" to int");
+			}
 		}
 
-		public int Length { get { return 2; } }
+		public int Length { get { return 7; } }
 
 		public string this[int i]
 		{
@@ -49,6 +89,21 @@ namespace Google2u
 				case 1:
 					ret = _Distance.ToString();
 					break;
+				case 2:
+					ret = _Item1.ToString();
+					break;
+				case 3:
+					ret = _Item2.ToString();
+					break;
+				case 4:
+					ret = _Item3.ToString();
+					break;
+				case 5:
+					ret = _Item4.ToString();
+					break;
+				case 6:
+					ret = _Item5.ToString();
+					break;
 			}
 
 			return ret;
@@ -65,6 +120,21 @@ namespace Google2u
 				case "Distance":
 					ret = _Distance.ToString();
 					break;
+				case "Item1":
+					ret = _Item1.ToString();
+					break;
+				case "Item2":
+					ret = _Item2.ToString();
+					break;
+				case "Item3":
+					ret = _Item3.ToString();
+					break;
+				case "Item4":
+					ret = _Item4.ToString();
+					break;
+				case "Item5":
+					ret = _Item5.ToString();
+					break;
 			}
 
 			return ret;
@@ -74,6 +144,11 @@ namespace Google2u
 			string ret = System.String.Empty;
 			ret += "{" + "Name" + " : " + _Name.ToString() + "} ";
 			ret += "{" + "Distance" + " : " + _Distance.ToString() + "} ";
+			ret += "{" + "Item1" + " : " + _Item1.ToString() + "} ";
+			ret += "{" + "Item2" + " : " + _Item2.ToString() + "} ";
+			ret += "{" + "Item3" + " : " + _Item3.ToString() + "} ";
+			ret += "{" + "Item4" + " : " + _Item4.ToString() + "} ";
+			ret += "{" + "Item5" + " : " + _Item5.ToString() + "} ";
 			return ret;
 		}
 	}
@@ -100,17 +175,17 @@ namespace Google2u
 
 		private StageMaster()
 		{
-			Rows.Add( new StageMasterRow("ID_000", "テストの星", "5"));
-			Rows.Add( new StageMasterRow("ID_001", "はじまりの星", "1"));
-			Rows.Add( new StageMasterRow("ID_002", "つぎの星", "10"));
-			Rows.Add( new StageMasterRow("ID_003", "つぎの星", "100"));
-			Rows.Add( new StageMasterRow("ID_004", "つぎの星", "100"));
-			Rows.Add( new StageMasterRow("ID_005", "つぎの星", "100"));
-			Rows.Add( new StageMasterRow("ID_006", "つぎの星", "100"));
-			Rows.Add( new StageMasterRow("ID_007", "つぎの星", "100"));
-			Rows.Add( new StageMasterRow("ID_008", "つぎの星", "100"));
-			Rows.Add( new StageMasterRow("ID_009", "つぎの星", "100"));
-			Rows.Add( new StageMasterRow("ID_010", "つぎの星", "100"));
+			Rows.Add( new StageMasterRow("ID_000", "テストの星", "5", "1", "2", "3", "4", "5"));
+			Rows.Add( new StageMasterRow("ID_001", "はじまりの星", "1", "1", "2", "3", "4", "5"));
+			Rows.Add( new StageMasterRow("ID_002", "つぎの星", "10", "1", "1", "2", "2", "3"));
+			Rows.Add( new StageMasterRow("ID_003", "つぎの星", "100", "1", "1", "2", "2", "3"));
+			Rows.Add( new StageMasterRow("ID_004", "つぎの星", "100", "1", "1", "2", "2", "3"));
+			Rows.Add( new StageMasterRow("ID_005", "つぎの星", "100", "1", "1", "2", "2", "3"));
+			Rows.Add( new StageMasterRow("ID_006", "つぎの星", "100", "1", "1", "2", "2", "3"));
+			Rows.Add( new StageMasterRow("ID_007", "つぎの星", "100", "1", "1", "2", "2", "3"));
+			Rows.Add( new StageMasterRow("ID_008", "つぎの星", "100", "1", "1", "2", "2", "3"));
+			Rows.Add( new StageMasterRow("ID_009", "つぎの星", "100", "1", "1", "2", "2", "3"));
+			Rows.Add( new StageMasterRow("ID_010", "つぎの星", "100", "1", "1", "2", "2", "3"));
 		}
 		public IGoogle2uRow GetGenRow(string in_RowString)
 		{

@@ -67,6 +67,11 @@ namespace DarkTonic.MasterAudio {
         public float despawnFadeTime = .3f;
 
         public bool isUsingOcclusion;
+        public bool willOcclusionOverrideRaycastOffset;
+        public float occlusionRayCastOffset = 0f;
+        public bool willOcclusionOverrideFrequencies;
+        public float occlusionMaxCutoffFreq = AudioUtil.DefaultMaxOcclusionCutoffFrequency;
+        public float occlusionMinCutoffFreq = AudioUtil.DefaultMinOcclusionCutoffFrequency;
 
         public bool isSoloed = false;
         public bool isMuted = false;
@@ -75,14 +80,13 @@ namespace DarkTonic.MasterAudio {
 		public string soundPlayedCustomEvent = string.Empty;
 
 		public event System.Action LastVariationFinishedPlay;
-		// ReSharper restore InconsistentNaming
+        public int frames = 0;
+        // ReSharper restore InconsistentNaming
 
         private List<int> _activeAudioSourcesIds;
         private string _objectName = string.Empty;
         private Transform _trans;
         private float _originalVolume = 1;
-
-		public int frames = 0;
 
         public enum ChildGroupMode {
             None,

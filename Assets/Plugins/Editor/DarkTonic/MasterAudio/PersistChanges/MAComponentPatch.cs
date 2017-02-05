@@ -9,6 +9,8 @@ using UnityEngine;
 
 // ReSharper disable once CheckNamespace
 public class MAComponentPatch {
+    private const string IgnoredPropertyNames = ";useConeFriction;sleepVelocity;sleepAngularVelocity;";
+
     private Dictionary<string, object> _values;
 
     public MAComponentPatch(Component component) {
@@ -44,6 +46,9 @@ public class MAComponentPatch {
         var fields = GetFields();
 
         foreach (var property in properties) {
+            if (IgnoredPropertyNames.Contains(";" + property.Name + ";")) {
+                continue;
+            }
             if (_values.ContainsKey(property.Name)) {
                 continue;
             }
