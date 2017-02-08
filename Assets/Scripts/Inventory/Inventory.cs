@@ -173,13 +173,14 @@ public class Inventory : SingletonMonoBehaviour<Inventory>
 				var slot = slots[index];
 				if (slot != null)
 				{
-					contents[i].icon = null;
+					var sprite = Resources.Load<Sprite>("Sprites/Icons/Pocha");
+					contents[i].icon.sprite = sprite;
 					contents[i].stackText.text = (slot.stack + "/" + 99).ToString();
 				}
 				else
 				{
 					// スロットが空なら
-					contents[i].icon = null;
+					contents[i].icon.sprite = null;
 					contents[i].stackText.text = "";
 				}
 			}
