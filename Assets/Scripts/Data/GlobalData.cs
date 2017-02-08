@@ -56,10 +56,10 @@ public class GlobalData : SingletonMonoBehaviour<GlobalData>
 
     private bool m_IsMenu = false;
     // 所持品リスト
-    private Inventory.Item[] m_Bag;
+	private Inventory.Item[] m_InventorySlots = null;
 
     // 最大アイテム所持数
-    public static readonly int MAX_INVENTORY_SIZE = 30;
+    public static readonly int MAX_INVENTORY_SIZE = 20;
     // SAVEDATA LOAD KEY
     private static readonly string EXP_KEY = "EXP";
     private static readonly string GOLD_KEY = "GOLD";
@@ -102,7 +102,10 @@ public class GlobalData : SingletonMonoBehaviour<GlobalData>
 		set { m_IsMenu = value; }
 	}// メニューを開いているか
 
-    public Inventory.Item[] bag { get { return m_Bag; } set { m_Bag = value; } }
+	public Inventory.Item[] inventorySlots {
+		get { return m_InventorySlots; }
+		private set { m_InventorySlots = value; }
+	}
     #endregion// properties
 
     #region unity callbacks
@@ -115,14 +118,17 @@ public class GlobalData : SingletonMonoBehaviour<GlobalData>
     #region PublicMethods
     public void Init()
     {
+		// インベントリの初期化
+		inventorySlots = new Inventory.Item[MAX_INVENTORY_SIZE];
+		// セーブデータのロード
         Load();
 		Refresh();
         // ステート初期化
         gameState = GameState.Title;
         // フラグ初期化
         isMenu = false;
-        // インベントリ初期化
-        bag = new Inventory.Item[MAX_INVENTORY_SIZE];
+
+		Inventory.Instance.Init();
     }
 
     public void Load()
@@ -144,7 +150,6 @@ public class GlobalData : SingletonMonoBehaviour<GlobalData>
         PlayerPrefs.SetInt(GOLD_KEY, gold);
         PlayerPrefs.SetInt(EXP_KEY, exp);
 
-
         PlayerPrefs.Save();
         Debug.Log("Saved.");
     }
@@ -160,6 +165,63 @@ public class GlobalData : SingletonMonoBehaviour<GlobalData>
 
         return days;
     }
+
+	public int GetInventorySlotsLength()
+	{
+		return inventorySlots.Length;
+	}
+
+	/// <summary>
+	/// アイテムを入手
+	/// </summary>
+	public void AddItem(int _ItemID, int _Quantity = 1)
+	{
+		Inventory.Item[] invenSlots = inventorySlots;
+		bool incrementFlag = false;// インクリメントできたか(== 所持していたか)
+		for (int i = 0; i < invenSlots.Length; i++)
+		{
+			if (invenSlots[i] != null)
+			{
+				// 加えようとしたアイテムが既にあれば、加算
+				// && 既に99個無ければ
+				if (invenSlots[i].id == _ItemID && invenSlots[i].stack < 99)
+				{
+					invenSlots[i].stack += _Quantity;// 加算
+					incrementFlag = true;
+
+					if (invenSlots[i].stack > 99)
+					{
+						int remain = (invenSlots[i].stack - 99);
+						invenSlots[i].stack = 99;
+						// 再帰的に呼んで他のスロットに加算
+						AddItem(_ItemID, remain);
+					}
+
+					Inventory.Instance.Refresh();
+
+					return;
+				}
+			}
+		}
+
+		// インクリメントされて居なければ(== 所持していなければ)、新規追加
+		if (!incrementFlag)
+		{
+			for (int i = 0; i < invenSlots.Length; i++)
+			{
+				// 空いていればそこに追加する
+				if (invenSlots[i] == null)
+				{
+					var item = new Inventory.Item(_ItemID, _Quantity);
+					invenSlots[i] = item;
+
+					Inventory.Instance.Refresh();
+
+					return;
+				}
+			}
+		}
+	}
 
     public int AddMoney(int _point)
     {

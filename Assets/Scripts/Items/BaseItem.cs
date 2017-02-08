@@ -100,20 +100,6 @@ public class BaseItem : MonoBehaviour
     #endregion// properties
 
     #region public methods
-	//public static BaseItem Create(int _id, ItemMasterRow _row, Transform _parent, Vector3 _localPos)
-	//{
-	//	var prefab = Resources.Load(_row._Prefab) as GameObject;
-	//	GameObject go = Instantiate (prefab, _parent, false);
- //       go.transform.localPosition = _localPos;
-	//	go.name = "Item[" + _row._Name + "]";
-
-	//	BaseItem baseItem = go.GetComponent<BaseItem> ();
- //       baseItem.Init ();
-	//	baseItem.SetParams(_id, _row);
-
- //       return baseItem;
-	//}
-
     public virtual void Init()
 	{
         // Init Components
@@ -172,8 +158,10 @@ public class BaseItem : MonoBehaviour
 		// HPが0になっていたら消す
 		if (data.health <= 0)
 		{
-			GlobalData.Instance.AddMoney(data.exp);// Test money
-			GlobalData.Instance.GainExp(data.exp);
+			GlobalData.Instance.AddItem(data.id, 1);
+
+			//GlobalData.Instance.AddMoney(data.exp);// Test money
+			//GlobalData.Instance.GainExp(data.exp);
 
 			var message = ("+" + data.exp.ToString());
 			var floatingText = FloatingText.Create();
