@@ -115,7 +115,11 @@ public class Inventory : SingletonMonoBehaviour<Inventory>
 
 	public void Refresh()
 	{
-		UpdateListContent();
+		// 表示中ならUIの更新をかける
+		if (reference.canvasGroup.alpha > 0)
+		{
+			UpdateListContent();
+		}
 	}
 
 	#endregion// public methods
