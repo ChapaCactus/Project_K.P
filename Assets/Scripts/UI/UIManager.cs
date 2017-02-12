@@ -53,8 +53,9 @@ public class UIManager : SingletonMonoBehaviour<UIManager>
     #region variables
     [SerializeField] private UI m_UI;
 
-	[SerializeField]
+	// Poolingやキャッシュ
 	private ObjectPooling m_FloatingTextPooling = null;
+	private HealthBar m_HealthBar = null;
 
     private bool isMenuAnimRunning = false;
     #endregion// variables

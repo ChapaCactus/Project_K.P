@@ -1,0 +1,21 @@
+fileFormatVersion: 2
+guid: d049fd2f174744728a4765fe6e0ae8ea
+timeCreated: 1486778938
+licenseType: Free
+TrueTypeFontImporter:
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: ???????
+  fontNames:
+  - miraifont
+  fallbackFontReferences: []
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
