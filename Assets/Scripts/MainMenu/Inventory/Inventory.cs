@@ -6,7 +6,7 @@ using UnityEngine.UI;
 using Google2u;
 
 [RequireComponent(typeof (CanvasGroup))]
-public class Inventory : SingletonMonoBehaviour<Inventory>
+public class Inventory : BaseMainMenuContent
 {
     [Serializable]
     public class Item
@@ -40,8 +40,6 @@ public class Inventory : SingletonMonoBehaviour<Inventory>
     public class Reference
     {
 		public Transform inventoryContentParent = null;
-
-		public CanvasGroup canvasGroup = null;
     }
 
     [Serializable]
@@ -50,23 +48,19 @@ public class Inventory : SingletonMonoBehaviour<Inventory>
         public bool isActive = false;
     }
 
-	#region variables
+	#region Variables
 	[SerializeField]
 	private Content[] m_Contents = null;
 
     [SerializeField] private Reference m_Reference;
     [SerializeField] private Data m_Data;
-    #endregion// variables
-    #region properties
+    #endregion// Variables
+    #region Properties
     public Reference reference { get { return m_Reference; } private set { m_Reference = value; } }
     public Data data { get { return m_Data; } private set { m_Data = value; } }
-    #endregion// properties
-    #region unity callbacks
-    //private void Awake()
-    //{
-    //    Init ();
-    //}
+    #endregion// Properties
 
+    #region UnityCallbacks
 	private void Update()
 	{
 		if (Input.GetButtonDown("Jump"))
@@ -75,34 +69,13 @@ public class Inventory : SingletonMonoBehaviour<Inventory>
 			DummyCall();
 		}
 	}
-    #endregion// unity callbacks
-    #region public methods
+    #endregion// UnityCallbacks
+
+    #region PublicMethods
     public void Init()
     {
         Hide ();
-
 		CreateListContents();
-    }
-
-    /// <summary>
-    /// Show bag instance.
-    /// </summary>
-    public void Show()
-    {
-        data.isActive = true;
-
-        reference.canvasGroup.alpha = 1;
-        reference.canvasGroup.blocksRaycasts = true;
-        reference.canvasGroup.interactable = true;
-    }
-
-    public void Hide()
-    {
-        data.isActive = false;
-
-        reference.canvasGroup.alpha = 0;
-        reference.canvasGroup.blocksRaycasts = false;
-        reference.canvasGroup.interactable = false;
     }
 
 	/// <summary>
@@ -116,14 +89,14 @@ public class Inventory : SingletonMonoBehaviour<Inventory>
 	public void Refresh()
 	{
 		// 表示中ならUIの更新をかける
-		if (reference.canvasGroup.alpha > 0)
+		if (GetComponent<CanvasGroup>().alpha > 0)
 		{
 			UpdateListContent();
 		}
 	}
 
-	#endregion// public methods
-	#region private methods
+	#endregion// PublicMethods
+	#region PrivateMethods
 	private void CreateListContents()
 	{
 		// 初期化
@@ -220,6 +193,6 @@ public class Inventory : SingletonMonoBehaviour<Inventory>
 	{
 		Debug.Log("DummyCalling...");
 	}
-    #endregion// private methods
+    #endregion// PrivateMethods
 
 }// class

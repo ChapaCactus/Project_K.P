@@ -20,6 +20,8 @@ public class SceneController : MonoBehaviour
 	{
 		// Initializing GameState.
 		m_SceneState = SceneState.Title;
+
+		MenuController.Instance.Init();
 	}
 
 	public SceneState GetState()

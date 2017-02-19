@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(CanvasGroup))]
-public class Artifact : BaseMainMenuContent
+public class Home : BaseMainMenuContent
 {
-	#region PublicMethods
-	#endregion// PublicMethods
 }

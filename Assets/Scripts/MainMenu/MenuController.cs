@@ -2,11 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(MainMenu))]
-public class MainMenuController : MonoBehaviour
+public class MenuController : SingletonMonoBehaviour<MenuController>
 {
 	#region Variables
-	private MainMenu m_MainMenu;
+	private Menu m_Menu;
 	#endregion// Variables
 
 	#region Properties
@@ -18,16 +17,16 @@ public class MainMenuController : MonoBehaviour
 	/// </summary>
 	public void Init()
 	{
-		
+		m_Menu = GetComponent<Menu>();
+		m_Menu.Init();
 	}
 
 	/// <summary>
 	/// 他クラスから情報のセットが必要な場合の初期化、
 	/// Button.OnClick等のセット
 	/// </summary>
-	public void Setup(MainMenu _model)
+	public void Setup()
 	{
-		m_MainMenu = _model;
 	}
 
 	/// <summary>
@@ -35,15 +34,15 @@ public class MainMenuController : MonoBehaviour
 	/// </summary>
 	public void OnClickInventory()
 	{
-		if (m_MainMenu.state != MainMenu.State.Inventory)
+		if (m_Menu.state != Menu.State.Inventory)
 		{
 			// インベントリ以外であればインベントリを表示
-			m_MainMenu.ShowInventory();
+			m_Menu.ShowInventory();
 		}
 		else
 		{
 			// インベントリなら全てを非表示
-			m_MainMenu.HideAllContents();
+			m_Menu.HideAllContents();
 		}
 
 		Debug.Log("OnClickInventory");
@@ -54,15 +53,15 @@ public class MainMenuController : MonoBehaviour
 	/// </summary>
 	public void OnClickConfig()
 	{
-		if (m_MainMenu.state != MainMenu.State.Config)
+		if (m_Menu.state != Menu.State.Config)
 		{
 			// コンフィグ以外であればコンフィグを表示
-			m_MainMenu.ShowConfig();
+			m_Menu.ShowConfig();
 		}
 		else
 		{
 			// コンフィグなら全てを非表示
-			m_MainMenu.HideAllContents();
+			m_Menu.HideAllContents();
 		}
 
 		Debug.Log("OnClickConfig");

@@ -127,8 +127,6 @@ public class GlobalData : SingletonMonoBehaviour<GlobalData>
         gameState = GameState.Title;
         // フラグ初期化
         isMenu = false;
-
-		Inventory.Instance.Init();
     }
 
     public void Load()
@@ -197,7 +195,7 @@ public class GlobalData : SingletonMonoBehaviour<GlobalData>
 						AddItem(_ItemID, remain);
 					}
 
-					Inventory.Instance.Refresh();
+					Menu.Inventory.Refresh();
 
 					return;
 				}
@@ -215,7 +213,7 @@ public class GlobalData : SingletonMonoBehaviour<GlobalData>
 					var item = new Inventory.Item(_ItemID, _Quantity);
 					invenSlots[i] = item;
 
-					Inventory.Instance.Refresh();
+					Menu.Inventory.Refresh();
 
 					return;
 				}

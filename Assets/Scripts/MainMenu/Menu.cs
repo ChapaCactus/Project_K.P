@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-[RequireComponent(typeof(MainMenuController))]
-public class MainMenu : MonoBehaviour
+[RequireComponent(typeof(MenuController))]
+public class Menu : MonoBehaviour
 {
 	#region Enums
 	/// <summary>
@@ -14,8 +14,8 @@ public class MainMenu : MonoBehaviour
 	{
 		None = -1,
 		Inventory = 0,
-		Artifact,
-		MyHome,
+		Equip,
+		Home,
 		Config,
 		Num
 	}
@@ -25,11 +25,17 @@ public class MainMenu : MonoBehaviour
 	private State m_State = State.None;
 	// TabButtons
 	private Button m_InventoryTabButton = null;
-	private Button m_ArtifactTabButton = null;
-	private Button m_MyHomeTabButton = null;
+	private Button m_EquipTabButton = null;
+	private Button m_HomeTabButton = null;
 	private Button m_ConfigTabButton = null;
 	// Controller
-	private MainMenuController m_Controller = null;
+	private MenuController m_Controller = null;
+
+	public static Inventory Inventory = null;
+	public static Equip Equip = null;
+	public static Home Home = null;
+	public static Config Config = null;
+
 	#endregion// Variables
 
 	#region Properties
@@ -42,39 +48,37 @@ public class MainMenu : MonoBehaviour
 	}
 	#endregion// Properties
 
-	#region UnityCallbacks
-	private void Awake()
-	{
-		Init();
-	}
-	#endregion// UnityCallbacks
-
 	#region PublicMethods
 	/// <summary>
 	/// 初期化
 	/// </summary>
 	public void Init()
 	{
-		// コントローラの初期化
-		m_Controller = GetComponent<MainMenuController>();
-		m_Controller.Init();
-		m_Controller.Setup(this);
+		// TabButtonsの初期化
+		m_InventoryTabButton = transform.FindChild("Buttons/Tabs/Inventory (Tab)").GetComponent<Button>();
+		m_InventoryTabButton.onClick.RemoveAllListeners();
+		m_InventoryTabButton.onClick.AddListener(() => m_Controller.OnClickInventory());
+		m_ConfigTabButton = transform.FindChild("Buttons/Tabs/Config (Tab)").GetComponent<Button>();
+		m_ConfigTabButton.onClick.RemoveAllListeners();
+		m_ConfigTabButton.onClick.AddListener(() => m_Controller.OnClickConfig());
+		// コンテンツの参照
+		Inventory = transform.Find("Contents/Inventory").GetComponent<Inventory>();
+		Equip = transform.Find("Contents/Equip").GetComponent<Equip>();
+		Home = transform.Find("Contents/Home").GetComponent<Home>();
+		Config = transform.Find("Contents/Config").GetComponent<Config>();
+		// コンテンツの初期化
+		Inventory.Init();
+		//Equip.Init();
+		//Home.Init();
+		Config.Init();
 
 		// UI表示の初期化
 		HideAllContents();
-
-		// TabButtonsの初期化
-		m_InventoryTabButton = transform.FindChild("MenuButtons/TabButtons/InventoryTab").GetComponent<Button>();
-		m_InventoryTabButton.onClick.RemoveAllListeners();
-		m_InventoryTabButton.onClick.AddListener(() => m_Controller.OnClickInventory());
-		m_ConfigTabButton = transform.FindChild("MenuButtons/TabButtons/ConfigTab").GetComponent<Button>();
-		m_ConfigTabButton.onClick.RemoveAllListeners();
-		m_ConfigTabButton.onClick.AddListener(() => m_Controller.OnClickConfig());
 	}
 
 	public void ShowInventory()
 	{
-		Inventory.Instance.Show();
+		Inventory.Show();
 		m_State = State.Inventory;
 
 		Debug.Log("ShowInventory()");
@@ -82,7 +86,7 @@ public class MainMenu : MonoBehaviour
 
 	public void ShowConfig()
 	{
-		Config.Instance.Show();
+		Config.Show();
 		m_State = State.Config;
 
 		Debug.Log("ShowConfig()");
@@ -101,7 +105,7 @@ public class MainMenu : MonoBehaviour
 
 	public void HideInventory()
 	{
-		Inventory.Instance.Hide();
+		Inventory.Hide();
 		m_State = State.None;
 
 		Debug.Log("HideInventory()");
@@ -109,7 +113,7 @@ public class MainMenu : MonoBehaviour
 
 	public void HideConfig()
 	{
-		Config.Instance.Hide();
+		Config.Hide();
 		m_State = State.None;
 
 		Debug.Log("HideConfig()");

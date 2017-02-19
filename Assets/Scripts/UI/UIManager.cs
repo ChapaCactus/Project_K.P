@@ -55,7 +55,7 @@ public class UIManager : SingletonMonoBehaviour<UIManager>
 
 	// Poolingやキャッシュ
 	private ObjectPooling m_FloatingTextPooling = null;
-	private HealthBar m_HealthBar = null;
+	private HealthBar m_HealthBar = null;// 体力ゲージ
 
     private bool isMenuAnimRunning = false;
     #endregion// variables
@@ -92,6 +92,10 @@ public class UIManager : SingletonMonoBehaviour<UIManager>
 
         m_FloatingTextPooling = new ObjectPooling ();
         m_FloatingTextPooling.Init ("Prefabs/UI/Texts/FloatingText", 10);
+		// HPバーの初期化
+		m_HealthBar = GameObject.FindWithTag("EnemyHealthBar").GetComponent<HealthBar>();
+		m_HealthBar.Init();
+		m_HealthBar.Setup(1);
     }
 
     public void OnClickMenu()
@@ -101,7 +105,7 @@ public class UIManager : SingletonMonoBehaviour<UIManager>
         if (isMenu) {
             // 閉じる
             StartCoroutine(PlayMenuAnimation(true));
-            Inventory.Instance.Init ();
+            Menu.Inventory.Init ();
         } else {
             // 開く
             StartCoroutine(PlayMenuAnimation(false));
@@ -113,10 +117,10 @@ public class UIManager : SingletonMonoBehaviour<UIManager>
     /// </summary>
     public void OnClickItemMenu()
     {
-        if (Inventory.Instance.data.isActive) {
-            Inventory.Instance.Hide ();
+		if (Menu.Inventory.data.isActive) {
+			Menu.Inventory.Hide ();
         } else {
-            Inventory.Instance.Show ();
+			Menu.Inventory.Show ();
         }
     }
 
@@ -142,6 +146,19 @@ public class UIManager : SingletonMonoBehaviour<UIManager>
     {
         return ui.uiCamera;
     }
+
+	public HealthBar GetHealthBar()
+	{
+		if (m_HealthBar == null)
+		{
+			m_HealthBar = GameObject.FindWithTag("EnemyHealthBar").GetComponent<HealthBar>();
+			if (m_HealthBar == null)
+			{
+				m_HealthBar = HealthBar.Create(ui.mainCanvas.transform);
+			}
+		}
+		return m_HealthBar;
+	}
     #endregion// public methods
     #region private methods
     private IEnumerator PlayMenuAnimation(bool _IsReverse = false)
