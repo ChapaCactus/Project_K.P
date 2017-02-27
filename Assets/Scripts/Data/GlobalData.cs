@@ -56,10 +56,12 @@ public class GlobalData : SingletonMonoBehaviour<GlobalData>
 
     private bool m_IsMenu = false;
     // 所持品リスト
+	[SerializeField, HeaderAttribute("カバンの内容")]
 	private Inventory.Item[] m_InventorySlots = null;
 
     // 最大アイテム所持数
-    public static readonly int MAX_INVENTORY_SIZE = 20;
+    public static readonly int MAX_INVENTORY_SIZE = 15;
+	public static readonly int MAX_STACK_SIZE = 99;
     // SAVEDATA LOAD KEY
     private static readonly string EXP_KEY = "EXP";
     private static readonly string GOLD_KEY = "GOLD";

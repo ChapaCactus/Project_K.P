@@ -54,6 +54,8 @@ public class Menu : MonoBehaviour
 	/// </summary>
 	public void Init()
 	{
+		m_Controller = GetComponent<MenuController>();
+		
 		// TabButtonsの初期化
 		m_InventoryTabButton = transform.FindChild("Buttons/Tabs/Inventory (Tab)").GetComponent<Button>();
 		m_InventoryTabButton.onClick.RemoveAllListeners();

@@ -25,15 +25,87 @@ public class Inventory : BaseMainMenuContent
 	/// インベントリボタン個々の参照
 	/// </summary>
 	[Serializable]
-	public struct Content
+	public class Content
 	{
-		public int invenSlotIndex;// GlobalData.inventorySlotsの対応番地
+		#region Properties
+		public int invenSlotIndex { get { return m_InvenSlotIndex; } }
+		#endregion// Properties
 
-		public Image icon;
+		#region Variables
+		// GlobalData.inventorySlotsの対応番地
+		private int m_InvenSlotIndex = -1;
 
-		public Button button;
+		private Button m_Button = null;
 
-		public Text stackText;// 2/99 所持数/最大所持数
+		private Text m_StackText = null;// 2/99 所持数/最大所持数
+
+		private Image m_IconImage = null;
+		#endregion// Variables
+
+		#region PublicMethods
+		// コンストラクタ
+		public Content(int _invenSlotIndex, Text _stackText, Image _iconImage, Button _button)
+		{
+			m_InvenSlotIndex = _invenSlotIndex;
+			m_StackText = _stackText;
+			m_IconImage = _iconImage;
+			m_Button = _button;
+
+			AddEventInvenButton(m_Button, m_InvenSlotIndex);
+		}
+
+		public void SetStackText(int _myStack, int _maxStack)
+		{
+			m_StackText.text = (_myStack + "/" + _maxStack);
+		}
+
+		/// <summary>
+		/// Global.Inventory(の該当Index)の情報に更新
+		/// </summary>
+		public void Update()
+		{
+			if (m_InvenSlotIndex == -1)
+			{
+				Debug.Log("対応スロット 番号エラー => m_InvenSlotIndex: " + m_InvenSlotIndex.ToString());
+				return;
+			}
+
+			// アイテムデータ取得
+			var slot = GlobalData.Instance.inventorySlots[m_InvenSlotIndex];
+			if (slot != null)
+			{
+				var rowID = Utilities.GetMasterRowID(slot.id);
+				var itemData = ItemMaster.Instance.GetRow(rowID);
+				// 所持数テキスト更新
+				var stack = slot.stack;
+				var maxStack = GlobalData.MAX_STACK_SIZE;
+				SetStackText(stack, maxStack);
+			}
+		}
+		#endregion// PublicMethods
+
+		#region PrivateMethods
+		/// <summary>
+		/// タッチイベントセット
+		/// </summary>
+		/// <param name="_button">対象ボタン</param>
+		/// <param name="_slotIndex">GlobalData.InventorySlotsと対応</param>
+		private void AddEventInvenButton(Button _button, int _slotIndex)
+		{
+			_button.onClick.RemoveAllListeners();
+			_button.onClick.AddListener(() => OnClickInvenButton(_slotIndex));
+		}
+
+		/// <summary>
+		/// スロット内、各ボタン押下時の処理
+		/// </summary>
+		/// <param name="_slotIndex">GlobalData.InventorySlotsと対応</param>
+		private void OnClickInvenButton(int _slotIndex)
+		{
+			Debug.Log("OnClick....InvenButton....");
+		}
+		#endregion// PrivateMethods
+
 	}
 
     [Serializable]
@@ -78,20 +150,12 @@ public class Inventory : BaseMainMenuContent
 		CreateListContents();
     }
 
-	/// <summary>
-	/// スロット内、各ボタン押下時の処理
-	/// </summary>
-	/// <param name="_slotIndex">GlobalData.InventorySlotsと対応</param>
-    public void OnClickInvenButton(int _slotIndex)
-    {
-    }
-
 	public void Refresh()
 	{
 		// 表示中ならUIの更新をかける
 		if (GetComponent<CanvasGroup>().alpha > 0)
 		{
-			UpdateListContent();
+			UpdateListContents();
 		}
 	}
 
@@ -100,79 +164,62 @@ public class Inventory : BaseMainMenuContent
 	private void CreateListContents()
 	{
 		// 初期化
-		m_Contents = null;
 		m_Contents = new Content[GlobalData.Instance.GetInventorySlotsLength()];
-
-		var parent = transform.FindChild("Viewport/Content");
-		var prefab = parent.transform.FindChild("Template").gameObject;
-		prefab.SetActive(true);
 
 		// インベントリ最大数まで要素を作る
 		for (int i = 0; i < GlobalData.Instance.GetInventorySlotsLength(); i++)
 		{
+			// 生成
+			var go = transform.Find("Viewport/Content/Slot (" + i + ")").gameObject;
 			// 初期化
-			var go = Instantiate(prefab, parent, false);
-			var content = new Content();
-			// 参照設定
-			content.invenSlotIndex = i;
-			content.button = go.GetComponent<Button>();
-			content.icon = go.transform.FindChild("Image").GetComponent<Image>();
-			content.stackText = go.transform.FindChild("Stack/Text").GetComponent<Text>();
-			// データセット
-			AddEventInvenButton(content.button, i);
-			SetIconSprite(content.icon, i);
+			var index = i;// スロット参照用
+			var stackText = go.transform.FindChild("Stack/Text").GetComponent<Text>();
+			var iconImage = go.transform.FindChild("Image").GetComponent<Image>();
+			var button = go.GetComponent<Button>();
+			var content = new Content(index, stackText, iconImage, button);
 
+			if (!go.activeSelf) go.SetActive(true);
+			// 登録
 			m_Contents[i] = content;
 		}
 
-		prefab.SetActive(false);
 		// GlobalDataの情報通りに更新
-		UpdateListContent();
+		UpdateListContents();
 	}
 
 	/// <summary>
 	/// GlobalDataの情報通りに更新
 	/// </summary>
-	private void UpdateListContent()
+	/// <param name="_slotIndexes">更新スロットの指定(nullなら全てのスロットを更新)</param>
+	private void UpdateListContents(int[] _slotIndexes = null)
 	{
-		if (m_Contents == null)
+		var slots = GlobalData.Instance.inventorySlots;
+
+		if (_slotIndexes == null)
 		{
-			CreateListContents();
+			// 未指定なら全てのスロットを
+			// 更新
+			for (int i = 0; i < m_Contents.Length; i++)
+			{
+				m_Contents[i].Update();
+			}
 		}
 		else
 		{
-			var slots = GlobalData.Instance.inventorySlots;
-			var contents = m_Contents;
-
-			for (int i = 0; i < contents.Length; i++)
+			// 指定があれば、そのスロットだけ更新
+			for (int i = 0; i < m_Contents.Length; i++)
 			{
-				var index = contents[i].invenSlotIndex;
-				var slot = slots[index];
-				if (slot != null)
+				for (int j = 0; j < _slotIndexes.Length; j++)
 				{
-					var sprite = Resources.Load<Sprite>("Sprites/Icons/Pocha");
-					contents[i].icon.sprite = sprite;
-					contents[i].stackText.text = (slot.stack + "/" + 99).ToString();
-				}
-				else
-				{
-					// スロットが空なら
-					contents[i].icon.sprite = null;
-					contents[i].stackText.text = "";
+					if (m_Contents[i].invenSlotIndex == _slotIndexes[j])
+					{
+						// 指定Indexと同じ対応Indexを持つスロットがあれば
+						// 更新
+						m_Contents[i].Update();
+					}
 				}
 			}
 		}
-	}
-
-	/// <summary>
-	/// タッチイベントセット
-	/// </summary>
-	/// <param name="_button">対象ボタン</param>
-	/// <param name="_slotIndex">GlobalData.InventorySlotsと対応</param>
-	private void AddEventInvenButton(Button _button, int _slotIndex)
-	{
-		_button.onClick.RemoveAllListeners();
-		_button.onClick.AddListener(() => OnClickInvenButton(_slotIndex));
 	}
 
 	/// <summary>
@@ -185,6 +232,14 @@ public class Inventory : BaseMainMenuContent
 		Sprite sprite = new Sprite();
 		_image.sprite = sprite;
 	}
+
+	/// <summary>
+	/// スロットの要素を取得する
+	/// </summary>
+	//private Content[] GetSlotContents()
+	//{
+	//	var parent = transform.Find("Viewport/Content");
+	//}
 
 	/// <summary>
 	/// Dummy
