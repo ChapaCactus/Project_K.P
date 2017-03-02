@@ -223,6 +223,8 @@ namespace DarkTonic.MasterAudio {
             // set occlusion default
             if (LowPassFilter == null) {
                 _lpFilter = gameObject.AddComponent<AudioLowPassFilter>();
+            } else {
+                _lpFilter = GetComponent<AudioLowPassFilter>();
             }
 
             // ReSharper disable once PossibleNullReferenceException
@@ -678,17 +680,14 @@ namespace DarkTonic.MasterAudio {
         }
 
         /// <summary>
-        /// This property returns you a lazy-loaded reference to the Unity Low Pass Filter FX component.
+        /// This property returns you a reference to the Unity Low Pass Filter FX component.
         /// </summary>
         public AudioLowPassFilter LowPassFilter {
             get {
-                if (_lpFilter != null) {
-                    return _lpFilter;
-                }
-
-                _lpFilter = GetComponent<AudioLowPassFilter>();
-
                 return _lpFilter;
+            }
+            set {
+                _lpFilter = value;
             }
         }
 

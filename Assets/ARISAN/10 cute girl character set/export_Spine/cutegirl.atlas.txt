@@ -1,0 +1,508 @@
+
+cutegirl.png
+size: 1024,1024
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+arm_left_dn
+  rotate: false
+  xy: 260, 580
+  size: 24, 30
+  orig: 24, 30
+  offset: 0, 0
+  index: -1
+arm_left_up
+  rotate: true
+  xy: 260, 612
+  size: 27, 26
+  orig: 27, 26
+  offset: 0, 0
+  index: -1
+arm_right_dn
+  rotate: true
+  xy: 260, 545
+  size: 33, 19
+  orig: 33, 19
+  offset: 0, 0
+  index: -1
+arm_right_up
+  rotate: true
+  xy: 305, 669
+  size: 30, 22
+  orig: 30, 22
+  offset: 0, 0
+  index: -1
+body
+  rotate: false
+  xy: 260, 641
+  size: 43, 58
+  orig: 43, 58
+  offset: 0, 0
+  index: -1
+hair_part/hair_003_f
+  rotate: true
+  xy: 878, 5
+  size: 187, 143
+  orig: 187, 143
+  offset: 0, 0
+  index: -1
+hair_part/hair_008_b
+  rotate: false
+  xy: 589, 431
+  size: 230, 263
+  orig: 230, 263
+  offset: 0, 0
+  index: -1
+hair_part/hair_018_b
+  rotate: false
+  xy: 589, 431
+  size: 230, 263
+  orig: 230, 263
+  offset: 0, 0
+  index: -1
+hair_part/hair_008_f
+  rotate: true
+  xy: 866, 850
+  size: 172, 156
+  orig: 172, 156
+  offset: 0, 0
+  index: -1
+hair_part/hair_009_b
+  rotate: false
+  xy: 676, 2
+  size: 200, 190
+  orig: 200, 190
+  offset: 0, 0
+  index: -1
+hair_part/hair_019_b
+  rotate: false
+  xy: 676, 2
+  size: 200, 190
+  orig: 200, 190
+  offset: 0, 0
+  index: -1
+hair_part/hair_014_b
+  rotate: false
+  xy: 305, 448
+  size: 282, 219
+  orig: 282, 219
+  offset: 0, 0
+  index: -1
+hair_part/hair_014_f
+  rotate: true
+  xy: 821, 509
+  size: 281, 201
+  orig: 281, 201
+  offset: 0, 0
+  index: -1
+hair_part/hair_018_f
+  rotate: true
+  xy: 2, 161
+  size: 280, 223
+  orig: 280, 223
+  offset: 0, 0
+  index: -1
+hair_part/hair_023_f
+  rotate: false
+  xy: 465, 3
+  size: 209, 205
+  orig: 209, 205
+  offset: 0, 0
+  index: -1
+hair_part/hair_024_b
+  rotate: false
+  xy: 486, 210
+  size: 236, 219
+  orig: 236, 219
+  offset: 0, 0
+  index: -1
+hair_part/hair_026_f
+  rotate: false
+  xy: 260, 218
+  size: 224, 228
+  orig: 224, 228
+  offset: 0, 0
+  index: -1
+hair_part/hair_027_b
+  rotate: false
+  xy: 724, 194
+  size: 217, 235
+  orig: 217, 235
+  offset: 0, 0
+  index: -1
+hair_part/hair_027_f
+  rotate: false
+  xy: 227, 8
+  size: 236, 208
+  orig: 236, 208
+  offset: 0, 0
+  index: -1
+hair_part/hair_028_b
+  rotate: true
+  xy: 601, 792
+  size: 230, 263
+  orig: 230, 263
+  offset: 0, 0
+  index: -1
+hair_part/hair_028_f
+  rotate: false
+  xy: 2, 3
+  size: 203, 156
+  orig: 203, 156
+  offset: 0, 0
+  index: -1
+hair_part/hair_030_b
+  rotate: false
+  xy: 2, 701
+  size: 326, 321
+  orig: 326, 321
+  offset: 0, 0
+  index: -1
+hair_part/hair_030_f
+  rotate: true
+  xy: 330, 696
+  size: 326, 269
+  orig: 326, 269
+  offset: 0, 0
+  index: -1
+leg_left_dn
+  rotate: false
+  xy: 260, 511
+  size: 16, 32
+  orig: 16, 32
+  offset: 0, 0
+  index: -1
+leg_right_dn
+  rotate: false
+  xy: 260, 511
+  size: 16, 32
+  orig: 16, 32
+  offset: 0, 0
+  index: -1
+leg_left_up
+  rotate: false
+  xy: 260, 476
+  size: 14, 33
+  orig: 14, 33
+  offset: 0, 0
+  index: -1
+leg_right_up
+  rotate: false
+  xy: 260, 476
+  size: 14, 33
+  orig: 14, 33
+  offset: 0, 0
+  index: -1
+weapon_100
+  rotate: false
+  xy: 2, 443
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: -1
+
+cutegirl2.png
+size: 1024,1024
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+face
+  rotate: false
+  xy: 796, 6
+  size: 164, 152
+  orig: 164, 152
+  offset: 0, 0
+  index: -1
+hair_part/hair_001_f
+  rotate: true
+  xy: 849, 172
+  size: 192, 173
+  orig: 192, 173
+  offset: 0, 0
+  index: -1
+hair_part/hair_002_b
+  rotate: false
+  xy: 2, 492
+  size: 196, 246
+  orig: 196, 246
+  offset: 0, 0
+  index: -1
+hair_part/hair_002_f
+  rotate: false
+  xy: 857, 785
+  size: 164, 237
+  orig: 164, 237
+  offset: 0, 0
+  index: -1
+hair_part/hair_004_b
+  rotate: true
+  xy: 628, 356
+  size: 216, 219
+  orig: 216, 219
+  offset: 0, 0
+  index: -1
+hair_part/hair_004_f
+  rotate: true
+  xy: 626, 2
+  size: 156, 168
+  orig: 156, 168
+  offset: 0, 0
+  index: -1
+hair_part/hair_005_f
+  rotate: false
+  xy: 398, 376
+  size: 228, 194
+  orig: 228, 194
+  offset: 0, 0
+  index: -1
+hair_part/hair_006_b
+  rotate: false
+  xy: 200, 791
+  size: 217, 231
+  orig: 217, 231
+  offset: 0, 0
+  index: -1
+hair_part/hair_006_f
+  rotate: false
+  xy: 624, 574
+  size: 224, 215
+  orig: 224, 215
+  offset: 0, 0
+  index: -1
+hair_part/hair_011_f
+  rotate: true
+  xy: 849, 366
+  size: 202, 173
+  orig: 202, 173
+  offset: 0, 0
+  index: -1
+hair_part/hair_012_b
+  rotate: false
+  xy: 200, 543
+  size: 196, 246
+  orig: 196, 246
+  offset: 0, 0
+  index: -1
+hair_part/hair_012_f
+  rotate: false
+  xy: 211, 62
+  size: 175, 237
+  orig: 175, 237
+  offset: 0, 0
+  index: -1
+hair_part/hair_015_f
+  rotate: false
+  xy: 391, 180
+  size: 228, 194
+  orig: 228, 194
+  offset: 0, 0
+  index: -1
+hair_part/hair_016_b
+  rotate: false
+  xy: 419, 791
+  size: 217, 231
+  orig: 217, 231
+  offset: 0, 0
+  index: -1
+hair_part/hair_016_f
+  rotate: false
+  xy: 398, 572
+  size: 224, 217
+  orig: 224, 217
+  offset: 0, 0
+  index: -1
+hair_part/hair_017_f
+  rotate: false
+  xy: 388, 2
+  size: 236, 156
+  orig: 236, 156
+  offset: 0, 0
+  index: -1
+hair_part/hair_020_f
+  rotate: true
+  xy: 621, 160
+  size: 194, 218
+  orig: 194, 218
+  offset: 0, 0
+  index: -1
+hair_part/hair_021_b
+  rotate: true
+  xy: 2, 254
+  size: 236, 204
+  orig: 236, 204
+  offset: 0, 0
+  index: -1
+hair_part/hair_021_f
+  rotate: true
+  xy: 2, 31
+  size: 221, 207
+  orig: 221, 207
+  offset: 0, 0
+  index: -1
+hair_part/hair_022_b
+  rotate: false
+  xy: 2, 740
+  size: 196, 282
+  orig: 196, 282
+  offset: 0, 0
+  index: -1
+hair_part/hair_024_f
+  rotate: true
+  xy: 850, 570
+  size: 213, 168
+  orig: 213, 168
+  offset: 0, 0
+  index: -1
+hair_part/hair_026_b
+  rotate: false
+  xy: 638, 791
+  size: 217, 231
+  orig: 217, 231
+  offset: 0, 0
+  index: -1
+hair_part/hair_029_f
+  rotate: false
+  xy: 208, 301
+  size: 181, 240
+  orig: 181, 240
+  offset: 0, 0
+  index: -1
+
+cutegirl3.png
+size: 1024,1024
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+body_c_001
+  rotate: false
+  xy: 872, 796
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+hair_part/hair_001_b
+  rotate: true
+  xy: 232, 512
+  size: 194, 204
+  orig: 194, 204
+  offset: 0, 0
+  index: -1
+hair_part/hair_011_b
+  rotate: true
+  xy: 232, 512
+  size: 194, 204
+  orig: 194, 204
+  offset: 0, 0
+  index: -1
+hair_part/hair_003_b
+  rotate: true
+  xy: 375, 317
+  size: 193, 184
+  orig: 193, 184
+  offset: 0, 0
+  index: -1
+hair_part/hair_013_b
+  rotate: true
+  xy: 375, 317
+  size: 193, 184
+  orig: 193, 184
+  offset: 0, 0
+  index: -1
+hair_part/hair_023_b
+  rotate: true
+  xy: 375, 317
+  size: 193, 184
+  orig: 193, 184
+  offset: 0, 0
+  index: -1
+hair_part/hair_007_b
+  rotate: false
+  xy: 156, 147
+  size: 217, 178
+  orig: 217, 178
+  offset: 0, 0
+  index: -1
+hair_part/hair_007_f
+  rotate: true
+  xy: 2, 43
+  size: 236, 152
+  orig: 236, 152
+  offset: 0, 0
+  index: -1
+hair_part/hair_009_f
+  rotate: true
+  xy: 375, 145
+  size: 170, 193
+  orig: 170, 193
+  offset: 0, 0
+  index: -1
+hair_part/hair_010_b
+  rotate: true
+  xy: 2, 281
+  size: 251, 152
+  orig: 251, 152
+  offset: 0, 0
+  index: -1
+hair_part/hair_020_b
+  rotate: true
+  xy: 2, 281
+  size: 251, 152
+  orig: 251, 152
+  offset: 0, 0
+  index: -1
+hair_part/hair_010_f
+  rotate: false
+  xy: 437, 715
+  size: 194, 209
+  orig: 194, 209
+  offset: 0, 0
+  index: -1
+hair_part/hair_013_f
+  rotate: false
+  xy: 156, 2
+  size: 216, 143
+  orig: 216, 143
+  offset: 0, 0
+  index: -1
+hair_part/hair_017_b
+  rotate: false
+  xy: 156, 327
+  size: 217, 183
+  orig: 217, 183
+  offset: 0, 0
+  index: -1
+hair_part/hair_019_f
+  rotate: false
+  xy: 232, 708
+  size: 203, 216
+  orig: 203, 216
+  offset: 0, 0
+  index: -1
+hair_part/hair_022_f
+  rotate: true
+  xy: 633, 760
+  size: 164, 237
+  orig: 164, 237
+  offset: 0, 0
+  index: -1
+hair_part/hair_025_b
+  rotate: false
+  xy: 2, 730
+  size: 228, 194
+  orig: 228, 194
+  offset: 0, 0
+  index: -1
+hair_part/hair_025_f
+  rotate: false
+  xy: 2, 534
+  size: 228, 194
+  orig: 228, 194
+  offset: 0, 0
+  index: -1
+hair_part/hair_029_b
+  rotate: true
+  xy: 438, 513
+  size: 200, 190
+  orig: 200, 190
+  offset: 0, 0
+  index: -1

@@ -19,12 +19,12 @@ namespace Google2u
 		public int _Price;
 		public int _Rarity;
 		public int _Health;
-		public string _Resource;
+		public string _Icon;
 		public string _Prefab;
 		public int _Exp;
 		public Vector3 _Offset;
 		public Vector3 _Rotation;
-		public ItemMasterRow(string __ID, string __Name, string __Type, string __Price, string __Rarity, string __Health, string __Resource, string __Prefab, string __Exp, string __Offset, string __Rotation) 
+		public ItemMasterRow(string __ID, string __Name, string __Type, string __Price, string __Rarity, string __Health, string __Icon, string __Prefab, string __Exp, string __Offset, string __Rotation) 
 		{
 			_Name = __Name.Trim();
 			_Type = __Type.Trim();
@@ -49,7 +49,7 @@ namespace Google2u
 				else
 					Debug.LogError("Failed To Convert _Health string: "+ __Health +" to int");
 			}
-			_Resource = __Resource.Trim();
+			_Icon = __Icon.Trim();
 			_Prefab = __Prefab.Trim();
 			{
 			int res;
@@ -133,7 +133,7 @@ namespace Google2u
 					ret = _Health.ToString();
 					break;
 				case 5:
-					ret = _Resource.ToString();
+					ret = _Icon.ToString();
 					break;
 				case 6:
 					ret = _Prefab.ToString();
@@ -172,8 +172,8 @@ namespace Google2u
 				case "Health":
 					ret = _Health.ToString();
 					break;
-				case "Resource":
-					ret = _Resource.ToString();
+				case "Icon":
+					ret = _Icon.ToString();
 					break;
 				case "Prefab":
 					ret = _Prefab.ToString();
@@ -199,7 +199,7 @@ namespace Google2u
 			ret += "{" + "Price" + " : " + _Price.ToString() + "} ";
 			ret += "{" + "Rarity" + " : " + _Rarity.ToString() + "} ";
 			ret += "{" + "Health" + " : " + _Health.ToString() + "} ";
-			ret += "{" + "Resource" + " : " + _Resource.ToString() + "} ";
+			ret += "{" + "Icon" + " : " + _Icon.ToString() + "} ";
 			ret += "{" + "Prefab" + " : " + _Prefab.ToString() + "} ";
 			ret += "{" + "Exp" + " : " + _Exp.ToString() + "} ";
 			ret += "{" + "Offset" + " : " + _Offset.ToString() + "} ";
@@ -231,16 +231,16 @@ namespace Google2u
 		private ItemMaster()
 		{
 			Rows.Add( new ItemMasterRow("ID_000", "Dummy", "Dummy", "1", "1", "1", "Dummy", "Dummy", "1", "0,1.3,0", "0,0,0"));
-			Rows.Add( new ItemMasterRow("ID_001", "たべかけスイカ", "Crop", "1", "1", "1", "Item/Suica/Suica_D", "Prefabs/Items/Suica1", "3", "0,1.3,0", "0,0,0"));
-			Rows.Add( new ItemMasterRow("ID_002", "ひとくちスイカ", "Crop", "1", "1", "1", "Item/Suica/Suica_C", "Prefabs/Items/Suica2", "4", "0,1.4,0", "0,0,0"));
-			Rows.Add( new ItemMasterRow("ID_003", "たっぷりスイカ", "Crop", "1", "1", "1", "Item/Suica/Suica_B", "Prefabs/Items/Suica3", "7", "0,1.5,0", "0,0,0"));
-			Rows.Add( new ItemMasterRow("ID_004", "ぜいたくスイカ", "Crop", "1", "1", "1", "Item/Suica/Suica_A", "Prefabs/Items/Suica4", "15", "0,1.4,0", "0,0,0"));
-			Rows.Add( new ItemMasterRow("ID_005", "かんぺきスイカ", "Crop", "1", "1", "1", "Daikon", "Prefabs/Items/Suica5", "400", "0,1.4,0", "0,0,0"));
-			Rows.Add( new ItemMasterRow("ID_006", "ダイコン06", "Crop", "1", "1", "1", "Daikon", "Prefabs/Items/Daikon", "1", "0,1.3,0", "0,0,0"));
-			Rows.Add( new ItemMasterRow("ID_007", "ダイコン07", "Crop", "1", "1", "1", "Daikon", "Prefabs/Items/Daikon", "1", "0,1.3,0", "0,0,0"));
-			Rows.Add( new ItemMasterRow("ID_008", "ダイコン08", "Crop", "1", "1", "1", "Daikon", "Prefabs/Items/Daikon", "1", "0,1.3,0", "0,0,0"));
-			Rows.Add( new ItemMasterRow("ID_009", "ダイコン09", "Crop", "1", "1", "1", "Daikon", "Prefabs/Items/Daikon", "1", "0,1.3,0", "0,0,0"));
-			Rows.Add( new ItemMasterRow("ID_010", "ダイコン10", "Crop", "1", "1", "1", "Daikon", "Prefabs/Items/Daikon", "1", "0,1.3,0", "0,0,0"));
+			Rows.Add( new ItemMasterRow("ID_001", "たべかけスイカ", "Crop", "1", "1", "5", "Item/Suica/Suica_D", "Prefabs/Items/Suica1", "3", "0,1.3,0", "0,0,0"));
+			Rows.Add( new ItemMasterRow("ID_002", "ひとくちスイカ", "Crop", "1", "1", "5", "Item/Suica/Suica_C", "Prefabs/Items/Suica2", "4", "0,1.4,0", "0,0,0"));
+			Rows.Add( new ItemMasterRow("ID_003", "たっぷりスイカ", "Crop", "1", "1", "5", "Item/Suica/Suica_B", "Prefabs/Items/Suica3", "7", "0,1.5,0", "0,0,0"));
+			Rows.Add( new ItemMasterRow("ID_004", "ぜいたくスイカ", "Crop", "1", "1", "5", "Item/Suica/Suica_A", "Prefabs/Items/Suica4", "15", "0,1.4,0", "0,0,0"));
+			Rows.Add( new ItemMasterRow("ID_005", "かんぺきスイカ", "Crop", "1", "1", "5", "Daikon", "Prefabs/Items/Suica5", "400", "0,1.4,0", "0,0,0"));
+			Rows.Add( new ItemMasterRow("ID_006", "ダイコン06", "Crop", "1", "1", "5", "Daikon", "Prefabs/Items/Daikon", "1", "0,1.3,0", "0,0,0"));
+			Rows.Add( new ItemMasterRow("ID_007", "ダイコン07", "Crop", "1", "1", "5", "Daikon", "Prefabs/Items/Daikon", "1", "0,1.3,0", "0,0,0"));
+			Rows.Add( new ItemMasterRow("ID_008", "ダイコン08", "Crop", "1", "1", "5", "Daikon", "Prefabs/Items/Daikon", "1", "0,1.3,0", "0,0,0"));
+			Rows.Add( new ItemMasterRow("ID_009", "ダイコン09", "Crop", "1", "1", "5", "Daikon", "Prefabs/Items/Daikon", "1", "0,1.3,0", "0,0,0"));
+			Rows.Add( new ItemMasterRow("ID_010", "ダイコン10", "Crop", "1", "1", "5", "Daikon", "Prefabs/Items/Daikon", "1", "0,1.3,0", "0,0,0"));
 		}
 		public IGoogle2uRow GetGenRow(string in_RowString)
 		{

@@ -6084,8 +6084,10 @@ namespace DarkTonic.MasterAudio {
                 return;
             }
 
-            if (QueuedOcclusionRays.Contains(updater)) {
-                return; // already in there. Should almost never happen except under weird circumstances.
+            for (var i = 0; i < QueuedOcclusionRays.Count; i++) {
+                if (QueuedOcclusionRays.ElementAt(i) == updater) {
+                    return; // already in there. Should almost never happen except under weird circumstances.
+                }
             }
 
             QueuedOcclusionRays.Enqueue(updater);
@@ -6156,10 +6158,14 @@ namespace DarkTonic.MasterAudio {
         }
 
         public static bool IsOcclusionFreqencyTransitioning(SoundGroupVariation variation) {
-    #if UNITY_5
-            return VariationOcclusionFreqChanges.FindIndex(delegate(OcclusionFreqChangeInfo x)  {
-                return x.ActingVariation == variation;
-            }) >= 0;
+#if UNITY_5
+            for (var i = 0; i < VariationOcclusionFreqChanges.Count; i++) {
+                if (VariationOcclusionFreqChanges[i].ActingVariation == variation) {
+                    return true;
+                }
+            }
+
+            return false;
     #else
                 return false;
     #endif
@@ -6167,15 +6173,14 @@ namespace DarkTonic.MasterAudio {
 
         public static void RemoveFromOcclusionFrequencyTransitioning(SoundGroupVariation variation) {
 #if UNITY_5
-            var matchIndex = VariationOcclusionFreqChanges.FindIndex(delegate (OcclusionFreqChangeInfo x) {
-                return x.ActingVariation == variation;
-            });
+            for (var i = 0; i < VariationOcclusionFreqChanges.Count; i++) {
+                if (VariationOcclusionFreqChanges[i].ActingVariation != variation) {
+                    continue;
+                }
 
-            if (matchIndex < 0) {
-                return;
+                VariationOcclusionFreqChanges.RemoveAt(i);
+                break;
             }
-
-            VariationOcclusionFreqChanges.RemoveAt(matchIndex);
 #endif
         }
 

@@ -287,7 +287,8 @@ namespace DarkTonic.MasterAudio {
 
             if (GrpVariation.LowPassFilter == null) {
                 // in case Occlusion got turned on during runtime.
-                GrpVariation.gameObject.AddComponent<AudioLowPassFilter>();
+                var newFilter = GrpVariation.gameObject.AddComponent<AudioLowPassFilter>();
+                GrpVariation.LowPassFilter = newFilter;
             }
 
 #if UNITY_4_5 || UNITY_4_6 || UNITY_4_7 || UNITY_5_0 || UNITY_5_1

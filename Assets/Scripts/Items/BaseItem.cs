@@ -5,6 +5,9 @@ using UnityEngine;
 using UnityEngine.UI;
 using Google2u;
 
+/// <summary>
+/// フィールドに生成されるアイテム(GameObject)
+/// </summary>
 [RequireComponent(typeof(Rigidbody2D))]
 public class BaseItem : MonoBehaviour
 {
@@ -43,8 +46,28 @@ public class BaseItem : MonoBehaviour
     [Serializable]
     public class Data
     {
-        #region variables
-        [SerializeField]
+		#region Properties
+		public State state { get { return m_State; } set { m_State = value; } }
+		public int id { get { return m_ID; } set { m_ID = value; } }
+		public string name { get { return m_Name; } set { m_Name = value; } }
+		public Type type { get { return m_Type; } set { m_Type = value; } }
+		public int price { get { return m_Price; } set { m_Price = value; } }
+		public int rarity { get { return m_Rarity; } set { m_Rarity = value; } }
+
+		public int health {
+			get { return m_Health; }
+			set {
+				m_Health = value;
+				if (m_Health < 0) m_Health = 0;
+			}
+		}
+		public int exp { get { return m_Exp; } set { m_Exp = value; } }
+		public Rigidbody2D rigid2D { get { return m_Rigid2D; } set { m_Rigid2D = value; } }
+		public SpriteRenderer[] renderers { get { return m_SpriteRenderersInChild; } set { m_SpriteRenderersInChild = value; } }
+		#endregion// Properties
+
+		#region Variables
+		[SerializeField]
         private State m_State = State.None;
         [SerializeField, HeaderAttribute("基本情報")]
         private int m_ID              = 0;
@@ -65,21 +88,7 @@ public class BaseItem : MonoBehaviour
         private Rigidbody2D m_Rigid2D = null;
 		[SerializeField]
 		private SpriteRenderer[] m_SpriteRenderersInChild = null;// 透過アニメーション用、子全てのレンダラー
-        #endregion// variables
-
-        #region properties
-        public State state { get { return m_State; } set { m_State = value; } }
-        public int id { get { return m_ID; } set { m_ID = value; } }
-        public string name { get { return m_Name; } set { m_Name = value; } }
-        public Type type { get { return m_Type; } set { m_Type = value; } }
-        public int price { get { return m_Price; } set { m_Price = value; } }
-        public int rarity { get { return m_Rarity; } set { m_Rarity = value; } }
-
-        public int health { get { return m_Health; } set { m_Health = value; } }
-        public int exp { get { return m_Exp; } set { m_Exp = value; } }
-        public Rigidbody2D rigid2D { get { return m_Rigid2D; } set { m_Rigid2D = value; } }
-		public SpriteRenderer[] renderers { get { return m_SpriteRenderersInChild; } set { m_SpriteRenderersInChild = value; } }
-        #endregion// properties
+        #endregion// Variables
     }
 
     #region enum
@@ -155,10 +164,10 @@ public class BaseItem : MonoBehaviour
     {
 		data.health -= _point;
 
-		// HPが0になっていたら消す
+		// HPが0になっていたら消してインベントリへ
 		if (data.health <= 0)
 		{
-			GlobalData.Instance.AddItem(data.id, 1);
+			AddInventory();
 
 			//GlobalData.Instance.AddMoney(data.exp);// Test money
 			//GlobalData.Instance.GainExp(data.exp);
@@ -168,15 +177,22 @@ public class BaseItem : MonoBehaviour
 			floatingText.transform.localPosition = Player.Instance.GetScreenPosition();
 			floatingText.SetText(message);
 			floatingText.Show(1f);
-
-			Stage.Instance.platforms[0].KillItem();
 		}
 
 		return data.health;
     }
-    #endregion// public methods
+	#endregion// public methods
 
-    #region Private methods
+	#region Private methods
+	/// <summary>
+	/// インベントリにアイテムとして追加
+	/// </summary>
+	private void AddInventory()
+	{
+		GlobalData.Instance.AddItem(data.id, 1);
+		Stage.Instance.platforms[0].KillItem();
+	}
+
     /// <summary>
     /// Locking Position XY(Position), Z(Rotation)
     /// </summary>

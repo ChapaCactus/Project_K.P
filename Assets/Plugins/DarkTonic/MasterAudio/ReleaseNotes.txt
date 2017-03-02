@@ -2,6 +2,8 @@ MASTER AUDIO PLUGIN - By DarkTonic, Inc. (c) 2012-2016
 
 - Code by Brian Hunsaker
 
+-V 4.0.8	- Bug fix: Occlusion code no longer causes any Garbage Collection when occlusion is turned off (or on), except possibly during the frame that you turn it on during runtime (which wouldn't happen in normal game play I think).
+
 -V 4.0.7    - Important change: Changed "Occlusion Check Time Gap" setting to "Max Ray Casts Per Frame". Defaults to 4. The other setting wasn't distributing the load correctly on slow devices (mobile mostly). You may need to adjust this new setting to your liking.
 			- Fixed bug about stuttering gap on "Gapless" setting when using Song Transition Type of "New Song From Beginning".
 			- Fixed warnings in Unity 5 that happen when using "Save Runtime Changes" option.
