@@ -2,40 +2,59 @@
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
+using Spine.Unity;
 
 /// <summary>
 /// Controll player character.
 /// </summary>
 public class Player : SingletonMonoBehaviour<Player>
 {
-    #region Variables
-    private Transform m_Transform = null;
+	#region Enums
+	public enum AnimationType
+	{
+		Idle = 0,
+		Num
+	}
+	#endregion// Enums
+
+	#region Properties
+	public Transform tf { get { return m_Transform ?? (m_Transform = transform); } }
+
+	/// プレイヤーの補正後最終攻撃力(能力上昇や、ステータスダウンも含める)
+	public int totalPower { get { return GlobalData.Instance.playerStatus.power; } }
+
+	public int exp { get { return GlobalData.Instance.exp; } }
+	public int level { get { return GlobalData.Instance.level; } }
+	public float charge
+	{
+		get { return m_Charge; }
+		private set { Mathf.Clamp(m_Charge = value, MIN_CHARGE_VALUE, MAX_CHARGE_VALUE); }
+	}
+	#endregion// Properties
+
+	#region Variables
+	private Transform m_Transform = null;// Transformキャッシュ用
 
     [SerializeField] private BaseItem m_Target = null;
     [SerializeField] private bool m_ChargeTrigger = false;
     // チャージ
     [SerializeField] private float m_Charge = 0;
 
-    public float charge {
-        get { return m_Charge; }
-        private set { Mathf.Clamp(m_Charge = value, MIN_CHARGE_VALUE, MAX_CHARGE_VALUE); }
-    }
+	// SpineAnimation
+	private SkeletonAnimation m_SkeletonAnimation = null;
+	private Spine.AnimationState m_AnimationState = null;
 
     private const int   MAX_CHARGE_VALUE = 1;
     private const int   MIN_CHARGE_VALUE = 0;
     private const float CHARGE_BUFF      = 0.1f;
-    #endregion// Variables
+	#endregion// Variables
 
-    #region Properties
-    /// <summary>
-    /// プレイヤーの補正後最終攻撃力(能力上昇や、ステータスダウンも含める)
-    /// </summary>
-    public int totalPower { get { return GlobalData.Instance.playerStatus.power; } }
+	#region UnityCallbacks
+	private void Start()
+	{
+		Init();
+	}
 
-    public int exp { get { return GlobalData.Instance.exp; } }
-    #endregion// Properties
-
-    #region UnityCallbacks
     private void Update()
     {
         if (Input.GetMouseButtonDown (0)) {
@@ -52,31 +71,12 @@ public class Player : SingletonMonoBehaviour<Player>
     #region PublicMethods
     public void Init()
     {
-        m_Transform = gameObject.transform;
-    }
+		Debug.Log("Player Initialize.....");
 
-    public Transform GetTransform()
-    {
-        return m_Transform ?? (m_Transform = gameObject.transform);
-    }
+		m_SkeletonAnimation = GetComponent<SkeletonAnimation>();
+		m_AnimationState = m_SkeletonAnimation.state;
 
-    /// <summary>
-    /// このPlayerのスクリーン座標をUI用に変換して返す
-    /// </summary>
-    public Vector2 GetScreenPosition()
-    {
-        var pos = Vector2.zero;
-
-		var uiManager = UIManager.Instance;
-        var mainCanvasRect = uiManager.GetMainCanvasRect();
-        var mainCamera = uiManager.GetMainCamera();
-        var uiCamera = uiManager.GetUICamera();
-
-        var screenPos = RectTransformUtility.WorldToScreenPoint(mainCamera, transform.position);
-        RectTransformUtility.ScreenPointToLocalPointInRectangle(
-            mainCanvasRect, screenPos, uiCamera, out pos);
-
-        return pos;
+		PlayAnimation("01. Idle", true);
     }
 
     public BaseItem GetTarget()
@@ -93,7 +93,7 @@ public class Player : SingletonMonoBehaviour<Player>
     {
         
     }
-    #endregion// public methods
+    #endregion// PublicMethods
 
     #region Private methods
     private void Attack()
@@ -102,10 +102,13 @@ public class Player : SingletonMonoBehaviour<Player>
 
 		if (item == null)
 		{
+			
 			return;
 		}
 		else
 		{
+			PlayAnimation("04. Jump", false);
+
 			var state = item.GetState();// 状態
 			int health = item.GetHealth();// 体力
 			// 体力があって、かつ準備完了状態なら
@@ -124,14 +127,37 @@ public class Player : SingletonMonoBehaviour<Player>
         return charge += (Time.deltaTime * CHARGE_BUFF);
     }
 
-    private void PlayAnimTypeA()
+	/// <summary>
+	/// アニメーション再生
+	/// </summary>
+	/// <param name="_type">どのアニメーションか</param>
+	/// <param name="_loop">ループするかどうか</param>
+	/// <param name="_speed">再生速度</param>
+	private void PlayAnimation(string _animationName, bool _loop = false, float _speed = 1.0f)
     {
-        transform.localScale = Vector3.one;
+		Debug.Log("animationName : " + _animationName + ", loop : " + _loop + ", speed : " + _speed);
 
-        Sequence seq = DOTween.Sequence();
-        seq.Append (transform.DOScaleX(1.3f, 0.3f));
-        seq.OnComplete (() => transform.localScale = Vector3.one);
+		var animationName = _animationName;
+		var loop = _loop;
+
+		var animState = m_AnimationState;
+		animState.SetAnimation(0, animationName, loop);
+		if (loop)
+		{
+			// 何もしない
+		}
+		else
+		{
+			// ループしなければ、Idleに戻る
+			animState.Complete += PlayDefaultAnimation;
+		}
     }
+
+	private void PlayDefaultAnimation(Spine.AnimationState state, int trackIndex, int loopCount)
+	{
+		PlayAnimation("01. Idle", true);
+		m_AnimationState.Complete -= PlayDefaultAnimation;
+	}
     #endregion
 
 }// Class

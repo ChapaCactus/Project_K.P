@@ -74,7 +74,7 @@ public class Inventory : BaseMainMenuContent
 			var slot = GlobalData.Instance.inventorySlots[m_InvenSlotIndex];
 			if (slot != null)
 			{
-				var rowID = Utilities.GetMasterRowID(slot.id);
+				var rowID = Utilities.ConvertMasterRowID(slot.id);
 				var itemData = ItemMaster.Instance.GetRow(rowID);
 				// 所持数テキスト更新
 				var stack = slot.stack;

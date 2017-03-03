@@ -174,7 +174,8 @@ public class BaseItem : MonoBehaviour
 
 			var message = ("+" + data.exp.ToString());
 			var floatingText = FloatingText.Create();
-			floatingText.transform.localPosition = Player.Instance.GetScreenPosition();
+			var playerTF = Player.Instance.tf;
+			floatingText.transform.localPosition = Utilities.GetScreenPosition(playerTF.position);
 			floatingText.SetText(message);
 			floatingText.Show(1f);
 		}
