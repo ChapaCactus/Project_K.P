@@ -190,7 +190,7 @@ public class BaseItem : MonoBehaviour
 	/// </summary>
 	private void AddInventory()
 	{
-		GlobalData.Instance.AddItem(data.id, 1);
+		GlobalData.AddItem(data.id, 1);
 		Stage.Instance.platforms[0].KillItem();
 	}
 

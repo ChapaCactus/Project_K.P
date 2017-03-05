@@ -7,27 +7,20 @@ using UnityEngine.UI;
 /// 170212:１画面に一つまでとする(T.Titansみたいな感じ？)
 /// </summary>
 [RequireComponent(typeof(CanvasGroup))]
-public class HealthBar : MonoBehaviour
+public class HealthBar : SingletonMonoBehaviour<HealthBar>
 {
+	#region Properties
+	public float sliderValue {
+		get { return m_Slider.value; }
+		private set { m_Slider.value = value; }
+	}
+	#endregion// Properties
+
 	#region Variables
 	private Slider m_Slider = null;
 
 	private CanvasGroup m_CanvasGroup = null;
 	#endregion// Variables
-
-	#region Properties
-	public float sliderValue
-	{
-		get
-		{
-			return m_Slider.value;
-		}
-		private set
-		{
-			m_Slider.value = value;
-		}
-	}
-	#endregion// Properties
 
 	#region PublicMethods
 	public static HealthBar Create(Transform _parent)

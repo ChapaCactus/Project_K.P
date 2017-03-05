@@ -5,59 +5,86 @@ using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
 
-public class GlobalData : SingletonMonoBehaviour<GlobalData>
+public static class GlobalData
 {
+	#region Enums
+	// ゲーム状態
     public enum GameState { Title = 0, Game, Num }
+	#endregion// Enums
 
-    [Serializable]
-    public class PlayerStatus
-    {
-        #region Variables
-        [SerializeField]
-        private int m_Level = 0;
-        [SerializeField]
-        private int m_Exp = 0;
-        [SerializeField]
-        private int m_Power = 0;
-        #endregion// Variables
+	#region Properties
+	public static int power
+	{
+		get { return m_Power; }
+		private set { m_Power = value; }
+	}
 
-        #region properties
-        public int level
-        {
-            get { return m_Level; }
-            private set { m_Level = value; }
-        }
+	public static int exp
+	{
+		get { return m_Exp; }
+		private set
+		{
+			m_Exp = value;
+			if (m_Exp < 0)
+				m_Exp = 0;
+		}
+	}
+	/// <summary>
+	/// 所持金(ReadOnly)
+	/// </summary>
+	public static int gold
+	{
+		get { return m_Gold; }
+		private set
+		{
+			int addGold = (value - m_Gold);
+			m_Gold = value;
+			if (m_Gold < 0)
+				m_Gold = 0;
+			var goldText = UIManager.Instance.ui.goldText;
+			goldText.text = m_Gold.ToString();
 
-        public int exp
-        {
-            get { return m_Exp; }
-            private set { m_Exp = value; }
-        }
+			var text = FloatingText.Create();
+			text.transform.SetParent(goldText.transform, false);
+			text.transform.localPosition += new Vector3(40, 0, 0);
+			text.SetText("+" + addGold.ToString());
+			text.Show(1f);
+		}
+	}
 
-        public int power { get { return m_Power; } set { m_Power = value; } }
-        #endregion// properties
-    }
+	public static bool isMenu
+	{
+		get { return m_IsMenu; }
+		set { m_IsMenu = value; }
+	}// メニューを開いているか
 
-    #region variables
-    public PlayerStatus playerStatus = new PlayerStatus();
+	public static Inventory.Item[] inventorySlots
+	{
+		get { return m_InventorySlots; }
+		private set { m_InventorySlots = value; }
+	}
+	#endregion// Properties
 
-    public string playerName { get; private set; }
-    public string globalID { get; private set; }
+	#region Variables
+	public static string playerName { get; private set; }
+	public static string globalID { get; private set; }
 
-    public int days { get; set; }
+    public static int days { get; set; }
 
-    public int score { get; set; }
-    public int level { get; set; }// Stage Level
+    public static int score { get; set; }
+    public static int level { get; set; }// Stage Level
 
-    private int m_Exp = 0;
-    private int m_Gold = 0;
+	private static int m_Power = 0;
 
-    public GameState gameState { get; set; }
+    private static int m_Exp = 0;
+    private static int m_Gold = 0;
 
-    private bool m_IsMenu = false;
+    public static GameState gameState { get; set; }
+
+    private static bool m_IsMenu = false;
     // 所持品リスト
 	[SerializeField, HeaderAttribute("カバンの内容")]
-	private Inventory.Item[] m_InventorySlots = null;
+	private static Inventory.Item[] m_InventorySlots = null;
 
     // 最大アイテム所持数
     public static readonly int MAX_INVENTORY_SIZE = 15;
@@ -67,58 +94,16 @@ public class GlobalData : SingletonMonoBehaviour<GlobalData>
     private static readonly string GOLD_KEY = "GOLD";
     private static readonly string POWER_KEY = "POWER";
     #endregion// variables
-    #region properties
-    public int exp
-    {
-        get { return m_Exp; }
-        private set
-        {
-            m_Exp = value;
-            if (m_Exp < 0)
-                m_Exp = 0;
-        }
-    }
-    /// <summary>
-    /// 所持金(ReadOnly)
-    /// </summary>
-    public int gold {
-        get { return m_Gold; }
-        private set {
-            int addGold = (value - m_Gold);
-            m_Gold = value;
-            if (m_Gold < 0)
-                m_Gold = 0;
-            var goldText = UIManager.Instance.ui.goldText;
-            goldText.text = m_Gold.ToString();
-
-            var text = FloatingText.Create();
-            text.transform.SetParent(goldText.transform, false);
-            text.transform.localPosition += new Vector3(40, 0, 0);
-			text.SetText("+" + addGold.ToString());
-			text.Show(1f);
-        }
-    }
-
-    public bool isMenu {
-		get { return m_IsMenu; }
-		set { m_IsMenu = value; }
-	}// メニューを開いているか
-
-	public Inventory.Item[] inventorySlots {
-		get { return m_InventorySlots; }
-		private set { m_InventorySlots = value; }
-	}
-    #endregion// properties
 
     #region unity callbacks
-    private void Awake()
+    private static void Awake()
     {
         Init();
     }
     #endregion// unity callbacks
 
     #region PublicMethods
-    public void Init()
+    public static void Init()
     {
 		// インベントリの初期化
 		inventorySlots = new Inventory.Item[MAX_INVENTORY_SIZE];
@@ -131,18 +116,17 @@ public class GlobalData : SingletonMonoBehaviour<GlobalData>
         isMenu = false;
     }
 
-    public void Load()
+	public static void Load()
     {
         // Set variables from savedata.
-        playerStatus = new PlayerStatus();// 実際はセーブデータから読み込む
         playerName = PlayerPrefs.GetString("playerName", "NO NAME");
         score = PlayerPrefs.GetInt("score", 0);
         gold = PlayerPrefs.GetInt(GOLD_KEY, 0);
-        playerStatus.power = PlayerPrefs.GetInt(POWER_KEY, 1);
+        power = PlayerPrefs.GetInt(POWER_KEY, 1);
         exp = PlayerPrefs.GetInt(EXP_KEY, 0);
     }
 
-    public void Save()
+	public static void Save()
     {
         PlayerPrefs.SetString("playerName", playerName);
         PlayerPrefs.SetInt("score", score);
@@ -154,19 +138,19 @@ public class GlobalData : SingletonMonoBehaviour<GlobalData>
         Debug.Log("Saved.");
     }
 
-	public void Refresh()
+	public static void Refresh()
 	{
 		UIManager.Instance.ui.goldText.text = gold.ToString();
 	}
 
-    public int ToNextDay()
+	public static int ToNextDay()
     {
         days++;
 
         return days;
     }
 
-	public int GetInventorySlotsLength()
+	public static int GetInventorySlotsLength()
 	{
 		return inventorySlots.Length;
 	}
@@ -174,7 +158,7 @@ public class GlobalData : SingletonMonoBehaviour<GlobalData>
 	/// <summary>
 	/// アイテムを入手
 	/// </summary>
-	public void AddItem(int _ItemID, int _Quantity = 1)
+	public static void AddItem(int _ItemID, int _Quantity = 1)
 	{
 		Inventory.Item[] invenSlots = inventorySlots;
 		bool incrementFlag = false;// インクリメントできたか(== 所持していたか)
@@ -223,7 +207,7 @@ public class GlobalData : SingletonMonoBehaviour<GlobalData>
 		}
 	}
 
-    public int AddMoney(int _point)
+	public static int AddMoney(int _point)
     {
 		gold += _point;
 		PlayerPrefs.SetInt(GOLD_KEY, gold);
@@ -233,7 +217,7 @@ public class GlobalData : SingletonMonoBehaviour<GlobalData>
     /// <summary>
     /// 経験値取得
     /// </summary>
-    public void GainExp(int _gainExp)
+	public static void GainExp(int _gainExp)
     {
         // 経験値加算
         exp += _gainExp;
@@ -252,7 +236,7 @@ public class GlobalData : SingletonMonoBehaviour<GlobalData>
     /// <summary>
     /// レベルアップ処理
     /// </summary>
-    private void LevelUp(int _remainExp)
+	private static void LevelUp(int _remainExp)
     {
         Debug.Log("Level UP !!! " + level.ToString() + " => " + (level + 1).ToString());
         level++;

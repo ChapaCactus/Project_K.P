@@ -21,10 +21,10 @@ public class Player : SingletonMonoBehaviour<Player>
 	public Transform tf { get { return m_Transform ?? (m_Transform = transform); } }
 
 	/// プレイヤーの補正後最終攻撃力(能力上昇や、ステータスダウンも含める)
-	public int totalPower { get { return GlobalData.Instance.playerStatus.power; } }
+	public int totalPower { get { return GlobalData.power; } }
 
-	public int exp { get { return GlobalData.Instance.exp; } }
-	public int level { get { return GlobalData.Instance.level; } }
+	public int exp { get { return GlobalData.exp; } }
+	public int level { get { return GlobalData.level; } }
 	public float charge
 	{
 		get { return m_Charge; }
@@ -107,15 +107,18 @@ public class Player : SingletonMonoBehaviour<Player>
 		}
 		else
 		{
-			PlayAnimation("04. Jump", false);
+			PlayAnimation("04. Jump", false, 2);
 
 			var state = item.GetState();// 状態
 			int health = item.GetHealth();// 体力
+
 			// 体力があって、かつ準備完了状態なら
 			if (health > 0 && state == BaseItem.State.Ready)
 			{
 				// ターゲットのHPが残っていれば
 				item.Damage(totalPower);
+			} else {
+				
 			}
 
 			Debug.Log("Attacked.");
@@ -141,6 +144,7 @@ public class Player : SingletonMonoBehaviour<Player>
 		var loop = _loop;
 
 		var animState = m_AnimationState;
+		animState.TimeScale = _speed;
 		animState.SetAnimation(0, animationName, loop);
 		if (loop)
 		{

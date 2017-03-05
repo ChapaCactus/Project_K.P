@@ -71,7 +71,7 @@ public class Inventory : BaseMainMenuContent
 			}
 
 			// アイテムデータ取得
-			var slot = GlobalData.Instance.inventorySlots[m_InvenSlotIndex];
+			var slot = GlobalData.inventorySlots[m_InvenSlotIndex];
 			if (slot != null)
 			{
 				var rowID = Utilities.ConvertMasterRowID(slot.id);
@@ -164,10 +164,10 @@ public class Inventory : BaseMainMenuContent
 	private void CreateListContents()
 	{
 		// 初期化
-		m_Contents = new Content[GlobalData.Instance.GetInventorySlotsLength()];
+		m_Contents = new Content[GlobalData.GetInventorySlotsLength()];
 
 		// インベントリ最大数まで要素を作る
-		for (int i = 0; i < GlobalData.Instance.GetInventorySlotsLength(); i++)
+		for (int i = 0; i < GlobalData.GetInventorySlotsLength(); i++)
 		{
 			// 生成
 			var go = transform.Find("Viewport/Content/Slot (" + i + ")").gameObject;
@@ -193,7 +193,7 @@ public class Inventory : BaseMainMenuContent
 	/// <param name="_slotIndexes">更新スロットの指定(nullなら全てのスロットを更新)</param>
 	private void UpdateListContents(int[] _slotIndexes = null)
 	{
-		var slots = GlobalData.Instance.inventorySlots;
+		var slots = GlobalData.inventorySlots;
 
 		if (_slotIndexes == null)
 		{

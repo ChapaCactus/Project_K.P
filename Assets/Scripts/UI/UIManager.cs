@@ -11,68 +11,90 @@ using DG.Tweening;
 /// </summary>
 public class UIManager : SingletonMonoBehaviour<UIManager>
 {
-    [Serializable]
-    public class UI
-    {
-		private Canvas m_MainCanvas = null;
-		public Canvas mainCanvas {
-			get { return m_MainCanvas ?? (m_MainCanvas = GameObject.FindWithTag ("MainCanvas").GetComponent<Canvas> ()); }
+	[Serializable]
+	public class UI
+	{
+		#region Properties
+		public Canvas mainCanvas
+		{
+			get { return m_MainCanvas ?? (m_MainCanvas = GameObject.FindWithTag("MainCanvas").GetComponent<Canvas>()); }
 		}
+		public RectTransform mainCanvasRect
+		{
+			get
+			{
+				return m_MainCanvasRect ?? (m_MainCanvasRect = mainCanvas.GetComponent<RectTransform>());
+			}
+		}
+		public Camera uiCamera
+		{
+			get
+			{
+				return m_UICamera ?? (m_UICamera = GameObject.FindWithTag("UICamera").GetComponent<Camera>());
+			}
+		}
+		public Camera mainCamera
+		{
+			get { return m_MainCamera ?? (m_MainCamera = Camera.main); }
+		}
+		#endregion// Properties
 
-        private RectTransform m_MainCanvasRect = null;
-        public RectTransform mainCanvasRect
-        {
-            get
-            {
-                return m_MainCanvasRect ?? (m_MainCanvasRect = mainCanvas.GetComponent<RectTransform>());
-            }
-        }
+		#region Variables
+		private Canvas m_MainCanvas = null;
 
-        private Camera m_UICamera = null;
-        public Camera uiCamera
-        {
-            get
-            {
-                return m_UICamera ?? (m_UICamera = GameObject.FindWithTag("UICamera").GetComponent<Camera>());
-            }
-        }
+		private RectTransform m_MainCanvasRect = null;
 
-        private Camera m_MainCamera = null;
-        public Camera mainCamera
-        {
-            get { return m_MainCamera ?? (m_MainCamera = Camera.main); } 
-        }
+		private Camera m_UICamera = null;
 
-        public Text goldText = null;
-        // メニュー
+		private Camera m_MainCamera = null;
+
+		// 画面上部UI
+		public HealthBar healthBar = null;
+		public Text goldText = null;
+		// メニュー
 		public Button menuButton = null;// 親
 		public Button itemButton = null;// 子
-        [SerializeField, HeaderAttribute("__________Parents__________")]
-        public Transform particlesParent = null;
-    }
-    #region variables
-    [SerializeField] private UI m_UI;
+		[SerializeField, HeaderAttribute("__________Parents__________")]
+		public Transform particlesParent = null;
+		#endregion// Variables
+
+		#region PublicMethods
+		/// <summary>
+		/// キャッシュしている全てのUIを、必要な情報や各々が持つ初期化関数で初期化
+		/// </summary>
+		public void UpdateUI()
+		{
+			Debug.Log("Updating UI.....");
+
+			goldText.text = GlobalData.gold.ToString();
+		}
+		#endregion// PublicMethods
+	}
+
+	#region Properties
+	public UI ui { get { return m_UI; } private set { m_UI = value; } }
+
+	public ObjectPooling floatingTextPooling { get { return m_FloatingTextPooling; } }
+	#endregion// Properties
+
+	#region Variables
+	[SerializeField] private UI m_UI;
 
 	// Poolingやキャッシュ
 	private ObjectPooling m_FloatingTextPooling = null;
 	private HealthBar m_HealthBar = null;// 体力ゲージ
 
     private bool isMenuAnimRunning = false;
-    #endregion// variables
-    #region properties
-    public UI ui { get { return m_UI; } private set { m_UI = value; } }
+    #endregion// Variables
 
-    public ObjectPooling floatingTextPooling { get { return m_FloatingTextPooling; } }
-    #endregion// properties
-
-    #region unity callbacks
+    #region UnityCallbacks
     private void Awake()
     {
         Init ();
     }
-    #endregion// unity callbacks
+    #endregion// UnityCallbacks
 
-    #region public methods
+    #region PublicMethods
     public void Init()
     {
         isMenuAnimRunning = false;
@@ -100,7 +122,7 @@ public class UIManager : SingletonMonoBehaviour<UIManager>
 
     public void OnClickMenu()
     {
-        bool isMenu = GlobalData.Instance.isMenu;
+        bool isMenu = GlobalData.isMenu;
 
         if (isMenu) {
             // 閉じる
@@ -185,10 +207,10 @@ public class UIManager : SingletonMonoBehaviour<UIManager>
         var wait = new WaitWhile (() => isMenuAnimRunning);
         yield return wait;
 
-        GlobalData.Instance.isMenu = !GlobalData.Instance.isMenu;
+        GlobalData.isMenu = !GlobalData.isMenu;
         yield break;
     }
-    #endregion// private methods
+    #endregion// PrivateMethods
 
 }// UIManager
 
