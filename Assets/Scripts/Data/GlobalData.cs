@@ -89,18 +89,18 @@ public static class GlobalData
     // 最大アイテム所持数
     public static readonly int MAX_INVENTORY_SIZE = 15;
 	public static readonly int MAX_STACK_SIZE = 99;
-    // SAVEDATA LOAD KEY
-    private static readonly string EXP_KEY = "EXP";
-    private static readonly string GOLD_KEY = "GOLD";
-    private static readonly string POWER_KEY = "POWER";
-    #endregion// variables
+    // SAVEDATA KEY
+	private static readonly string SAVE_KEY_PLAYER_NAME = "SAVE_KEY_PLAYER_NAME";
+	private static readonly string SAVE_KEY_GOLD        = "SAVE_KEY_GOLD";
+	private static readonly string SAVE_KEY_EXP         = "SAVE_KEY_EXP";
+    #endregion// Variables
 
-    #region unity callbacks
+    #region UnityCallbacks
     private static void Awake()
     {
         Init();
     }
-    #endregion// unity callbacks
+    #endregion// UnityCallbacks
 
     #region PublicMethods
     public static void Init()
@@ -118,24 +118,23 @@ public static class GlobalData
 
 	public static void Load()
     {
-        // Set variables from savedata.
-        playerName = PlayerPrefs.GetString("playerName", "NO NAME");
-        score = PlayerPrefs.GetInt("score", 0);
-        gold = PlayerPrefs.GetInt(GOLD_KEY, 0);
-        power = PlayerPrefs.GetInt(POWER_KEY, 1);
-        exp = PlayerPrefs.GetInt(EXP_KEY, 0);
+		// Set variables from savedata.
+		playerName = ES2.Load<string>(SAVE_KEY_PLAYER_NAME);
+
+		gold = ES2.Load<int>(SAVE_KEY_GOLD);
+		exp = ES2.Load<int>(SAVE_KEY_EXP);
+
+		Debug.Log("Loaded");
     }
 
 	public static void Save()
     {
-        PlayerPrefs.SetString("playerName", playerName);
-        PlayerPrefs.SetInt("score", score);
+		ES2.Save(playerName, SAVE_KEY_PLAYER_NAME);
 
-        PlayerPrefs.SetInt(GOLD_KEY, gold);
-        PlayerPrefs.SetInt(EXP_KEY, exp);
+		ES2.Save(gold, SAVE_KEY_GOLD);
+		ES2.Save(exp, SAVE_KEY_EXP);
 
-        PlayerPrefs.Save();
-        Debug.Log("Saved.");
+        Debug.Log("Saved");
     }
 
 	public static void Refresh()
@@ -145,7 +144,10 @@ public static class GlobalData
 
 	public static int ToNextDay()
     {
-        days++;
+		var before = days;
+        var after = days++;
+
+		Debug.Log("before: " + before + ", after: " + after);
 
         return days;
     }
@@ -210,7 +212,7 @@ public static class GlobalData
 	public static int AddMoney(int _point)
     {
 		gold += _point;
-		PlayerPrefs.SetInt(GOLD_KEY, gold);
+		PlayerPrefs.SetInt(SAVE_KEY_GOLD, gold);
 		return gold;
     }
 

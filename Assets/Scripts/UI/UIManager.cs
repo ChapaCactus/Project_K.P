@@ -19,6 +19,7 @@ public class UIManager : SingletonMonoBehaviour<UIManager>
 		{
 			get { return m_MainCanvas ?? (m_MainCanvas = GameObject.FindWithTag("MainCanvas").GetComponent<Canvas>()); }
 		}
+
 		public RectTransform mainCanvasRect
 		{
 			get
@@ -26,6 +27,7 @@ public class UIManager : SingletonMonoBehaviour<UIManager>
 				return m_MainCanvasRect ?? (m_MainCanvasRect = mainCanvas.GetComponent<RectTransform>());
 			}
 		}
+
 		public Camera uiCamera
 		{
 			get
@@ -33,6 +35,7 @@ public class UIManager : SingletonMonoBehaviour<UIManager>
 				return m_UICamera ?? (m_UICamera = GameObject.FindWithTag("UICamera").GetComponent<Camera>());
 			}
 		}
+
 		public Camera mainCamera
 		{
 			get { return m_MainCamera ?? (m_MainCamera = Camera.main); }
