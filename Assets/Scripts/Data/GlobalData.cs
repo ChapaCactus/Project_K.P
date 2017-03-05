@@ -13,17 +13,20 @@ public static class GlobalData
 	#endregion// Enums
 
 	#region Properties
-	public static int power
-	{
-		get { return m_Power; }
-		private set { m_Power = value; }
-	}
+	public static string playerName { get { return m_PlayerName; } private set { m_PlayerName = value; } }
 
-	public static int exp
-	{
+	public static string globalID { get { return m_GlobalID; } private set { m_GlobalID = value; } }
+
+	public static int days { get { return m_Days; } private set { m_Days = value; } }
+
+	public static int score { get { return m_Score; } private set { m_Score = value; } }
+	public static int level { get { return m_Level; } private set { m_Level = value; } }// Stage Level
+
+	public static int power { get { return m_Power; } private set { m_Power = value; } }
+
+	public static int exp {
 		get { return m_Exp; }
-		private set
-		{
+		private set {
 			m_Exp = value;
 			if (m_Exp < 0)
 				m_Exp = 0;
@@ -66,13 +69,13 @@ public static class GlobalData
 	#endregion// Properties
 
 	#region Variables
-	public static string playerName { get; private set; }
-	public static string globalID { get; private set; }
+	private static string m_PlayerName = "";
+	private static string m_GlobalID = "";
 
-    public static int days { get; set; }
+	private static int m_Days = 0;
 
-    public static int score { get; set; }
-    public static int level { get; set; }// Stage Level
+	private static int m_Score = 0;
+	private static int m_Level = 0;
 
 	private static int m_Power = 0;
 
@@ -95,13 +98,6 @@ public static class GlobalData
 	private static readonly string SAVE_KEY_EXP         = "SAVE_KEY_EXP";
     #endregion// Variables
 
-    #region UnityCallbacks
-    private static void Awake()
-    {
-        Init();
-    }
-    #endregion// UnityCallbacks
-
     #region PublicMethods
     public static void Init()
     {
@@ -116,13 +112,39 @@ public static class GlobalData
         isMenu = false;
     }
 
+	// ES2 Loading
 	public static void Load()
     {
 		// Set variables from savedata.
-		playerName = ES2.Load<string>(SAVE_KEY_PLAYER_NAME);
+		if (ES2.Exists(SAVE_KEY_PLAYER_NAME))
+		{
+			playerName = ES2.Load<string>(SAVE_KEY_PLAYER_NAME);
+		}
+		else
+		{
+			playerName = "No Name";
+			Debug.Log("playerName セーブデータが存在しません。");
+		}
 
-		gold = ES2.Load<int>(SAVE_KEY_GOLD);
-		exp = ES2.Load<int>(SAVE_KEY_EXP);
+		if (ES2.Exists(SAVE_KEY_GOLD))
+		{
+			gold = ES2.Load<int>(SAVE_KEY_GOLD);
+		}
+		else
+		{
+			gold = 0;
+			Debug.Log("gold セーブデータが存在しません。");
+		}
+
+		if (ES2.Exists(SAVE_KEY_EXP))
+		{
+			exp = ES2.Load<int>(SAVE_KEY_EXP);
+		}
+		else
+		{
+			exp = 0;
+			Debug.Log("exp セーブデータが存在しません。");
+		}
 
 		Debug.Log("Loaded");
     }

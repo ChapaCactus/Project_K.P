@@ -36,6 +36,8 @@ public class MenuController : SingletonMonoBehaviour<MenuController>
 	{
 		if (m_Menu.state != Menu.State.Inventory)
 		{
+			// 全て非表示にしてから
+			m_Menu.HideAllContents();
 			// インベントリ以外であればインベントリを表示
 			m_Menu.ShowInventory();
 		}
@@ -55,6 +57,8 @@ public class MenuController : SingletonMonoBehaviour<MenuController>
 	{
 		if (m_Menu.state != Menu.State.Config)
 		{
+			// 全て非表示にしてから
+			m_Menu.HideAllContents();
 			// コンフィグ以外であればコンフィグを表示
 			m_Menu.ShowConfig();
 		}

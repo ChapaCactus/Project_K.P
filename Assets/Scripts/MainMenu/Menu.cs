@@ -21,23 +21,6 @@ public class Menu : MonoBehaviour
 	}
 	#endregion// Enums
 
-	#region Variables
-	private State m_State = State.None;
-	// TabButtons
-	private Button m_InventoryTabButton = null;
-	private Button m_EquipTabButton = null;
-	private Button m_HomeTabButton = null;
-	private Button m_ConfigTabButton = null;
-	// Controller
-	private MenuController m_Controller = null;
-
-	public static Inventory Inventory = null;
-	public static Equip Equip = null;
-	public static Home Home = null;
-	public static Config Config = null;
-
-	#endregion// Variables
-
 	#region Properties
 	public State state
 	{
@@ -48,6 +31,28 @@ public class Menu : MonoBehaviour
 	}
 	#endregion// Properties
 
+	#region Variables
+	private State m_State = State.None;
+	// TabButtons
+	private Button m_InventoryTabButton = null;
+	private Button m_EquipTabButton = null;
+	private Button m_HomeTabButton = null;
+	private Button m_ConfigTabButton = null;
+	// TabActiveImages
+	private Image m_InventoryActiveImage = null;
+	private Image m_EquipActiveImage = null;
+	private Image m_HomeActiveImage = null;
+	private Image m_ConfigActiveImage = null;
+	// Controller
+	private MenuController m_Controller = null;
+
+	public static Inventory Inventory = null;
+	public static Equip Equip = null;
+	public static Home Home = null;
+	public static Config Config = null;
+
+	#endregion// Variables
+
 	#region PublicMethods
 	/// <summary>
 	/// 初期化
@@ -57,12 +62,17 @@ public class Menu : MonoBehaviour
 		m_Controller = GetComponent<MenuController>();
 		
 		// TabButtonsの初期化
-		m_InventoryTabButton = transform.FindChild("Buttons/Tabs/Inventory (Tab)").GetComponent<Button>();
+		m_InventoryTabButton = transform.Find("Buttons/Tabs/Inventory (Tab)/Button").GetComponent<Button>();
 		m_InventoryTabButton.onClick.RemoveAllListeners();
 		m_InventoryTabButton.onClick.AddListener(() => m_Controller.OnClickInventory());
-		m_ConfigTabButton = transform.FindChild("Buttons/Tabs/Config (Tab)").GetComponent<Button>();
+		m_ConfigTabButton = transform.Find("Buttons/Tabs/Config (Tab)/Button").GetComponent<Button>();
 		m_ConfigTabButton.onClick.RemoveAllListeners();
 		m_ConfigTabButton.onClick.AddListener(() => m_Controller.OnClickConfig());
+		// ActiveImageの参照
+		m_InventoryActiveImage = transform.Find("Buttons/Tabs/Inventory (Tab)/ActiveImage").GetComponent<Image>();
+		m_EquipActiveImage = transform.Find("Buttons/Tabs/Equip (Tab)/ActiveImage").GetComponent<Image>();
+		m_HomeActiveImage = transform.Find("Buttons/Tabs/Home (Tab)/ActiveImage").GetComponent<Image>();
+		m_ConfigActiveImage = transform.Find("Buttons/Tabs/Config (Tab)/ActiveImage").GetComponent<Image>();
 		// コンテンツの参照
 		Inventory = transform.Find("Contents/Inventory").GetComponent<Inventory>();
 		Equip = transform.Find("Contents/Equip").GetComponent<Equip>();
@@ -83,6 +93,8 @@ public class Menu : MonoBehaviour
 		Inventory.Show();
 		m_State = State.Inventory;
 
+		m_InventoryActiveImage.enabled = true;
+
 		Debug.Log("ShowInventory()");
 	}
 
@@ -90,6 +102,8 @@ public class Menu : MonoBehaviour
 	{
 		Config.Show();
 		m_State = State.Config;
+
+		m_ConfigActiveImage.enabled = true;
 
 		Debug.Log("ShowConfig()");
 	}
@@ -110,6 +124,8 @@ public class Menu : MonoBehaviour
 		Inventory.Hide();
 		m_State = State.None;
 
+		m_InventoryActiveImage.enabled = false;
+
 		Debug.Log("HideInventory()");
 	}
 
@@ -117,6 +133,8 @@ public class Menu : MonoBehaviour
 	{
 		Config.Hide();
 		m_State = State.None;
+
+		m_ConfigActiveImage.enabled = false;
 
 		Debug.Log("HideConfig()");
 	}

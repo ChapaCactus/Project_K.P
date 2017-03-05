@@ -7,15 +7,27 @@ using UnityEngine;
 /// </summary>
 public class GameManager : MonoBehaviour
 {
+	#region Properties
+	#endregion// Properties
+
 	#region Variables
 	// 現在の遷移状態
 	private GameState m_CurrentGameState;
 	#endregion// Variables
 
-	#region Properties
-	#endregion// Properties
+	#region UnityCallbacks
+	private void Awake()
+	{
+		Init();
+	}
+	#endregion// UnityCallbacks
 
 	#region PublicMethods
+	public void Init()
+	{
+		GlobalData.Init();
+	}
+
 	/// <summary>
 	/// 現在のゲーム全体の遷移状態を取得
 	/// </summary>
