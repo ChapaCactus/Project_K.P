@@ -104,7 +104,7 @@ public static class GlobalData
 		// インベントリの初期化
 		inventorySlots = new Inventory.Item[MAX_INVENTORY_SIZE];
 		// セーブデータのロード
-        Load();
+		LoadData();
 		Refresh();
         // ステート初期化
         gameState = GameState.Title;
@@ -113,7 +113,7 @@ public static class GlobalData
     }
 
 	// ES2 Loading
-	public static void Load()
+	public static void LoadData()
     {
 		// Set variables from savedata.
 		if (ES2.Exists(SAVE_KEY_PLAYER_NAME))
@@ -149,7 +149,7 @@ public static class GlobalData
 		Debug.Log("Loaded");
     }
 
-	public static void Save()
+	public static void SaveData()
     {
 		ES2.Save(playerName, SAVE_KEY_PLAYER_NAME);
 

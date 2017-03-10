@@ -8,18 +8,221 @@ using Google2u;
 [RequireComponent(typeof (CanvasGroup))]
 public class Inventory : BaseMainMenuContent
 {
-    [Serializable]
-    public class Item
+	#region Variables
+	[SerializeField] private Content[] m_Contents = null;
+
+	// InventoryInfo
+	private InventoryInfo m_InventoryInfo = null;
+
+    [SerializeField] private Reference m_Reference;
+    [SerializeField] private Data m_Data;
+    #endregion// Variables
+    #region Properties
+	public InventoryInfo info { get { return m_InventoryInfo; } }
+
+    public Reference reference { get { return m_Reference; } private set { m_Reference = value; } }
+    public Data data { get { return m_Data; } private set { m_Data = value; } }
+    #endregion// Properties
+
+    #region UnityCallbacks
+    #endregion// UnityCallbacks
+
+    #region PublicMethods
+    public override void Init()
     {
-        public int id = 0;
-        public int stack = 0;
+		// アイテム詳細パネルの設定
+		var infoTF = transform.Find("InventoryInfo").transform;
+		var infoCanvasGroup = infoTF.GetComponent<CanvasGroup>();
+		var infoNameText = infoTF.Find("Name/Text").GetComponent<Text>();
+		var infoIconImage = infoTF.Find("Icon/Image").GetComponent<Image>();
+		var infoExplainText = infoTF.Find("Explain/Text").GetComponent<Text>();
+		var infoCloseButton = infoTF.Find("Close/Button").GetComponent<Button>();
+		m_InventoryInfo = new InventoryInfo(infoCanvasGroup, infoIconImage, infoNameText
+											, infoExplainText, infoCloseButton);
+		m_InventoryInfo.Hide();
+
+        Hide ();
+		CreateListContents();
+    }
+
+	public void Refresh()
+	{
+		// 表示中ならUIの更新をかける
+		if (GetComponent<CanvasGroup>().alpha > 0)
+		{
+			UpdateListContents();
+		}
+	}
+
+	#endregion// PublicMethods
+	#region PrivateMethods
+	private void CreateListContents()
+	{
+		// 初期化
+		m_Contents = new Content[GlobalData.GetInventorySlotsLength()];
+
+		// インベントリ最大数まで要素を作る
+		for (int i = 0; i < GlobalData.GetInventorySlotsLength(); i++)
+		{
+			// 生成
+			var go = transform.Find("InventoryList/Viewport/Content/Slot (" + i + ")").gameObject;
+			// 初期化
+			var index = i;// スロット参照用
+			var stackText = go.transform.FindChild("Stack/Text").GetComponent<Text>();
+			var iconImage = go.transform.FindChild("Image").GetComponent<Image>();
+			var button = go.GetComponent<Button>();
+			var content = new Content(index, stackText, iconImage, button);
+
+			if (!go.activeSelf) go.SetActive(true);
+			// 登録
+			m_Contents[i] = content;
+		}
+
+		// GlobalDataの情報通りに更新
+		UpdateListContents();
+	}
+
+	/// <summary>
+	/// GlobalDataの情報通りに更新
+	/// </summary>
+	/// <param name="_slotIndexes">更新スロットの指定(nullなら全てのスロットを更新)</param>
+	private void UpdateListContents(int[] _slotIndexes = null)
+	{
+		var slots = GlobalData.inventorySlots;
+
+		if (_slotIndexes == null)
+		{
+			// 未指定なら全てのスロットを
+			// 更新
+			for (int i = 0; i < m_Contents.Length; i++)
+			{
+				m_Contents[i].Update();
+			}
+		}
+		else
+		{
+			// 指定があれば、そのスロットだけ更新
+			for (int i = 0; i < m_Contents.Length; i++)
+			{
+				for (int j = 0; j < _slotIndexes.Length; j++)
+				{
+					if (m_Contents[i].invenSlotIndex == _slotIndexes[j])
+					{
+						// 指定Indexと同じ対応Indexを持つスロットがあれば
+						// 更新
+						m_Contents[i].Update();
+					}
+				}
+			}
+		}
+	}
+
+	/// <summary>
+	/// アイコンをセットする(場合によってはキャッシュからロードする様にする)
+	/// </summary>
+	/// <param name="_image">IconのImageなど</param>
+	/// <param name="_spriteIndex">Sprite参照用</param>
+	private void SetIconSprite(Image _image, int _spriteIndex)
+	{
+		Sprite sprite = new Sprite();
+		_image.sprite = sprite;
+	}
+
+	/// <summary>
+	/// スロットの要素を取得する
+	/// </summary>
+	//private Content[] GetSlotContents()
+	//{
+	//	var parent = transform.Find("Viewport/Content");
+	//}
+
+	/// <summary>
+	/// Dummy
+	/// </summary>
+	private void DummyCall()
+	{
+		Debug.Log("DummyCalling...");
+	}
+    #endregion// PrivateMethods
+
+	#region InnerClasses
+	public class InventoryInfo
+	{
+		#region Properties
+		#endregion// Properties
+
+		#region Variables
+		private CanvasGroup m_CanvasGroup = null;
+
+		private Image m_IconImage = null;
+		private Text m_NameText = null;
+		private Text m_ExplainText = null;
+
+		private Button m_CloseButton = null;
+		#endregion// Variables
+
+		#region PublicMethods
+		public void Init()
+		{
+			m_IconImage = null;
+			m_NameText = null;
+			m_ExplainText = null;
+			m_CloseButton = null;
+		}
+
+		public void Show()
+		{
+			Utilities.ToggleCanvasGroup(m_CanvasGroup, true);
+		}
+
+		public void Hide()
+		{
+			Debug.Log("AAAAAAAAAAAA : " + m_CanvasGroup);
+			Utilities.ToggleCanvasGroup(m_CanvasGroup, false);
+		}
+
+		public void SetupUI(ItemMasterRow _row)
+		{
+			m_NameText.text = _row._Name;
+			m_ExplainText.text = "説明テキストです";
+		}
+
+		public void OnClickClose()
+		{
+			Hide();
+		}
+		#endregion// PublicMethods
+
+		#region PrivateMethods
+		#endregion// PrivateMethods
+
+		#region Consructor
+		public InventoryInfo(CanvasGroup _canvasGroup, Image _iconImage, Text _nameText, Text _explainText, Button _closeButton)
+		{
+			Init();
+
+			m_CanvasGroup = _canvasGroup;
+
+			m_IconImage = _iconImage;
+			m_NameText = _nameText;
+			m_ExplainText = _explainText;
+			m_CloseButton = _closeButton;
+		}
+		#endregion// Constructor
+	}
+
+	[Serializable]
+	public class Item
+	{
+		public int id = 0;
+		public int stack = 0;
 
 		public Item(int _ID, int _Stack)
-        {
-            id = _ID;
-            stack = _Stack;
-        }
-    }
+		{
+			id = _ID;
+			stack = _Stack;
+		}
+	}
 
 	/// <summary>
 	/// インベントリボタン個々の参照
@@ -108,146 +311,17 @@ public class Inventory : BaseMainMenuContent
 
 	}
 
-    [Serializable]
-    public class Reference
-    {
+	[Serializable]
+	public class Reference
+	{
 		public Transform inventoryContentParent = null;
-    }
-
-    [Serializable]
-    public class Data
-    {
-        public bool isActive = false;
-    }
-
-	#region Variables
-	[SerializeField]
-	private Content[] m_Contents = null;
-
-    [SerializeField] private Reference m_Reference;
-    [SerializeField] private Data m_Data;
-    #endregion// Variables
-    #region Properties
-    public Reference reference { get { return m_Reference; } private set { m_Reference = value; } }
-    public Data data { get { return m_Data; } private set { m_Data = value; } }
-    #endregion// Properties
-
-    #region UnityCallbacks
-	private void Update()
-	{
-		if (Input.GetButtonDown("Jump"))
-		{
-			// DummyCall
-			DummyCall();
-		}
-	}
-    #endregion// UnityCallbacks
-
-    #region PublicMethods
-    public void Init()
-    {
-        Hide ();
-		CreateListContents();
-    }
-
-	public void Refresh()
-	{
-		// 表示中ならUIの更新をかける
-		if (GetComponent<CanvasGroup>().alpha > 0)
-		{
-			UpdateListContents();
-		}
 	}
 
-	#endregion// PublicMethods
-	#region PrivateMethods
-	private void CreateListContents()
+	[Serializable]
+	public class Data
 	{
-		// 初期化
-		m_Contents = new Content[GlobalData.GetInventorySlotsLength()];
-
-		// インベントリ最大数まで要素を作る
-		for (int i = 0; i < GlobalData.GetInventorySlotsLength(); i++)
-		{
-			// 生成
-			var go = transform.Find("Viewport/Content/Slot (" + i + ")").gameObject;
-			// 初期化
-			var index = i;// スロット参照用
-			var stackText = go.transform.FindChild("Stack/Text").GetComponent<Text>();
-			var iconImage = go.transform.FindChild("Image").GetComponent<Image>();
-			var button = go.GetComponent<Button>();
-			var content = new Content(index, stackText, iconImage, button);
-
-			if (!go.activeSelf) go.SetActive(true);
-			// 登録
-			m_Contents[i] = content;
-		}
-
-		// GlobalDataの情報通りに更新
-		UpdateListContents();
+		public bool isActive = false;
 	}
+	#endregion// InnerClasses
 
-	/// <summary>
-	/// GlobalDataの情報通りに更新
-	/// </summary>
-	/// <param name="_slotIndexes">更新スロットの指定(nullなら全てのスロットを更新)</param>
-	private void UpdateListContents(int[] _slotIndexes = null)
-	{
-		var slots = GlobalData.inventorySlots;
-
-		if (_slotIndexes == null)
-		{
-			// 未指定なら全てのスロットを
-			// 更新
-			for (int i = 0; i < m_Contents.Length; i++)
-			{
-				m_Contents[i].Update();
-			}
-		}
-		else
-		{
-			// 指定があれば、そのスロットだけ更新
-			for (int i = 0; i < m_Contents.Length; i++)
-			{
-				for (int j = 0; j < _slotIndexes.Length; j++)
-				{
-					if (m_Contents[i].invenSlotIndex == _slotIndexes[j])
-					{
-						// 指定Indexと同じ対応Indexを持つスロットがあれば
-						// 更新
-						m_Contents[i].Update();
-					}
-				}
-			}
-		}
-	}
-
-	/// <summary>
-	/// アイコンをセットする(場合によってはキャッシュからロードする様にする)
-	/// </summary>
-	/// <param name="_image">IconのImageなど</param>
-	/// <param name="_spriteIndex">Sprite参照用</param>
-	private void SetIconSprite(Image _image, int _spriteIndex)
-	{
-		Sprite sprite = new Sprite();
-		_image.sprite = sprite;
-	}
-
-	/// <summary>
-	/// スロットの要素を取得する
-	/// </summary>
-	//private Content[] GetSlotContents()
-	//{
-	//	var parent = transform.Find("Viewport/Content");
-	//}
-
-	/// <summary>
-	/// Dummy
-	/// </summary>
-	private void DummyCall()
-	{
-		Debug.Log("DummyCalling...");
-	}
-    #endregion// PrivateMethods
-
-}// class
+}// Inventory

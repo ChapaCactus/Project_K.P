@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using DG.Tweening;
 using Spine.Unity;
 
@@ -33,6 +34,8 @@ public class Player : SingletonMonoBehaviour<Player>
 	#endregion// Properties
 
 	#region Variables
+	private EventSystem m_EventSystem = null;
+
 	private Transform m_Transform = null;// Transformキャッシュ用
 
     [SerializeField] private BaseItem m_Target = null;
@@ -57,8 +60,17 @@ public class Player : SingletonMonoBehaviour<Player>
 
     private void Update()
     {
-        if (Input.GetMouseButtonDown (0)) {
-			Attack();
+        if (Input.GetMouseButtonUp (0)) {
+			Debug.Log("Touched UI is... => " + m_EventSystem.currentSelectedGameObject);
+			if (m_EventSystem.currentSelectedGameObject == null)
+			{
+				// UIを選択していなければ
+				Attack();
+			}
+			else
+			{
+				// 何もしない
+			}
         }
 
         if (m_ChargeTrigger) {
@@ -77,6 +89,8 @@ public class Player : SingletonMonoBehaviour<Player>
 		m_AnimationState = m_SkeletonAnimation.state;
 
 		PlayAnimation("01. Idle", true);
+
+		m_EventSystem = GameObject.Find("Canvas/EventSystem").GetComponent<EventSystem>();
     }
 
     public BaseItem GetTarget()

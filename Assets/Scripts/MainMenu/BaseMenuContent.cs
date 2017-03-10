@@ -9,20 +9,20 @@ public class BaseMainMenuContent : MonoBehaviour
 	#endregion// Variables
 
 	#region PublicMethods
+	public virtual void Init()
+	{
+	}
+
 	public virtual void Show()
 	{
 		var canvasGroup = GetComponent<CanvasGroup>();
-		canvasGroup.alpha = 1;
-		canvasGroup.interactable = true;
-		canvasGroup.blocksRaycasts = true;
+		Utilities.ToggleCanvasGroup(canvasGroup, true);
 	}
 
 	public virtual void Hide()
 	{
 		var canvasGroup = GetComponent<CanvasGroup>();
-		canvasGroup.alpha = 0;
-		canvasGroup.interactable = false;
-		canvasGroup.blocksRaycasts = false;
+		Utilities.ToggleCanvasGroup(canvasGroup, false);
 	}
 	#endregion// PublicMethods
 }

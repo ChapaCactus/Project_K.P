@@ -115,10 +115,6 @@ public class Platform : MonoBehaviour
 		Destroy(item.gameObject);
         item = null;
     }
-
-    public void CommonAction()
-    {
-    }
         
     #region PrivatMethods
 	/// <summary>

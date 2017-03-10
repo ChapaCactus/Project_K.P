@@ -28,7 +28,6 @@ public class TouchParticle : MonoBehaviour
     private void Update()
     {
         if (Input.GetMouseButtonDown (0)) {
-            Debug.Log ("Particle");
             // タッチした座標にエフェクトを出す
             var camera = GetParticleCamera();
             var pos = camera.ScreenToWorldPoint(Input.mousePosition + camera.transform.forward * 10);
