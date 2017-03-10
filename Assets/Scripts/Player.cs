@@ -64,8 +64,9 @@ public class Player : SingletonMonoBehaviour<Player>
 			Debug.Log("Touched UI is... => " + m_EventSystem.currentSelectedGameObject);
 			if (m_EventSystem.currentSelectedGameObject == null)
 			{
-				// UIを選択していなければ
+				// UIを選択していなければ 攻撃
 				Attack();
+				TouchParticle.Instance.PlayParticle();
 			}
 			else
 			{

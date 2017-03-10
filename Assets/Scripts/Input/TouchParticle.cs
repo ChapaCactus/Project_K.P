@@ -6,7 +6,7 @@ using UnityEngine.UI;
 /// <summary>
 /// タッチした座標にパーティクルを出す
 /// </summary>
-public class TouchParticle : MonoBehaviour
+public class TouchParticle : SingletonMonoBehaviour<TouchParticle>
 {
     #region variables
     [SerializeField] private GameObject m_ParticlePrefab     = null;// パーティクルの原本
@@ -23,16 +23,6 @@ public class TouchParticle : MonoBehaviour
     private void Awake()
     {
         Init ();
-    }
-
-    private void Update()
-    {
-        if (Input.GetMouseButtonDown (0)) {
-            // タッチした座標にエフェクトを出す
-            var camera = GetParticleCamera();
-            var pos = camera.ScreenToWorldPoint(Input.mousePosition + camera.transform.forward * 10);
-            PlayParticle (pos);
-        }
     }
     #endregion// unity callbacks
 
@@ -52,6 +42,14 @@ public class TouchParticle : MonoBehaviour
     {
         return m_ParticleCamera;
     }
+
+	public void PlayParticle()
+	{
+		// タッチした座標にエフェクトを出す
+		var camera = GetParticleCamera();
+		var pos = camera.ScreenToWorldPoint(Input.mousePosition + camera.transform.forward * 10);
+		PlayParticle(pos);
+	}
     #endregion// public methods
 
     #region private methods
