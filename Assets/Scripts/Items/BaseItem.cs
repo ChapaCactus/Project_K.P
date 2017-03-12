@@ -164,20 +164,10 @@ public class BaseItem : MonoBehaviour
     {
 		data.health -= _point;
 
-		// HPが0になっていたら消してインベントリへ
+		// HPが0になっていたら消してインベントリへ移動
 		if (data.health <= 0)
 		{
-			AddInventory();
-
-			//GlobalData.Instance.AddMoney(data.exp);// Test money
-			//GlobalData.Instance.GainExp(data.exp);
-
-			var message = ("+" + data.exp.ToString());
-			var floatingText = FloatingText.Create();
-			var playerTF = Player.Instance.tf;
-			floatingText.transform.localPosition = Utilities.GetScreenPosition(playerTF.position);
-			floatingText.SetText(message);
-			floatingText.Show(1f);
+			Dead();
 		}
 
 		return data.health;
@@ -185,6 +175,21 @@ public class BaseItem : MonoBehaviour
 	#endregion// public methods
 
 	#region Private methods
+	private void Dead()
+	{
+		AddInventory();
+
+		//GlobalData.Instance.AddMoney(data.exp);// Test money
+		//GlobalData.Instance.GainExp(data.exp);
+
+		var message = ("+" + data.exp.ToString());
+		var floatingText = FloatingText.Create();
+		var playerTF = Player.Instance.tf;
+		floatingText.transform.localPosition = Utilities.GetScreenPosition(playerTF.position);
+		floatingText.SetText(message);
+		floatingText.Show(1f);
+		Debug.Log("Dead()");
+	}
 	/// <summary>
 	/// インベントリにアイテムとして追加
 	/// </summary>
@@ -192,6 +197,7 @@ public class BaseItem : MonoBehaviour
 	{
 		GlobalData.AddItem(data.id, 1);
 		Stage.Instance.platforms[0].KillItem();
+		Debug.Log("Trying add item... ID => " + data.id);
 	}
 
     /// <summary>
@@ -251,11 +257,6 @@ public class BaseItem : MonoBehaviour
     protected virtual void AnimationTypeA()
     {
         
-    }
-
-    protected void Dead()
-    {
-        Destroy (gameObject);
     }
     #endregion
 

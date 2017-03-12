@@ -22,7 +22,7 @@ public static class GlobalData
 	public static int score { get { return m_Score; } private set { m_Score = value; } }
 	public static int level { get { return m_Level; } private set { m_Level = value; } }// Stage Level
 
-	public static int power { get { return m_Power; } private set { m_Power = value; } }
+	public static int basePower { get { return m_BasePower; } private set { m_BasePower = value; } }
 
 	public static int exp {
 		get { return m_Exp; }
@@ -77,7 +77,7 @@ public static class GlobalData
 	private static int m_Score = 0;
 	private static int m_Level = 0;
 
-	private static int m_Power = 0;
+	private static int m_BasePower = 0;// 基礎攻撃力
 
     private static int m_Exp = 0;
     private static int m_Gold = 0;
@@ -96,6 +96,7 @@ public static class GlobalData
 	private static readonly string SAVE_KEY_PLAYER_NAME = "SAVE_KEY_PLAYER_NAME";
 	private static readonly string SAVE_KEY_GOLD        = "SAVE_KEY_GOLD";
 	private static readonly string SAVE_KEY_EXP         = "SAVE_KEY_EXP";
+	private static readonly string SAVE_KEY_BASE_POWER  = "SAVE_KEY_BASE_POWER";
     #endregion// Variables
 
     #region PublicMethods
@@ -103,6 +104,11 @@ public static class GlobalData
     {
 		// インベントリの初期化
 		inventorySlots = new Inventory.Item[MAX_INVENTORY_SIZE];
+		for (int i = 0; i < inventorySlots.Length; i++)
+		{
+			// 後でセーブデータから読む
+			inventorySlots[i] = new Inventory.Item(0, 0);
+		}
 		// セーブデータのロード
 		LoadData();
 		Refresh();
@@ -116,34 +122,36 @@ public static class GlobalData
 	public static void LoadData()
     {
 		// Set variables from savedata.
-		if (ES2.Exists(SAVE_KEY_PLAYER_NAME))
-		{
+		if (ES2.Exists(SAVE_KEY_PLAYER_NAME)) {
 			playerName = ES2.Load<string>(SAVE_KEY_PLAYER_NAME);
 		}
-		else
-		{
+		else {
 			playerName = "No Name";
 			Debug.Log("playerName セーブデータが存在しません。");
 		}
-
-		if (ES2.Exists(SAVE_KEY_GOLD))
-		{
+		// お金
+		if (ES2.Exists(SAVE_KEY_GOLD)) {
 			gold = ES2.Load<int>(SAVE_KEY_GOLD);
 		}
-		else
-		{
+		else {
 			gold = 0;
 			Debug.Log("gold セーブデータが存在しません。");
 		}
-
-		if (ES2.Exists(SAVE_KEY_EXP))
-		{
+		// 経験値
+		if (ES2.Exists(SAVE_KEY_EXP)) {
 			exp = ES2.Load<int>(SAVE_KEY_EXP);
 		}
-		else
-		{
+		else {
 			exp = 0;
 			Debug.Log("exp セーブデータが存在しません。");
+		}
+		// 基礎攻撃力
+		if (ES2.Exists(SAVE_KEY_BASE_POWER)) {
+			basePower = ES2.Load<int>(SAVE_KEY_BASE_POWER);
+		}
+		else {
+			basePower = 1;
+			Debug.Log("basePower セーブデータが存在しません。");
 		}
 
 		Debug.Log("Loaded");
@@ -218,7 +226,7 @@ public static class GlobalData
 			for (int i = 0; i < invenSlots.Length; i++)
 			{
 				// 空いていればそこに追加する
-				if (invenSlots[i] == null)
+				if (invenSlots[i].id <= 0)
 				{
 					var item = new Inventory.Item(_ItemID, _Quantity);
 					invenSlots[i] = item;

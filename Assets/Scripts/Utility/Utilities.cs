@@ -12,7 +12,9 @@ public static class Utilities
 	public static string ConvertMasterRowID(int _id)
 	{
 		var padleft = _id.ToString().PadLeft(3, '0');
-		return ("ID_" + padleft);
+		var combine = ("ID_" + padleft);
+		Debug.Log("Convert Key [" + _id.ToString() + "] => [" + combine);
+		return combine;
 	}
 
 	/// <summary>

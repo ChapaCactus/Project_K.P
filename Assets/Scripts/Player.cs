@@ -22,7 +22,7 @@ public class Player : SingletonMonoBehaviour<Player>
 	public Transform tf { get { return m_Transform ?? (m_Transform = transform); } }
 
 	/// プレイヤーの補正後最終攻撃力(能力上昇や、ステータスダウンも含める)
-	public int totalPower { get { return GlobalData.power; } }
+	public int totalPower { get { return GlobalData.basePower; } }
 
 	public int exp { get { return GlobalData.exp; } }
 	public int level { get { return GlobalData.level; } }
