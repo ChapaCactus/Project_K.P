@@ -1,6 +1,6 @@
 ﻿//////////////////////////////////////////////
-/// 2DxFX - 2D SPRITE FX - by VETASOFT 2016 //
-/// http://unity3D.vetasoft.com/            //
+/// 2DxFX - 2D SPRITE FX - by VETASOFT 2017 //
+/// http://vetasoft.store/2dxfx/            //
 //////////////////////////////////////////////
 
 Shader "2DxFX/Standard/Mystic_Distortion"
@@ -100,7 +100,7 @@ float2 d = p - m;
 float  r = sqrt(dot(d, d)); 
 float power = 4.44289334 * (_Pitch - 0.5);
 float bind = m.y;
-float2 uv;
+float2 uv=float2(0,0);
 uv = m + normalize(d) * atan(r * -power * 10.0) * bind / atan(-power * bind * 10.0);
 fixed4 mainColor = tex2D(_MainTex, uv)* IN.color;
 mainColor.a-=_Alpha;

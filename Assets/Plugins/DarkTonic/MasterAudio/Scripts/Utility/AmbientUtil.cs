@@ -57,7 +57,8 @@ namespace DarkTonic.MasterAudio {
             }
 
             follower.transform.parent = FollowerHolder;
-            var followerScript = follower.gameObject.AddComponent<TransformFollower>();
+			follower.gameObject.layer = FollowerHolder.gameObject.layer;
+			var followerScript = follower.gameObject.AddComponent<TransformFollower>();
 
             followerScript.StartFollowing(transToFollow, soundGroupName, triggerRadius, willFollowSource);
             return follower.transform;
@@ -77,6 +78,7 @@ namespace DarkTonic.MasterAudio {
                 if (follower == null) {
                     follower = new GameObject(ListenerFollowerName).transform;
                     follower.parent = FollowerHolder;
+					follower.gameObject.layer = FollowerHolder.gameObject.layer;
                 }
 
                 _listenerFollower = follower.GetComponent<ListenerFollower>();
@@ -110,6 +112,7 @@ namespace DarkTonic.MasterAudio {
 
                 _followerHolder = new GameObject(FollowerHolderName).transform;
                 _followerHolder.parent = ma;
+				_followerHolder.gameObject.layer = ma.gameObject.layer;
 
                 return _followerHolder;
             }

@@ -9,10 +9,10 @@ Properties
 {
 [PerRendererData] _MainTex("Sprite Texture", 2D) = "white" {}
 _MainTex2 ("Base (RGB)", 2D) = "white" {}
-_Speed ("_Speed", Range(4,128)) = 4
-_Intensity ("_Intensity", Range(4,128)) = 4
-_Color ("_Color", Color) = (1,1,1,1)
-_Alpha ("Alpha", Range (0,1)) = 1.0
+_Speed("_Speed", Range(4,128)) = 4
+_Intensity("_Intensity", Range(4,128)) = 4
+_Color("_Color", Color) = (1,1,1,1)
+_Alpha("Alpha", Range(0,1)) = 1.0
 [HideInInspector]_SrcBlend("_SrcBlend", Float) = 0
 [HideInInspector]_DstBlend("_DstBlend", Float) = 0
 [HideInInspector]_BlendOp("_BlendOp",Float) = 0
@@ -30,13 +30,13 @@ Tags
 }
 Cull Off
 Lighting Off
-ZWrite [_Z]
-BlendOp [_BlendOp]
-Blend [_SrcBlend] [_DstBlend]
+ZWrite[_Z]
+BlendOp[_BlendOp]
+Blend[_SrcBlend][_DstBlend]
 
 CGPROGRAM
 #pragma surface surf Lambert vertex:vert nofog keepalpha addshadow fullforwardshadows
-
+#pragma target 3.0
 sampler2D _MainTex;
 sampler2D _MainTex2;
 float _Speed;
@@ -76,20 +76,12 @@ void surf(Input IN, inout SurfaceOutput o)
 	float2 uv3= IN.uv_MainTex +offset*1.5;
 	uv2.y/=16;
 	uv3.y/=12;
-	
 	float flame = 1.3 - length(uv.x) * 3.0;
-	
-	
 	fixed4 t3 =  tex2D(_MainTex2,uv3);
-    
-	
 	fixed4 t2 = tex2D(_MainTex2,uv2);
-   
 	float variationH = t3.g-t2.g;
-  
     uv2.x += IN.uv_MainTex.y*cos(_TimeX)/8;
     fixed4 t =  tex2D(_MainTex, float2(uv2.x, IN.uv_MainTex.y));
-   
 	flame *= smoothstep(1., variationH * _Intensity, _uv.y);
 	flame = clamp(flame, 0.0, 1.0);
 	flame = pow(flame, 3.);
@@ -105,11 +97,10 @@ void surf(Input IN, inout SurfaceOutput o)
 	
 	t2=col*1.2;
 	t2.a = t2.r*flame*_Alpha;
-	
 	t2.rgb= t2*IN.color;
 
-o.Albedo = t2.rgb * t2.a;
-o.Alpha = t2.a;
+	o.Albedo = t2.rgb * t2.a;
+	o.Alpha = t2.a;
 
 clip(o.Alpha-0.05);
 }

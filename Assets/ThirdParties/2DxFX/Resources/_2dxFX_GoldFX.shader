@@ -1,6 +1,6 @@
 ﻿//////////////////////////////////////////////
-/// 2DxFX - 2D SPRITE FX - by VETASOFT 2016 //
-/// http://unity3D.vetasoft.com/            //
+/// 2DxFX - 2D SPRITE FX - by VETASOFT 2017 //
+/// http://vetasoft.store/2dxfx/            //
 //////////////////////////////////////////////
 
 Shader "2DxFX/Standard/GoldFX"
@@ -104,9 +104,7 @@ float3 Metal(float _t)
     
     return RGB;
 }
-	
-
-	inline float mod(float x,float modu) 
+inline float mod(float x,float modu) 
 {
   return x - floor(x * (1.0 / modu)) * modu;
 }   
@@ -115,9 +113,7 @@ fixed4 rainbow(float t)
 {
 	t=mod(t,1.0);
 	fixed tx = t * 6.0;
-	
 	fixed r = clamp(tx - 2.0, 0.0, 1.0) + clamp(2.0 - tx, 0.0, 1.0);
-	
 	return fixed4(1.0, 1.0, 1.0,r);
 }
 

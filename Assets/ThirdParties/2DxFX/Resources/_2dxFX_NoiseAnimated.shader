@@ -1,6 +1,6 @@
 ﻿//////////////////////////////////////////////
-/// 2DxFX - 2D SPRITE FX - by VETASOFT 2016 //
-/// http://unity3D.vetasoft.com/            //
+/// 2DxFX - 2D SPRITE FX - by VETASOFT 2017 //
+/// http://vetasoft.store/2dxfx/            //
 //////////////////////////////////////////////
 
 Shader "2DxFX/Standard/NoiseAnimated"
@@ -80,17 +80,17 @@ return OUT;
 }
 
 
-inline float rand(float2 co){
+inline float rand(float2 co)
+{
 return frac(sin(dot(co.xy ,float2(12.9898,78.233))) * 43758.5453 *(_Time+1));
 }
+
 float4 frag (v2f i) : COLOR
 {
 float4 tex=tex2D(_MainTex, i.texcoord.xy);
 float4 noise=lerp(tex,rand(i.texcoord.xy),_Distortion);
-
 noise.a=tex.a*1-_Alpha;
 return noise*i.color;
-
 }
 
 ENDCG

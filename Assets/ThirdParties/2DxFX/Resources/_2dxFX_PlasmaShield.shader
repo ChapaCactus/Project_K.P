@@ -1,6 +1,6 @@
 ﻿//////////////////////////////////////////////
-/// 2DxFX - 2D SPRITE FX - by VETASOFT 2016 //
-/// http://unity3D.vetasoft.com/            //
+/// 2DxFX - 2D SPRITE FX - by VETASOFT 2017 //
+/// http://vetasoft.store/2dxfx/            //
 //////////////////////////////////////////////
 
 Shader "2DxFX/Standard/PlasmaShield"
@@ -113,7 +113,6 @@ float4 plasma(float2 uv)
 float4 frag (v2f i) : COLOR
 {
 	float alpha = tex2D(_MainTex, i.texcoord).a;
-	
 	float4 sortie=plasma(i.texcoord);
 	sortie.a=sortie.a*alpha-_Alpha;
 	return sortie*i.color;	

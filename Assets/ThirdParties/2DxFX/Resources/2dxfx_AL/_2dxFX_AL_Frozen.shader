@@ -96,8 +96,7 @@ Shader "2DxFX/AL/Frozen"
 		t2.a = t.a;
 		t2.rgb = fixed3(t2.r / 10,t2.r / 1.5,t2.r);
 		fixed3 g = (t.r + t.g + t.b) / 3;
-		float l = (t.r + t.g + t.b) / 3.0;
-		fixed3 r = smoothstep(_Value1,_Value1 + 0.1,l) + .2;
+		fixed3 r = smoothstep(_Value1,_Value1 + 0.1,g) + .2;
 		t.rgb = lerp(t.rgb,hardLight(g,t2.rgb) + t2.b*r*t3.b + t4.g,_Value2);
 		float4 c = float4(t.rgb,t.a*(1 - _Alpha));
 		o.Albedo = c.rgb * c.a;

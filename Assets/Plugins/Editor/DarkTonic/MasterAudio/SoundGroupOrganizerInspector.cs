@@ -1296,8 +1296,11 @@ public class SoundGroupOrganizerInspector : Editor {
         groupScript.chainLoopMode = aGroup.chainLoopMode;
         groupScript.chainLoopNumLoops = aGroup.chainLoopNumLoops;
 
-        groupScript.childGroupMode = aGroup.childGroupMode;
+        groupScript.expandLinkedGroups = aGroup.expandLinkedGroups;
         groupScript.childSoundGroups = aGroup.childSoundGroups;
+        groupScript.endLinkedGroups = aGroup.endLinkedGroups;
+        groupScript.linkedStartGroupSelectionType = aGroup.linkedStartGroupSelectionType;
+        groupScript.linkedStopGroupSelectionType = aGroup.linkedStopGroupSelectionType;
 
 #if UNITY_5
         groupScript.spatialBlendType = aGroup.spatialBlendType;
@@ -1455,8 +1458,8 @@ public class SoundGroupOrganizerInspector : Editor {
         groupScript.chainLoopMode = aGroup.chainLoopMode;
         groupScript.chainLoopNumLoops = aGroup.chainLoopNumLoops;
 
-        groupScript.childGroupMode = aGroup.childGroupMode;
-        groupScript.childSoundGroups = aGroup.childSoundGroups;
+        //groupScript.childGroupMode = aGroup.childGroupMode;
+        //groupScript.childSoundGroups = aGroup.childSoundGroups;
 
         groupScript.soundPlayedEventActive = aGroup.soundPlayedEventActive;
         groupScript.soundPlayedCustomEvent = aGroup.soundPlayedCustomEvent;
@@ -1617,8 +1620,11 @@ public class SoundGroupOrganizerInspector : Editor {
         groupScript.chainLoopMode = aGroup.chainLoopMode;
         groupScript.chainLoopNumLoops = aGroup.chainLoopNumLoops;
 
-        groupScript.childGroupMode = aGroup.childGroupMode;
+        groupScript.expandLinkedGroups = aGroup.expandLinkedGroups;
         groupScript.childSoundGroups = aGroup.childSoundGroups;
+        groupScript.endLinkedGroups = aGroup.endLinkedGroups;
+        groupScript.linkedStartGroupSelectionType = aGroup.linkedStartGroupSelectionType;
+        groupScript.linkedStopGroupSelectionType = aGroup.linkedStopGroupSelectionType;
 
 #if UNITY_5
         groupScript.spatialBlendType = aGroup.spatialBlendType;
@@ -1808,8 +1814,11 @@ public class SoundGroupOrganizerInspector : Editor {
         groupScript.chainLoopMode = aGroup.chainLoopMode;
         groupScript.chainLoopNumLoops = aGroup.chainLoopNumLoops;
 
-        groupScript.childGroupMode = aGroup.childGroupMode;
+        groupScript.expandLinkedGroups = aGroup.expandLinkedGroups;
         groupScript.childSoundGroups = aGroup.childSoundGroups;
+        groupScript.endLinkedGroups = aGroup.endLinkedGroups;
+        groupScript.linkedStartGroupSelectionType = aGroup.linkedStartGroupSelectionType;
+        groupScript.linkedStopGroupSelectionType = aGroup.linkedStopGroupSelectionType;
 
         groupScript.soundPlayedEventActive = aGroup.soundPlayedEventActive;
         groupScript.soundPlayedCustomEvent = aGroup.soundPlayedCustomEvent;

@@ -1,6 +1,6 @@
 ﻿//////////////////////////////////////////////
-/// 2DxFX - 2D SPRITE FX - by VETASOFT 2016 //
-/// http://unity3D.vetasoft.com/            //
+/// 2DxFX - 2D SPRITE FX - by VETASOFT 2017 //
+/// http://vetasoft.store/2dxfx/            //
 //////////////////////////////////////////////
 
 Shader "2DxFX/Standard/SandFX"
@@ -85,7 +85,7 @@ float4 frag (v2f i) : COLOR
 {
 
 float4 Alpha = tex2D(_MainTex, i.texcoord+float2(sin(i.texcoord.y*125.82*_Distortion/3)/140,sin(i.texcoord.y*31.4*_Distortion/3)/40))*i.color;
-float4 res;
+float4 res=float4(0,0,0,0);
 float lum=dot(Alpha.rgb, float3(.222, .707, .071));
 float noise=lerp(lum,rand(i.texcoord.xy),_Distortion/3);
 if (noise>0.6) noise=0.6;

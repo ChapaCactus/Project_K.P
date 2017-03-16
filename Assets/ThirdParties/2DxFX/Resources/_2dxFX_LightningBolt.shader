@@ -1,6 +1,6 @@
 ﻿//////////////////////////////////////////////
-/// 2DxFX - 2D SPRITE FX - by VETASOFT 2016 //
-/// http://unity3D.vetasoft.com/            //
+/// 2DxFX - 2D SPRITE FX - by VETASOFT 2017 //
+/// http://vetasoft.store/2dxfx/            //
 //////////////////////////////////////////////
 
 Shader "2DxFX/Standard/LightningBolt"
@@ -97,7 +97,6 @@ float tm=_Time;
 uv.x += floor(fmod(tm*speed, 1.0)*8)/8;
 uv.y += (1-floor(fmod(tm*speed/8, 1.0)*8)/8);
 fixed4 t2 =  tex2D(_MainTex2, uv);
-
 uv=IN.texcoord;
 uv/=8;
 tm+=0.2;
@@ -105,21 +104,15 @@ uv/=1.0;
 uv.x += floor(fmod(tm*speed, 1.0)*8)/8;
 uv.y += (1-floor(fmod(tm*speed/8, 1.0)*8)/8);
 t2 +=  tex2D(_MainTex2, uv);
-
 uv=IN.texcoord;
 uv/=8; 
 tm+=0.6;
 uv.x += floor(fmod(tm*speed, 1.0)*8)/8;
 uv.y += (1-floor(fmod(tm*speed/8, 1.0)*8)/8);
 t2 +=  tex2D(_MainTex2, uv);
-
 fixed4 t =  tex2D(_MainTex, IN.texcoord)*IN.color;
 t2.a = t.a;
-
-
 t.rgb+=t2*_Value2;
-
-
 return float4(t.rgb,t.a*(1-_Alpha));
 }
 ENDCG

@@ -11,7 +11,7 @@ namespace DarkTonic.MasterAudio {
     public class SoundGroupVariation : MonoBehaviour {
         /*! \cond PRIVATE */
         // ReSharper disable InconsistentNaming
-		public int weight = 1;
+        public int weight = 1;
 
         public bool useLocalization = false;
 
@@ -165,6 +165,8 @@ namespace DarkTonic.MasterAudio {
                 return;
             }
 
+			GameObj.layer = MasterAudio.Instance.gameObject.layer;
+
             switch (audLocation) {
                 case MasterAudio.AudioLocation.FileOnInternet:
                     if (internetFileLoadStatus == MasterAudio.InternetFileLoadStatus.Loading) {
@@ -294,7 +296,7 @@ namespace DarkTonic.MasterAudio {
                         return;
                     case MasterAudio.InternetFileLoadStatus.Failed:
                         if (MasterAudio.Instance.LogSounds) {
-                            MasterAudio.LogWarning("Cannot play Variation '" + name +	
+                            MasterAudio.LogWarning("Cannot play Variation '" + name +
                                                    "' because its Internet file failed downloading.");
                         }
                         return;
@@ -464,17 +466,17 @@ namespace DarkTonic.MasterAudio {
 
             _playSndParam.VolumePercentage = volumePercentage;
 
-			// SET LastVolumePercentage for the AudioInfo so a bus fade will work with respect to this value.
-			var grpInfo = MasterAudio.GetAllVariationsOfGroup(ParentGroup.name);
-			for (var i = 0; i < grpInfo.Count; i++) {
-				var aVar = grpInfo[i];
-				if (aVar.Variation != this) {
-					continue;
-				}
+            // SET LastVolumePercentage for the AudioInfo so a bus fade will work with respect to this value.
+            var grpInfo = MasterAudio.GetAllVariationsOfGroup(ParentGroup.name);
+            for (var i = 0; i < grpInfo.Count; i++) {
+                var aVar = grpInfo[i];
+                if (aVar.Variation != this) {
+                    continue;
+                }
 
-				aVar.LastPercentageVolume = volumePercentage;
-				break;
-			}
+                aVar.LastPercentageVolume = volumePercentage;
+                break;
+            }
         }
 
         /// <summary>
@@ -512,10 +514,45 @@ namespace DarkTonic.MasterAudio {
             AudioUtil.UnloadNonPreloadedAudioData(VarAudio.clip);
         }
 
+        private void PlayEndLinkedGroups() {
+            if (MasterAudio.AppIsShuttingDown || MasterAudio.IsWarming || ParentGroup.endLinkedGroups.Count == 0) {
+                return;
+            }
+
+            if (VariationUpdater == null || VariationUpdater.FramesPlayed == 0) {
+                return;
+            }
+
+            switch (ParentGroup.linkedStopGroupSelectionType) {
+                case MasterAudio.LinkedGroupSelectionType.All:
+                    // ReSharper disable once ForCanBeConvertedToForeach
+                    for (var i = 0; i < ParentGroup.endLinkedGroups.Count; i++) {
+                        PlayEndLinkedGroup(ParentGroup.endLinkedGroups[i]);
+                    }
+                    break;
+                case MasterAudio.LinkedGroupSelectionType.OneAtRandom:
+                    var randomIndex = Random.Range(0, ParentGroup.endLinkedGroups.Count);
+                    PlayEndLinkedGroup(ParentGroup.endLinkedGroups[randomIndex]);
+                    break;
+            }
+        }
+
+        private void PlayEndLinkedGroup(string sType) {
+            if (_playSndParam.AttachToSource && _playSndParam.SourceTrans != null) {
+                MasterAudio.PlaySound3DFollowTransformAndForget(sType, _playSndParam.SourceTrans, _playSndParam.VolumePercentage, _playSndParam.Pitch);
+            } else if (_playSndParam.SourceTrans != null) {
+                MasterAudio.PlaySound3DAtTransformAndForget(sType, _playSndParam.SourceTrans, _playSndParam.VolumePercentage, _playSndParam.Pitch);
+            } else {
+                MasterAudio.PlaySound3DAtVector3AndForget(sType, Trans.position, _playSndParam.VolumePercentage, _playSndParam.Pitch);
+            }
+        }
+
         /// <summary>
         /// This method allows you to stop the audio being played by this Variation. 
         /// </summary>
-        public void Stop(bool stopEndDetection = false) {
+        /// <param name="stopEndDetection">Do not ever pass this in.</param>
+        /// <param name="skipLinked">Do not ever pass this in.</param>
+        public void Stop(bool stopEndDetection = false, bool skipLinked = false) {
             var waitStopped = false;
 
             if (stopEndDetection || _isWaitingForDelay) {
@@ -523,6 +560,10 @@ namespace DarkTonic.MasterAudio {
                     VariationUpdater.StopWaitingForFinish(); // turn off the chain loop endless repeat
                     waitStopped = true;
                 }
+            }
+
+            if (!skipLinked) {
+                PlayEndLinkedGroups();
             }
 
             _objectToFollow = null;
@@ -945,7 +986,7 @@ namespace DarkTonic.MasterAudio {
         }
 
         public bool UsesOcclusion {
-            get { 
+            get {
                 if (!VariationUpdater.MAThisFrame.useOcclusion) {
                     return false;
                 }

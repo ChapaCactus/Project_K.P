@@ -168,6 +168,11 @@ public class MasterAudioInspector : Editor {
         var fakeDirty = false;
         var allowPreview = !DTGUIHelper.IsPrefabInProjectView(_sounds);
 
+        if (!DTGUIHelper.IsPrefabInProjectView(_sounds) && !Application.isPlaying && _sounds.gameObject.layer != 2) { // "ignore raycast layer"
+            _sounds.gameObject.layer = 2;
+            _isDirty = true;
+        }
+
         _playlistNames = new List<string>();
 
         var maxPlaylistNameChars = 11;
@@ -1013,12 +1018,21 @@ public class MasterAudioInspector : Editor {
 
                 var slidWidth = _sounds.MixerWidth == MasterAudio.MixerWidthMode.Wide ? 120 : 60;
 
+                var duckingList = new List<string>(_sounds.musicDuckingSounds.Count);
+
                 for (var i = 0; i < _sounds.musicDuckingSounds.Count; i++) {
                     var duckSound = _sounds.musicDuckingSounds[i];
                     var index = groupNameList.IndexOf(duckSound.soundType);
                     if (index == -1) {
-                        index = 0;
+                        index = 0; 
                     }
+
+                    var groupName = groupNameList[index];
+                    if (groupName != MasterAudio.NoGroupName && duckingList.Contains(groupName)) {
+                        DTGUIHelper.ShowRedError("You have more than one Duck Group for Sound Group '" + groupName + "'. Please delete all duplicates as only one of the dupes will be seen when ducking code runs.");
+                    } 
+
+                    duckingList.Add(groupName);
 
                     DTGUIHelper.StartGroupHeader();
 
@@ -1975,7 +1989,7 @@ public class MasterAudioInspector : Editor {
 
                 if (groupToDelete != null) {
                     var grpName = groupToDelete.name;
-                    if (Application.isPlaying)  {
+                    if (Application.isPlaying) {
                         var grp = MasterAudio.GrabGroup(grpName, false);
                         if (grp != null && grp.isSoloed) {
                             MasterAudio.UnsoloGroup(grpName);
@@ -3610,6 +3624,7 @@ public class MasterAudioInspector : Editor {
 
         newVariation.name = clipName;
         newVariation.transform.parent = groupTrans;
+        newVariation.gameObject.layer = _sounds.gameObject.layer;
 
         var variation = newVariation.GetComponent<SoundGroupVariation>();
 
@@ -3681,8 +3696,10 @@ public class MasterAudioInspector : Editor {
 
         newVariation.transform.name = sName;
         newVariation.transform.parent = groupTrans;
+        newVariation.gameObject.layer = _sounds.gameObject.layer;
 
         groupTrans.parent = _sounds.transform;
+        groupTrans.gameObject.layer = _sounds.gameObject.layer;
 
         MasterAudioGroupInspector.RescanChildren(grp);
 
@@ -3727,6 +3744,7 @@ public class MasterAudioInspector : Editor {
         for (var i = 0; i < newGroup.transform.childCount; i++) {
             var aVar = newGroup.transform.GetChild(i);
 
+            aVar.gameObject.layer = _sounds.gameObject.layer;
             if (aVar.name == "Silence") {
                 continue; // no clip
             }
@@ -3751,6 +3769,7 @@ public class MasterAudioInspector : Editor {
         }
 
         groupTrans.parent = _sounds.transform;
+        groupTrans.gameObject.layer = _sounds.gameObject.layer;
 
         return grp;
     }
@@ -3805,7 +3824,7 @@ public class MasterAudioInspector : Editor {
             affectedGroups.Add(aGroup);
         }
 
-        var allObjects = new List<Object> {_sounds};
+        var allObjects = new List<Object> { _sounds };
 
         foreach (var g in affectedGroups) {
             allObjects.Add(g);

@@ -1,6 +1,6 @@
 ﻿//////////////////////////////////////////////
-/// 2DxFX - 2D SPRITE FX - by VETASOFT 2016 //
-/// http://unity3D.vetasoft.com/            //
+/// 2DxFX - 2D SPRITE FX - by VETASOFT 2017 //
+/// http://vetasoft.store/2dxfx/            //
 //////////////////////////////////////////////
 
 Shader "2DxFX/Standard/PatternAdditive"
@@ -82,8 +82,8 @@ float _OffsetY;
 fixed4 frag(v2f IN) : COLOR
 {
 fixed4 t =  tex2D(_MainTex, IN.texcoord);
-fixed4 t2 =  tex2D(_MainTex2, IN.texcoord+float2(_OffsetX,_OffsetY))*IN.color;
-t2.a = t2.a*t.a - _Alpha;
+fixed4 t2 =  tex2D(_MainTex2, IN.texcoord+float2(_OffsetX,_OffsetY)) * IN.color;
+t2.a = t2.a * t.a - _Alpha;
 return t2;
 }
 ENDCG

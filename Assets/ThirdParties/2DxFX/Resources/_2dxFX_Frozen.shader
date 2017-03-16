@@ -1,6 +1,6 @@
 ﻿//////////////////////////////////////////////
-/// 2DxFX - 2D SPRITE FX - by VETASOFT 2016 //
-/// http://unity3D.vetasoft.com/            //
+/// 2DxFX - 2D SPRITE FX - by VETASOFT 2017 //
+/// http://vetasoft.store/2dxfx/            //
 //////////////////////////////////////////////
 
 Shader "2DxFX/Standard/Frozen"
@@ -92,7 +92,7 @@ float hardLight( float s, float d )
 
 float3 hardLight( float3 s, float3 d )
 {
-	float3 c;
+	float3 c=float3(0,0,0);
 	c.x = hardLight(s.x,d.x);
 	c.y = hardLight(s.y,d.y);
 	c.z = hardLight(s.z,d.z);
@@ -114,17 +114,11 @@ fixed tx=t3.b;
 tx=lerp(0,t3.b*0.015,_Value2);
 fixed4 td =  tex2D(_MainTex, IN.texcoord)*IN.color;
 fixed4 t =  tex2D(_MainTex, IN.texcoord+float2(tx,tx))*IN.color;
-
 t2.a = t.a;
 t2.rgb = fixed3(t2.r/10,t2.r/1.5,t2.r);
-fixed3 g = (t.r+t.g+t.b)/3;
-
-float l 	= (t.r + t.g + t.b) / 3.0;
-fixed3 r = smoothstep(_Value1,_Value1+0.1,l)+.2;
-
+fixed g = (t.r+t.g+t.b)/3;
+fixed3 r = smoothstep(_Value1,_Value1+0.1,g)+.2;
 t.rgb=lerp(t.rgb,hardLight(g,t2.rgb)+t2.b*r*t3.b+t4.g,_Value2);
-
-
 return float4(t.rgb,t.a*(1-_Alpha));
 }
 ENDCG

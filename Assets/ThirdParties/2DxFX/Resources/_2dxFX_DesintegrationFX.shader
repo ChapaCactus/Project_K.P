@@ -1,6 +1,6 @@
-﻿//////////////////////////////////////////////
-/// 2DxFX - 2D SPRITE FX - by VETASOFT 2016 //
-/// http://unity3D.vetasoft.com/            //
+//////////////////////////////////////////////
+/// 2DxFX - 2D SPRITE FX - by VETASOFT 2017 //
+/// http://vetasoft.store/2dxfx/            //
 //////////////////////////////////////////////
 
 Shader "2DxFX/Standard/DesintegrationFX"
@@ -103,7 +103,7 @@ return m;
 
 float4 frag (v2f i) : COLOR
 {
-float2 uv 		=  i.texcoord;
+float2 uv =  i.texcoord;
 float4 tex = tex2D(_MainTex, uv)*i.color;
 
 float t = frac(_Distortion*0.9999);

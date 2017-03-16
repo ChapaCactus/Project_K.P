@@ -1,6 +1,6 @@
 ﻿//////////////////////////////////////////////
-/// 2DxFX - 2D SPRITE FX - by VETASOFT 2016 //
-/// http://unity3D.vetasoft.com/            //
+/// 2DxFX - 2D SPRITE FX - by VETASOFT 2017 //
+/// http://vetasoft.store/2dxfx/            //
 //////////////////////////////////////////////
 
 Shader "2DxFX/Standard/GoldenFX"
@@ -85,7 +85,7 @@ float4 frag (v2f i) : COLOR
 	
 	float2 uv = i.texcoord.xy;
 
-	float2 step = 0.004;
+	float2 step = float2(0.004,0.004);
 				
 	float4 tex = tex2D( _MainTex, uv); 
 	float calc= 1.5 *_Distortion;

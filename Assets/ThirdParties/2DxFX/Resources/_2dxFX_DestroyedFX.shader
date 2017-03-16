@@ -1,6 +1,6 @@
 ﻿//////////////////////////////////////////////
-/// 2DxFX - 2D SPRITE FX - by VETASOFT 2016 //
-/// http://unity3D.vetasoft.com/            //
+/// 2DxFX - 2D SPRITE FX - by VETASOFT 2017 //
+/// http://vetasoft.store/2dxfx/            //
 //////////////////////////////////////////////
 
 Shader "2DxFX/Standard/DestroyedFX"
@@ -98,16 +98,11 @@ return m;
 
 float4 frag (v2f i) : COLOR
 {
-float2 uv 		=  i.texcoord;
+float2 uv = i.texcoord;
 float4 tex = tex2D(_MainTex, uv)*i.color;
-
 float t = frac(_Distortion*0.9999);
-float4 c= smoothstep(t/1.2, t+.1, a(3.5*uv));
-
-//c=tex*c;
-//c.gba=tex.gba;
+float4 c = smoothstep(t/1.2, t+.1, a(3.5*uv));
 c=tex*c;
-//c.a=tex.a*c.a;
 c.r=lerp(c.r,c.r*15.0*(1-c.a)*8,_Distortion);
 c.g=lerp(c.g,c.g*10.0*(1-c.a)*4,_Distortion);
 c.b=lerp(c.b,c.b*5.0*(1-c.a),_Distortion);

@@ -1,6 +1,6 @@
-﻿//////////////////////////////////////////////
-/// 2DxFX - 2D SPRITE FX - by VETASOFT 2016 //
-/// http://unity3D.vetasoft.com/            //
+//////////////////////////////////////////////
+/// 2DxFX - 2D SPRITE FX - by VETASOFT 2017 //
+/// http://vetasoft.store/2dxfx/            //
 //////////////////////////////////////////////
 
 Shader "2DxFX/Standard/CircleFade"
@@ -84,7 +84,7 @@ float4 tex = tex2D(_MainTex, uv)*i.color;
 float alpha = tex.a;
 float2 center = float2(0.5,0.5);
 float dist = 1.0 - smoothstep( _Offset,_Offset+0.15, length(center-uv) );
-float c;
+float c=0;
 if (_InOut==0) { c = dist; } else { c= 1-dist; }
 tex.a = alpha*c-_Alpha;
 return tex;

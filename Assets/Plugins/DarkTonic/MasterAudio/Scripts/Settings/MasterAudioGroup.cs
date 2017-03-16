@@ -52,8 +52,11 @@ namespace DarkTonic.MasterAudio {
         public bool copySettingsExpanded = false;
         public int selectedVariationIndex = 0;
 
-        public ChildGroupMode childGroupMode = ChildGroupMode.None;
+		public bool expandLinkedGroups = false;
         public List<string> childSoundGroups = new List<string>();
+        public List<string> endLinkedGroups = new List<string>();
+        public MasterAudio.LinkedGroupSelectionType linkedStartGroupSelectionType = MasterAudio.LinkedGroupSelectionType.All;
+        public MasterAudio.LinkedGroupSelectionType linkedStopGroupSelectionType = MasterAudio.LinkedGroupSelectionType.All;
 
         public LimitMode limitMode = LimitMode.None;
         public int limitPerXFrames = 1;
@@ -82,17 +85,11 @@ namespace DarkTonic.MasterAudio {
 		public event System.Action LastVariationFinishedPlay;
         public int frames = 0;
         // ReSharper restore InconsistentNaming
-
+		 
         private List<int> _activeAudioSourcesIds;
         private string _objectName = string.Empty;
         private Transform _trans;
         private float _originalVolume = 1;
-
-        public enum ChildGroupMode {
-            None,
-            TriggerLinkedGroupsWhenRequested,
-            TriggerLinkedGroupsWhenPlayed
-        }
 
         public enum TargetDespawnedBehavior {
             None,
@@ -156,6 +153,10 @@ namespace DarkTonic.MasterAudio {
             } // to get rid of warning
 
             var needsUpgrade = false;
+
+			if (Trans.parent != null) {
+				gameObject.layer = Trans.parent.gameObject.layer;
+			} 
 
             for (var i = 0; i < Trans.childCount; i++) {
                 var variation = Trans.GetChild(i).GetComponent<SoundGroupVariation>();

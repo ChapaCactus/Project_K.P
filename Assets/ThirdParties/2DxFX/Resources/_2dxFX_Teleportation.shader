@@ -1,6 +1,6 @@
 ﻿//////////////////////////////////////////////
-/// 2DxFX - 2D SPRITE FX - by VETASOFT 2016 //
-/// http://unity3D.vetasoft.com/            //
+/// 2DxFX - 2D SPRITE FX - by VETASOFT 2017 //
+/// http://vetasoft.store/2dxfx/            //
 //////////////////////////////////////////////
 
 Shader "2DxFX/Standard/Teleportation"
@@ -32,7 +32,7 @@ Stencil
 {
 Ref [_Stencil]
 Comp [_StencilComp]
-Pass [_StencilOp] 
+Pass [_StencilOp]
 ReadMask [_StencilReadMask]
 WriteMask [_StencilWriteMask]
 }
@@ -76,58 +76,53 @@ OUT.color = IN.color;
 
 return OUT;
 }
-	
-	
-inline float rand(float2 co){
-    return frac(sin(dot(co.xy ,float2(12.9898,78.233))) * 43758.5453 *_Time);
+
+
+inline float rand(float2 co)
+{
+return frac(sin(dot(co.xy ,float2(12.9898,78.233))) * 43758.5453 *_Time);
 }
 
-
-
-
-	inline float mod(float x,float modu) 
+inline float mod(float x,float modu)
 {
-  return x - floor(x * (1.0 / modu)) * modu;
-}   
+return x - floor(x * (1.0 / modu)) * modu;
+}
 
-fixed4 rainbow(float t) 
+fixed4 rainbow(float t)
 {
-	t=mod(t,1.0);
-	fixed tx = t * 6.0;
-	
-	fixed r = clamp(tx - 2.0, 0.0, 1.0) + clamp(2.0 - tx, 0.0, 1.0);
-	
-	return fixed4(1.0, 1.0, 1.0,r);
+t=mod(t,1.0);
+fixed tx = t * 6.0;
+fixed r = clamp(tx - 2.0, 0.0, 1.0) + clamp(2.0 - tx, 0.0, 1.0);
+return fixed4(1.0, 1.0, 1.0,r);
 }
 
 float4 plasma(float2 uv)
 {
-	float2 tuv = uv;
-	uv *= 1.0*_Distortion*10;
-	float a = 1.1 + 20 * 2.25;
-	float n = sin(a + 2.0 * uv.x) + sin(a - 2.0 * uv.x) + sin(a + 2.0 * uv.y) + sin(a + 5.0 * uv.y);
-	n = mod(((5.0 + n) / 5.0), 1.0);
-	n += tex2D(_MainTex, tuv).r * 11.2 + tex2D(_MainTex, tuv).g * 8.4 + tex2D(_MainTex, tuv).b * 4.2;
-	
-	return rainbow(n);
+float2 tuv = uv;
+uv *= 1.0*_Distortion*10;
+float a = 1.1 + 20 * 2.25;
+float n = sin(a + 2.0 * uv.x) + sin(a - 2.0 * uv.x) + sin(a + 2.0 * uv.y) + sin(a + 5.0 * uv.y);
+n = mod(((5.0 + n) / 5.0), 1.0);
+n += tex2D(_MainTex, tuv).r * 11.2 + tex2D(_MainTex, tuv).g * 8.4 + tex2D(_MainTex, tuv).b * 4.2;
+return rainbow(n);
 }
 
 
 inline float added(float2 sh, float d)
 {
-	float2 rsh = sh * 0.70710638280; 
-	return 0.5 + 0.25 * cos((rsh.x + rsh.y) * d) + 0.25 * cos((rsh.x - rsh.y) * d);
+float2 rsh = sh * 0.70710638280;
+return 0.5 + 0.25 * cos((rsh.x + rsh.y) * d) + 0.25 * cos((rsh.x - rsh.y) * d);
 }
 
 float4 frag (v2f i) : COLOR
 {
 
 fixed threshold 		= _Distortion;
-	fixed rasterPattern = added(i.texcoord.xy , 2136.2812 / _Distortion  );
-	fixed4 srcPixel 	= tex2D(_MainTex, i.texcoord.xy);
-        
-	fixed avg 			= 0.2125 * srcPixel.r + 0.7154 * srcPixel.g + 0.0721 * srcPixel.b;
-    fixed gray 			= (rasterPattern * _Distortion + avg - _Distortion) / (1.0 - _Distortion);
+fixed rasterPattern = added(i.texcoord.xy , 2136.2812 / _Distortion  );
+fixed4 srcPixel 	= tex2D(_MainTex, i.texcoord.xy);
+
+fixed avg 			= 0.2125 * srcPixel.r + 0.7154 * srcPixel.g + 0.0721 * srcPixel.b;
+fixed gray 			= (rasterPattern * _Distortion + avg - _Distortion) / (1.0 - _Distortion);
 
 float4 tex=tex2D(_MainTex, i.texcoord.xy);
 float4 noise=lerp(tex,rand(i.texcoord.xy),_Distortion);

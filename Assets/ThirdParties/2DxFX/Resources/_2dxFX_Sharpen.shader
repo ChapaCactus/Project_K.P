@@ -1,6 +1,6 @@
 ﻿//////////////////////////////////////////////
-/// 2DxFX - 2D SPRITE FX - by VETASOFT 2016 //
-/// http://unity3D.vetasoft.com/            //
+/// 2DxFX - 2D SPRITE FX - by VETASOFT 2017 //
+/// http://vetasoft.store/2dxfx/            //
 //////////////////////////////////////////////
 
 Shader "2DxFX/Standard/Sharpen"
@@ -89,7 +89,8 @@ inline float4 sharp(float2 uv)
 	float4 c2 = tex2D(_MainTex,uv+float2(r,.0));
 	float4 c3 = tex2D(_MainTex,uv-float2(.0,r));
 	float4 c4 = tex2D(_MainTex,uv+float2(.0,r));
-	float4 c5 = c0+c1+c2+c3+c4; c5*=0.2;
+	float cx = c0+c1+c2+c3+c4;
+	float4 c5 = float4(cx,cx,cx,cx); c5*=0.2;
 	float4 mi = min(c0,c1); mi = min(mi,c2); mi = min(mi,c3); mi = min(mi,c4);
 	float4 ma = max(c0,c1); ma = max(ma,c2); ma = max(ma,c3); ma = max(ma,c4);
 	float4 rt= clamp(mi,(strength+1.0)*c0-c5*strength,ma);

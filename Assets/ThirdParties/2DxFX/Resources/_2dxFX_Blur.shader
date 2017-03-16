@@ -1,6 +1,6 @@
-﻿//////////////////////////////////////////////
-/// 2DxFX - 2D SPRITE FX - by VETASOFT 2016 //
-/// http://unity3D.vetasoft.com/            //
+//////////////////////////////////////////////
+/// 2DxFX - 2D SPRITE FX - by VETASOFT 2017 //
+/// http://vetasoft.store/2dxfx/            //
 //////////////////////////////////////////////
 
 Shader "2DxFX/Standard/Blur" 
@@ -98,7 +98,7 @@ texCoord = i.texcoord.xy + float2( stepU, -stepV ); result += tex2D(_MainTex,tex
 texCoord = i.texcoord.xy + float2( stepU, 0 ); result += 2.0* tex2D(_MainTex,texCoord);
 texCoord = i.texcoord.xy + float2( stepU, -stepV ); result += tex2D(_MainTex,texCoord);
 
-float4 r;
+float4 r=float4(0,0,0,0);
 r=result*0.0625;
 r.a*=Alpha.a*(1.0-_Alpha);
 r=r*i.color;		

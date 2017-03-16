@@ -1,8 +1,7 @@
 ﻿//////////////////////////////////////////////
-/// 2DxFX - 2D SPRITE FX - by VETASOFT 2016 //
-/// http://unity3D.vetasoft.com/            //
+/// 2DxFX - 2D SPRITE FX - by VETASOFT 2017 //
+/// http://vetasoft.store/2dxfx/            //
 //////////////////////////////////////////////
-
 Shader "2DxFX/Standard/Hologram"
 {
 Properties
@@ -125,7 +124,7 @@ float vShift = .4*onOff(2.,3.,.9)*(sin(_TimeX)*sin(_TimeX*20.) +
 
 look.y = mod(look.y + vShift, 1.);
 
-float4 video;
+float4 video = float4(0,0,0,0);
 float4 videox=tex2D(_MainTex,look);
 
 video.r = tex2D(_MainTex,look-float2(.05,0.)*onOff(2.,1.5,.9)).r;

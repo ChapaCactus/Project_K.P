@@ -1,6 +1,6 @@
 ﻿//////////////////////////////////////////////
-/// 2DxFX - 2D SPRITE FX - by VETASOFT 2016 //
-/// http://unity3D.vetasoft.com/            //
+/// 2DxFX - 2D SPRITE FX - by VETASOFT 2017 //
+/// http://vetasoft.store/2dxfx/            //
 //////////////////////////////////////////////
 
 Shader "2DxFX/Standard/Lightning"
@@ -116,11 +116,7 @@ t2 +=  tex2D(_MainTex2, uv);
 
 fixed4 t =  tex2D(_MainTex, IN.texcoord)*IN.color;
 t2.a = t.a;
-
-
 t.rgb+=t2*_Value2;
-
-
 return float4(t.rgb,t.a*(1-_Alpha));
 }
 ENDCG

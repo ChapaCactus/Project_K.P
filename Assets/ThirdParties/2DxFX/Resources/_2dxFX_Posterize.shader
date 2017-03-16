@@ -1,6 +1,6 @@
 ﻿//////////////////////////////////////////////
-/// 2DxFX - 2D SPRITE FX - by VETASOFT 2016 //
-/// http://unity3D.vetasoft.com/            //
+/// 2DxFX - 2D SPRITE FX - by VETASOFT 2017 //
+/// http://vetasoft.store/2dxfx/            //
 //////////////////////////////////////////////
 
 Shader "2DxFX/Standard/Posterize"
@@ -69,12 +69,11 @@ fixed4 _Color;
 
 v2f vert(appdata_t IN)
 {
-v2f OUT;
-OUT.vertex = mul(UNITY_MATRIX_MVP, IN.vertex);
-OUT.texcoord = IN.texcoord;
-OUT.color = IN.color;
-
-return OUT;
+	v2f OUT;
+	OUT.vertex = mul(UNITY_MATRIX_MVP, IN.vertex);
+	OUT.texcoord = IN.texcoord;
+	OUT.color = IN.color;
+	return OUT;
 }
 	
 float4 frag (v2f i) : COLOR
@@ -83,11 +82,7 @@ float4 frag (v2f i) : COLOR
 	float div = 256.0/float( _Distortion );
 	col = floor( col * div ) / div;
 	col.a = col.a*1-_Alpha;
-	
 	return col;
-	
-
-
 }
 
 ENDCG

@@ -1,6 +1,6 @@
 ﻿//////////////////////////////////////////////
-/// 2DxFX - 2D SPRITE FX - by VETASOFT 2016 //
-/// http://unity3D.vetasoft.com/            //
+/// 2DxFX - 2D SPRITE FX - by VETASOFT 2017 //
+/// http://vetasoft.store/2dxfx/            //
 //////////////////////////////////////////////
 
 Shader "2DxFX/Standard/ColorRGB"
@@ -85,7 +85,7 @@ return OUT;
 
 float4 frag (v2f i) : COLOR
 {
-float2 uv =  i.texcoord;
+float2 uv = i.texcoord;
 float4 tex = tex2D(_MainTex, uv)*i.color;
 tex.r+=_ColorR;
 tex.g+=_ColorG;

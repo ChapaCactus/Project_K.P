@@ -1,6 +1,6 @@
 ﻿//////////////////////////////////////////////
-/// 2DxFX - 2D SPRITE FX - by VETASOFT 2016 //
-/// http://unity3D.vetasoft.com/            //
+/// 2DxFX - 2D SPRITE FX - by VETASOFT 2017 //
+/// http://vetasoft.store/2dxfx/            //
 //////////////////////////////////////////////
 
 Shader "2DxFX/Standard/Liquid"
@@ -90,8 +90,6 @@ float time = _Time*10;
 float delta_theta = 0.897597901025655210989326680937;
 float col = 0.0;
 float theta = 0.0;
-
-
 float _Value=_Speed;
 float _Value2=_Distortion;
 float _Value3=_Distortion;

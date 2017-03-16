@@ -1,6 +1,6 @@
 ﻿//////////////////////////////////////////////
-/// 2DxFX - 2D SPRITE FX - by VETASOFT 2016 //
-/// http://unity3D.vetasoft.com/            //
+/// 2DxFX - 2D SPRITE FX - by VETASOFT 2017 //
+/// http://vetasoft.store/2dxfx/            //
 //////////////////////////////////////////////
 
 Shader "2DxFX/Standard/Smoke"
@@ -92,8 +92,6 @@ float _Value5;
 
 fixed4 frag(v2f IN) : COLOR
 {
-
-
 float2 uv=IN.texcoord;
 uv+=float2(-0.1,-0.1);
 uv/=8;

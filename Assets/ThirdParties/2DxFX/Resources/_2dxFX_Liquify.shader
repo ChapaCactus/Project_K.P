@@ -1,6 +1,6 @@
 ﻿//////////////////////////////////////////////
-/// 2DxFX - 2D SPRITE FX - by VETASOFT 2016 //
-/// http://unity3D.vetasoft.com/            //
+/// 2DxFX - 2D SPRITE FX - by VETASOFT 2017 //
+/// http://vetasoft.store/2dxfx/            //
 //////////////////////////////////////////////
 
 Shader "2DxFX/Standard/Liquify"
@@ -96,23 +96,17 @@ float noffset=TurnToLiquid*sin(p.x*16*(TurnToLiquid+1))/2;
 float _ClipUp=1-TurnToLiquid*2;
 c1= saturate(((1+noffset)/(1-_ClipUp+0.04))*(1-i.texcoord.y)-noffset);
 float r=1-c1+sin(p.x*_Distortion)*TurnToLiquid/3+TurnToLiquid/2;
-//float r=1-c1+sin(p.x*_Distortion)*TurnToLiquid/3+TurnToLiquid/2;
 p.y+=r;
 float2 p2=i.texcoord.xy;
 p2.y+=TurnToLiquid-0.5;
 p2/=3;
 float4 col2 = tex2D(_MainTex2,p2);
-
 col2*=TurnToLiquid*20;
 p+=float2(col2.r/16,col2.g/16);
 p-=TurnToLiquid;
-
 fixed4 col = tex2D(_MainTex,p)*i.color;
-
 col.rgb+=r/2;
 col.rgb+=col2.rgb/8;
-
-
 fixed alpha=1-((0.4+p.y)*TurnToLiquid*2);
 return float4(col.rgb,col.a*alpha*(1-_Alpha));
 }

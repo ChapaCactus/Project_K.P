@@ -1,6 +1,6 @@
 ﻿//////////////////////////////////////////////
-/// 2DxFX - 2D SPRITE FX - by VETASOFT 2015 //
-/// http://unity3D.vetasoft.com/            //
+/// 2DxFX - 2D SPRITE FX - by VETASOFT 2017 //
+/// http://vetasoft.store/2dxfx/            //
 //////////////////////////////////////////////
 
 Shader "2DxFX/Standard/Flame"
@@ -91,11 +91,8 @@ float4 frag (v2f i) : COLOR
     float2 uv = i.texcoord.xy;
     float2 _uv = uv;
 	float _TimeX=_Time*128*_Speed;
-
-    uv -= float2(0.5,0.5);
+	uv -= float2(0.5,0.5);
     float2 centerUV = uv;
-    
-    
     float2 offset = float2(0.0, -_TimeX * 0.15);
     
     // flame thickness
@@ -105,18 +102,13 @@ float4 frag (v2f i) : COLOR
 	uv3.y/=12;
 	
 	float flame = 1.3 - length(uv.x) * 3.0;
-	
-	
 	fixed4 t3 =  tex2D(_MainTex2,uv3);
-    
-	
-	fixed4 t2 = tex2D(_MainTex2,uv2);
+    fixed4 t2 = tex2D(_MainTex2,uv2);
    
 	float variationH = t3.g-t2.g;
   
     uv2.x += i.texcoord.y*cos(_TimeX)/8;
     fixed4 t =  tex2D(_MainTex, float2(uv2.x,i.texcoord.y));
-   
 	flame *= smoothstep(1., variationH * _Intensity, _uv.y);
 	flame = clamp(flame, 0.0, 1.0);
 	flame = pow(flame, 3.);

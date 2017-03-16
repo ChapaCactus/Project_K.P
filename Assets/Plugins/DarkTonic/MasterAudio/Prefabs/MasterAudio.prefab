@@ -9,7 +9,7 @@ GameObject:
   m_Component:
   - 4: {fileID: 400010}
   - 114: {fileID: 11400000}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: MasterAudio
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -105,10 +105,12 @@ MonoBehaviour:
   prioritizeOnDistance: 0
   rePrioritizeEverySecIndex: 0
   useOcclusion: 0
-  reOccludeEverySecIndex: 1
   occlusionMaxCutoffFreq: 0
   occlusionMinCutoffFreq: 22000
+  occlusionFreqChangeSeconds: 0
   occlusionSelectType: 0
+  occlusionMaxRayCastsPerFrame: 4
+  occlusionRayCastOffset: 0
   occlusionUseLayerMask: 0
   occlusionLayerMask:
     serializedVersion: 2

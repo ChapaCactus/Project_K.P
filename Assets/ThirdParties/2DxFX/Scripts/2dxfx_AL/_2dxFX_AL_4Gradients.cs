@@ -363,8 +363,7 @@ public class _2dxFX_AL_4Gradients_Editor : Editor
         }
 
         // Mode Blend
-        EditorGUILayout.BeginVertical("Box");
-        string BlendMethode = "Normal";
+         string BlendMethode = "Normal";
 
         if (_2dxScript.BlendMode == 0) BlendMethode = "Normal";
         if (_2dxScript.BlendMode == 1) BlendMethode = "Additive";

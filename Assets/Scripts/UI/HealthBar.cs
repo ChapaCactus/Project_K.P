@@ -18,8 +18,6 @@ public class HealthBar : SingletonMonoBehaviour<HealthBar>
 
 	#region Variables
 	private Slider m_Slider = null;
-
-	private CanvasGroup m_CanvasGroup = null;
 	#endregion// Variables
 
 	#region PublicMethods
@@ -35,11 +33,6 @@ public class HealthBar : SingletonMonoBehaviour<HealthBar>
 	{
 		m_Slider = transform.FindChild("Slider").GetComponent<Slider>();
 		m_Slider.minValue = 0;
-
-		m_CanvasGroup = GetComponent<CanvasGroup>();
-		m_CanvasGroup.alpha = 0;
-		m_CanvasGroup.interactable = false;
-		m_CanvasGroup.blocksRaycasts = false;
 	}
 
 	/// <summary>
@@ -62,16 +55,14 @@ public class HealthBar : SingletonMonoBehaviour<HealthBar>
 
 	public void Show()
 	{
-		m_CanvasGroup.alpha = 1;
-		m_CanvasGroup.interactable = true;
-		m_CanvasGroup.blocksRaycasts = true;
+		var canvasGroup = GetComponent<CanvasGroup>();
+		Utilities.ToggleCanvasGroup(canvasGroup, true);
 	}
 
 	public void Hide()
 	{
-		m_CanvasGroup.alpha = 0;
-		m_CanvasGroup.interactable = false;
-		m_CanvasGroup.blocksRaycasts = false;
+		var canvasGroup = GetComponent<CanvasGroup>();
+		Utilities.ToggleCanvasGroup(canvasGroup, false);
 	}
 	#endregion// PublicMethods
 }

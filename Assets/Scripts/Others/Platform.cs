@@ -112,7 +112,9 @@ public class Platform : MonoBehaviour
 
     public void KillItem()
     {
-		Destroy(item.gameObject);
+		item.ChangeConstraints();
+		item.transform.DOLocalMove(new Vector3(4, 4, 0), 0.5f).OnComplete(() => Destroy(item.gameObject));
+		//Destroy(item.gameObject);
         item = null;
     }
         

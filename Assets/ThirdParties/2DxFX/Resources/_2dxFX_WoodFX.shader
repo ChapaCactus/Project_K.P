@@ -1,6 +1,6 @@
 ﻿//////////////////////////////////////////////
-/// 2DxFX - 2D SPRITE FX - by VETASOFT 2016 //
-/// http://unity3D.vetasoft.com/            //
+/// 2DxFX - 2D SPRITE FX - by VETASOFT 2017 //
+/// http://vetasoft.store/2dxfx/            //
 //////////////////////////////////////////////
 
 Shader "2DxFX/Standard/WoodFX"
@@ -119,8 +119,9 @@ float4 frag (v2f i) : COLOR
 	
 	float4 sortie=Wood(i.texcoord);
 	sortie-=Wood(i.texcoord+float2(-0.05,0.02))/2.0;
-	float3 r2= r-(1-sortie.a)/8;
-	float3 tex2;
+	float rrr=r-(1-sortie.a)/8;
+	float3 r2= float3(rrr,rrr,rrr);
+	float3 tex2=float3(0,0,0);
 	r2.r-=0.1;
 	r2.g-=0.35;
 	r2.b-=0.5;

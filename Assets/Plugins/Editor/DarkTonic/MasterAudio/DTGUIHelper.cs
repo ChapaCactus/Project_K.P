@@ -313,6 +313,10 @@ public static class DTGUIHelper {
     }
 
     public static DTFunctionButtons AddDeleteIcon(bool showRenameButton, string eventName) {
+        var oldColor = GUI.color;
+        var oldBG = GUI.backgroundColor;
+        var oldContent = GUI.contentColor;
+
         GUI.backgroundColor = Color.white;
         GUI.color = Color.white;
         GUI.contentColor = BrightButtonColor;
@@ -325,7 +329,10 @@ public static class DTGUIHelper {
         var deleteIcon = MasterAudioInspectorResources.DeleteTexture;
         GUI.contentColor = Color.red;
         var shouldDelete = GUILayout.Button(new GUIContent(deleteIcon, "Click to delete " + eventName), EditorStyles.toolbarButton, GUILayout.MaxWidth(32), GUILayout.Height(15));
-        GUI.contentColor = Color.white;
+
+        GUI.color = oldColor;
+        GUI.backgroundColor = oldBG;
+        GUI.contentColor = oldContent;
 
         if (shouldDelete) {
             return DTFunctionButtons.Remove;
@@ -510,11 +517,11 @@ public static class DTGUIHelper {
             return DTFunctionButtons.None;
         }
 
-        if (GUILayout.Button(new GUIContent(MasterAudioInspectorResources.PreviewTexture, "Click to preview Variation"), EditorStyles.toolbarButton, GUILayout.Width(40))) {
+        if (GUILayout.Button(new GUIContent(MasterAudioInspectorResources.PreviewTexture, "Click to preview"), EditorStyles.toolbarButton, GUILayout.Width(24))) {
             return DTFunctionButtons.Play;
         }
 
-        if (GUILayout.Button(new GUIContent(MasterAudioInspectorResources.StopTexture, "Click to stop audio preview"), EditorStyles.toolbarButton, GUILayout.Width(40))) {
+        if (GUILayout.Button(new GUIContent(MasterAudioInspectorResources.StopTexture, "Click to stop audio preview"), EditorStyles.toolbarButton, GUILayout.Width(24))) {
             return DTFunctionButtons.Stop;
         }
 
@@ -865,9 +872,21 @@ public static class DTGUIHelper {
     }
 
     public static DTFunctionButtons AddSettingsButton(string itemName) {
+        var oldColor = GUI.color;
+        var oldBG = GUI.backgroundColor;
+
+        GUI.backgroundColor = Color.white;
+        GUI.color = Color.white;
+
         var settingsIcon = MasterAudioInspectorResources.GearTexture;
 
-        if (GUILayout.Button(new GUIContent(settingsIcon, "Click to edit " + itemName), EditorStyles.toolbarButton, GUILayout.Width(24), GUILayout.Height(20))) {
+        var buttonClicked = GUILayout.Button(new GUIContent(settingsIcon, "Click to edit " + itemName),
+            EditorStyles.toolbarButton, GUILayout.Width(24), GUILayout.Height(20));
+
+        GUI.color = oldColor;
+        GUI.backgroundColor = oldBG;
+
+        if (buttonClicked) {
             return DTFunctionButtons.Go;
         }
 
@@ -883,6 +902,106 @@ public static class DTGUIHelper {
 
         return false;
     }
+
+	public static void PreviewSoundGroup(string sType) {
+		var previewer = MasterAudioInspector.GetPreviewer ();
+		
+		if (Application.isPlaying) {
+			if (previewer != null) {
+				MasterAudio.PlaySound3DAtVector3AndForget (sType, previewer.transform.position);
+			}
+		} else {
+			var grp = MasterAudio.FindGroupTransform (sType);
+			if (grp == null) {
+				return;
+			}
+			var aGroup = grp.GetComponent<MasterAudioGroup> ();
+			if (aGroup != null) {
+				var rndIndex = UnityEngine.Random.Range (0, aGroup.groupVariations.Count);
+				var rndVar = aGroup.groupVariations [rndIndex];
+				
+				var calcVolume = aGroup.groupMasterVolume * rndVar.VarAudio.volume;
+				
+				if (rndVar.audLocation == MasterAudio.AudioLocation.ResourceFile) {
+					MasterAudioInspector.StopPreviewer ();
+					var fileName = AudioResourceOptimizer.GetLocalizedFileName (rndVar.useLocalization, rndVar.resourceFileName);
+					if (previewer != null) {
+						previewer.PlayOneShot (Resources.Load (fileName) as AudioClip, calcVolume);
+					}
+				} else {
+					if (previewer != null) {
+						rndVar.Trans.position = previewer.transform.position;
+					}
+					rndVar.VarAudio.PlayOneShot (rndVar.VarAudio.clip, calcVolume);
+				}
+				return;
+			}
+
+			var dynGroup = grp.GetComponent<DynamicSoundGroup> ();
+			if (dynGroup != null) {
+				var rndIndex = UnityEngine.Random.Range (0, dynGroup.groupVariations.Count);
+				var rndVar = dynGroup.groupVariations [rndIndex];
+				
+				var calcVolume = dynGroup.groupMasterVolume * rndVar.VarAudio.volume;
+				
+				if (rndVar.audLocation == MasterAudio.AudioLocation.ResourceFile) {
+					MasterAudioInspector.StopPreviewer ();
+					var fileName = AudioResourceOptimizer.GetLocalizedFileName (rndVar.useLocalization, rndVar.resourceFileName);
+					if (previewer != null) {
+						previewer.PlayOneShot (Resources.Load (fileName) as AudioClip, calcVolume);
+					}
+				} else {
+					if (previewer != null) {
+						rndVar.Trans.position = previewer.transform.position;
+					}
+					rndVar.VarAudio.PlayOneShot (rndVar.VarAudio.clip, calcVolume);
+				}
+			}
+		}
+	}
+
+	public static void StopPreview(string sType) {
+		if (Application.isPlaying) {
+			MasterAudio.StopAllOfSound(sType);
+		} else {
+			var grp = MasterAudio.FindGroupTransform(sType);
+			if (grp == null) {
+				return;
+			}
+
+			var aGroup = grp.GetComponent<MasterAudioGroup>();
+			if (aGroup != null) {
+				var hasResourceFile = false;
+				foreach (var t in aGroup.groupVariations) {
+					t.VarAudio.Stop();
+					if (t.audLocation == MasterAudio.AudioLocation.ResourceFile) {
+						hasResourceFile = true;
+					}
+				}
+				
+				if (hasResourceFile) {
+					MasterAudioInspector.StopPreviewer();
+				}
+
+				return;
+			}
+
+			var dynGroup = grp.GetComponent<DynamicSoundGroup>();
+			if (dynGroup != null) {
+				var hasResourceFile = false;
+				foreach (var t in dynGroup.groupVariations) {
+					t.VarAudio.Stop();
+					if (t.audLocation == MasterAudio.AudioLocation.ResourceFile) {
+						hasResourceFile = true;
+					}
+				}
+				
+				if (hasResourceFile) {
+					MasterAudioInspector.StopPreviewer();
+				}
+			}
+		}
+	}
 
     public static void ShowFilteredRelationsGraph(string groupFilter = null, string busFilter = null) {
         if (string.IsNullOrEmpty(groupFilter)) {

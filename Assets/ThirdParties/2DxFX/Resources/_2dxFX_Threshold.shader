@@ -1,6 +1,6 @@
 ﻿//////////////////////////////////////////////
-/// 2DxFX - 2D SPRITE FX - by VETASOFT 2016 //
-/// http://unity3D.vetasoft.com/            //
+/// 2DxFX - 2D SPRITE FX - by VETASOFT 2017 //
+/// http://vetasoft.store/2dxfx/            //
 //////////////////////////////////////////////
 
 Shader "2DxFX/Standard/Threshold"
@@ -77,19 +77,13 @@ OUT.color = IN.color;
 return OUT;
 }
 	
-	
 float4 frag (v2f i) : COLOR
 {
-	fixed4 tx 	= tex2D(_MainTex, i.texcoord);
-	float l 	= (tx.x + tx.y + tx.z) / 3.0;
+	fixed4 tx = tex2D(_MainTex, i.texcoord);
+	float l = (tx.x + tx.y + tx.z) / 3.0;
    	tx.rgb = smoothstep(_Distortion, _Distortion+0.0001, l);
-	
 	tx.a = tx.a*1-_Alpha;
-	
 	return tx*i.color;
-	
-
-
 }
 
 ENDCG

@@ -1,6 +1,6 @@
 ﻿//////////////////////////////////////////////
-/// 2DxFX - 2D SPRITE FX - by VETASOFT 2016 //
-/// http://unity3D.vetasoft.com/            //
+/// 2DxFX - 2D SPRITE FX - by VETASOFT 2017 //
+/// http://vetasoft.store/2dxfx/            //
 //////////////////////////////////////////////
 
 Shader "2DxFX/Standard/Ice"
@@ -127,13 +127,9 @@ tx= tex2D(_MainTex2, uv);
 tx.rgb=tx.bgg;
 tx.b+=0.1;
 t2 +=  tx;
-
-fixed4 t =  tex2D(_MainTex, IN.texcoord+float2(t2.g/64,t2.g/64))*IN.color;
-
+fixed4 t = tex2D(_MainTex, IN.texcoord+float2(t2.g/64,t2.g/64))*IN.color;
 t2.a = t.a;
-
 t.rgb+=t2*_Value2;
-
 
 return float4(t.rgb,t.a*(1-_Alpha));
 }

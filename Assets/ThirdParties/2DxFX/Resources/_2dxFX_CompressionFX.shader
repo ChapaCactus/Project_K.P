@@ -1,6 +1,6 @@
-﻿//////////////////////////////////////////////
-/// 2DxFX - 2D SPRITE FX - by VETASOFT 2016 //
-/// http://unity3D.vetasoft.com/            //
+//////////////////////////////////////////////
+/// 2DxFX - 2D SPRITE FX - by VETASOFT 2017 //
+/// http://vetasoft.store/2dxfx/            //
 //////////////////////////////////////////////
 
 Shader "2DxFX/Standard/CompressionFX"
@@ -95,19 +95,12 @@ float4 frag (v2f i) : COLOR
 {
 
 float2 uv = i.texcoord.xy;
-
 float2 blockS = floor(uv * float2(24., 19.))*4.0;
 float2 blockL = floor(uv * float2(38., 14.))*4.0;
-
 float r = rng2(uv);
-
 float lineNoise = pow(rng2(blockS), 3.0) *_Distortion* pow(rng2(blockL), 3.0);
-
 float4 col1 = tex2D(_MainTex, uv + float2(lineNoise * 0.02 * rng(2.0), 0))*i.color;
-
-float4 result;
-result = float4(float3(col1.x, col1.y, col1.z), 1.0);
-
+float4 result= float4(float3(col1.x, col1.y, col1.z), 1.0);
 result.a = col1.a*1-_Alpha;
 
 return result;

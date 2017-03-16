@@ -1,6 +1,6 @@
 ﻿//////////////////////////////////////////////
-/// 2DxFX - 2D SPRITE FX - by VETASOFT 2016 //
-/// http://unity3D.vetasoft.com/            //
+/// 2DxFX - 2D SPRITE FX - by VETASOFT 2017 //
+/// http://vetasoft.store/2dxfx/            //
 //////////////////////////////////////////////
 
 Shader "2DxFX/Standard/Pixel8bitsC64" {
@@ -97,7 +97,7 @@ float4 frag (v2f i) : COLOR
 {
 
 float2 q  = i.texcoord;
-float2 pixelSize=64*_Size;
+float2 pixelSize=float2(64*_Size,64*_Size);
 pixelSize.x/=3*_Offset;
 float2 c = floor(q * pixelSize)/pixelSize;
 

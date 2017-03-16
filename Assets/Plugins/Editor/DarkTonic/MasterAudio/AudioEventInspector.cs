@@ -1742,8 +1742,20 @@ public class AudioEventInspector : Editor {
                                                 if (trs != null) {
                                                     Selection.activeObject = trs;
                                                 }
-                                                break;
+                                                break; 
                                         }
+
+										var buttonPress = DTGUIHelper.AddDynamicVariationButtons();
+										var sType = _groupNames[existingIndex];		
+
+										switch (buttonPress) {
+											case DTGUIHelper.DTFunctionButtons.Play:
+												DTGUIHelper.PreviewSoundGroup(sType);
+												break;
+											case DTGUIHelper.DTFunctionButtons.Stop:
+												DTGUIHelper.StopPreview(sType);
+												break;
+										}
                                     }
 
                                     EditorGUILayout.EndHorizontal();

@@ -47,18 +47,36 @@ public class BaseItem : MonoBehaviour
     public class Data
     {
 		#region Properties
+		public bool isDead
+		{
+			get
+			{
+				return m_IsDead;
+			}
+			set
+			{
+				m_IsDead = value;
+			}
+		}
 		public State state { get { return m_State; } set { m_State = value; } }
 		public int id { get { return m_ID; } set { m_ID = value; } }
 		public string name { get { return m_Name; } set { m_Name = value; } }
 		public Type type { get { return m_Type; } set { m_Type = value; } }
 		public int price { get { return m_Price; } set { m_Price = value; } }
 		public int rarity { get { return m_Rarity; } set { m_Rarity = value; } }
-
+		public int maxHealth { get { return m_MaxHealth; }
+			set {
+				m_MaxHealth = value;
+				HealthBar.Instance.Setup(m_MaxHealth);
+			}
+		}
 		public int health {
 			get { return m_Health; }
 			set {
 				m_Health = value;
 				if (m_Health < 0) m_Health = 0;
+				// HPバー更新
+				HealthBar.Instance.UpdateSliderValue(m_Health);
 			}
 		}
 		public int exp { get { return m_Exp; } set { m_Exp = value; } }
@@ -67,6 +85,8 @@ public class BaseItem : MonoBehaviour
 		#endregion// Properties
 
 		#region Variables
+		[SerializeField]
+		private bool m_IsDead = false;
 		[SerializeField]
         private State m_State = State.None;
         [SerializeField, HeaderAttribute("基本情報")]
@@ -79,10 +99,12 @@ public class BaseItem : MonoBehaviour
         private int m_Price           = 0;
         [SerializeField]
         private int m_Rarity          = 0;
-        [SerializeField, HeaderAttribute("ステータス")]
+		[SerializeField, HeaderAttribute("ステータス")]
+		private int m_MaxHealth       = 0;
+		[SerializeField]
         private int m_Health          = 0;
         [SerializeField]
-        private int m_Exp             = 0;// take exp.
+        private int m_Exp             = 0;// 入手した際に貰える経験値
         [SerializeField]
 		// Component系 //
         private Rigidbody2D m_Rigid2D = null;
@@ -111,6 +133,7 @@ public class BaseItem : MonoBehaviour
     #region public methods
     public virtual void Init()
 	{
+		data.isDead = false;
         // Init Components
         data.rigid2D = GetComponent<Rigidbody2D> ();
 
@@ -156,6 +179,7 @@ public class BaseItem : MonoBehaviour
 		data.price = _row._Price;
 		data.rarity = _row._Rarity;
 
+		data.maxHealth = _row._Health;
 		data.health = _row._Health;
 		data.exp = _row._Exp;
     }
@@ -172,11 +196,49 @@ public class BaseItem : MonoBehaviour
 
 		return data.health;
     }
+
+	/// <summary>
+	/// Locking Position XY(Position), Z(Rotation)
+	/// </summary>
+	public void ChangeConstraints(bool _LockX = false, bool _LockY = false, bool _LockZ = false)
+	{
+		// Initialize
+		data.rigid2D.constraints = RigidbodyConstraints2D.None;
+		// Switching
+		if (_LockX && _LockY && _LockZ)
+		{
+			data.rigid2D.constraints = RigidbodyConstraints2D.FreezeAll;
+		}
+		else if (_LockX && _LockY && !_LockZ)
+		{
+			data.rigid2D.constraints = RigidbodyConstraints2D.FreezePosition;
+		}
+		else if (!_LockX && !_LockY && _LockZ)
+		{
+			data.rigid2D.constraints = RigidbodyConstraints2D.FreezeRotation;
+		}
+		else if (_LockX && !_LockY)
+		{
+			data.rigid2D.constraints = RigidbodyConstraints2D.FreezePositionX;
+			if (_LockZ)
+				data.rigid2D.constraints = RigidbodyConstraints2D.FreezeRotation;
+		}
+		else if (!_LockX && _LockY)
+		{
+			data.rigid2D.constraints = RigidbodyConstraints2D.FreezePositionY;
+			if (_LockZ)
+				data.rigid2D.constraints = RigidbodyConstraints2D.FreezeRotation;
+		}
+
+	}
 	#endregion// public methods
 
 	#region Private methods
 	private void Dead()
 	{
+		if (data.isDead) return;
+		data.isDead = true;
+
 		AddInventory();
 
 		//GlobalData.Instance.AddMoney(data.exp);// Test money
@@ -199,32 +261,6 @@ public class BaseItem : MonoBehaviour
 		Stage.Instance.platforms[0].KillItem();
 		Debug.Log("Trying add item... ID => " + data.id);
 	}
-
-    /// <summary>
-    /// Locking Position XY(Position), Z(Rotation)
-    /// </summary>
-    protected void ChangeConstraints(bool _LockX = false, bool _LockY = false, bool _LockZ = false)
-    {
-        // Initialize
-        data.rigid2D.constraints = RigidbodyConstraints2D.None;
-        // Switching
-        if (_LockX && _LockY && _LockZ) {
-            data.rigid2D.constraints = RigidbodyConstraints2D.FreezeAll;
-        } else if (_LockX && _LockY && !_LockZ) {
-            data.rigid2D.constraints = RigidbodyConstraints2D.FreezePosition;
-        } else if (!_LockX && !_LockY && _LockZ) {
-            data.rigid2D.constraints = RigidbodyConstraints2D.FreezeRotation;
-        } else if (_LockX && !_LockY) {
-            data.rigid2D.constraints = RigidbodyConstraints2D.FreezePositionX;
-            if(_LockZ)
-                data.rigid2D.constraints = RigidbodyConstraints2D.FreezeRotation;
-        } else if (!_LockX && _LockY) {
-            data.rigid2D.constraints = RigidbodyConstraints2D.FreezePositionY;
-            if(_LockZ)
-                data.rigid2D.constraints = RigidbodyConstraints2D.FreezeRotation;
-        }
-
-    }
 
     /// <summary>
     /// アイテムが出現するコルーチン

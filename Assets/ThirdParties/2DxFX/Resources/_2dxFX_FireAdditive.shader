@@ -1,6 +1,6 @@
 ﻿//////////////////////////////////////////////
-/// 2DxFX - 2D SPRITE FX - by VETASOFT 2016 //
-/// http://unity3D.vetasoft.com/            //
+/// 2DxFX - 2D SPRITE FX - by VETASOFT 2017 //
+/// http://vetasoft.store/2dxfx/            //
 //////////////////////////////////////////////
 
 Shader "2DxFX/Standard/FireAdditive"
@@ -92,7 +92,6 @@ fixed4 frag(v2f IN) : COLOR
 fixed4 t =  tex2D(_MainTex, IN.texcoord)*IN.color;
 float speed=_Value1;
 float2 uv=IN.texcoord;
-uv+=float2(0,0);
 uv/=8;
 uv/=1.4;
 uv-=float2(-0.022,-0.022);
@@ -121,10 +120,7 @@ uv.x += floor(fmod(tm*speed, 1.0)*8)/8;
 uv.y += (1-floor(fmod(tm*speed/8, 1.0)*8)/8);
 t2 +=  tex2D(_MainTex2, uv);
 
-
-
 t2.a = t.a;
-
 t.rgb=lerp(t2*_Value2,t+(t2*_Value2),_Value3);
 
 

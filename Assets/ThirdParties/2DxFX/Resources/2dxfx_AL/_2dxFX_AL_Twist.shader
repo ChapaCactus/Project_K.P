@@ -37,7 +37,7 @@ Shader "2DxFX/AL/Twist"
 
 		CGPROGRAM
 #pragma surface surf Lambert vertex:vert nofog keepalpha addshadow fullforwardshadows
-
+#pragma target 3.0
 		sampler2D _MainTex;
 	float _Distortion;
 	float _PosX;

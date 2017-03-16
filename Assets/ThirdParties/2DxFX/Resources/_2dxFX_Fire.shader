@@ -1,6 +1,6 @@
 ﻿//////////////////////////////////////////////
-/// 2DxFX - 2D SPRITE FX - by VETASOFT 2016 //
-/// http://unity3D.vetasoft.com/            //
+/// 2DxFX - 2D SPRITE FX - by VETASOFT 2017 //
+/// http://vetasoft.store/2dxfx/            //
 //////////////////////////////////////////////
 
 Shader "2DxFX/Standard/Fire"
@@ -94,7 +94,7 @@ fixed4 frag(v2f IN) : COLOR
 
 float speed=_Value1;
 float2 uv=IN.texcoord;
-uv+=float2(0,0);
+
 uv/=8;
 uv/=1.4;
 uv-=float2(-0.022,-0.022);

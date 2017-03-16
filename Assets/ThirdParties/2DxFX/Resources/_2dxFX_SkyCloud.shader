@@ -1,6 +1,6 @@
 ﻿//////////////////////////////////////////////
-/// 2DxFX - 2D SPRITE FX - by VETASOFT 2016 //
-/// http://unity3D.vetasoft.com/            //
+/// 2DxFX - 2D SPRITE FX - by VETASOFT 2017 //
+/// http://vetasoft.store/2dxfx/            //
 //////////////////////////////////////////////
 
 Shader "2DxFX/Standard/SkyCloud"
@@ -87,7 +87,7 @@ float _Intensity;
 fixed4 frag(v2f IN) : COLOR
 {
 float2 p=IN.texcoord;
-fixed4 t =  tex2D(_MainTex, p);
+fixed4 t = tex2D(_MainTex, p);
 p*=_Zoom;
 fixed4 t2 = tex2D(_MainTex2, p+float2(_OffsetX,_OffsetY))*IN.color;
 t2.rgb = t.rgb - (t2.rgb*_Intensity);

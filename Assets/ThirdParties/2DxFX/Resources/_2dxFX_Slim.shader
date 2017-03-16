@@ -1,6 +1,6 @@
 ﻿//////////////////////////////////////////////
-/// 2DxFX - 2D SPRITE FX - by VETASOFT 2016 //
-/// http://unity3D.vetasoft.com/            //
+/// 2DxFX - 2D SPRITE FX - by VETASOFT 2017 //
+/// http://vetasoft.store/2dxfx/            //
 //////////////////////////////////////////////
 
 Shader "2DxFX/Standard/Slim"
@@ -100,14 +100,10 @@ float r=1-c1;
 float2 p2=i.texcoord.xy;
 p2.y+=TurnToLiquid-0.2;
 p2/=2/(1+Mix/8);
-
-
 float4 col2 = tex2D(_MainTex2,p2);
 col2*=Mix*20;
-//p+=float2(col2.r/32,col2.g/32);
 float t=1+(_Time*100);
-
-float2 mx=col2.r/32;
+float2 mx=float2(col2.r*0.03125,col2.r*0.03125);
 p+=float2(mx.x,mx.y);
 p.x-=Mix/4;
 p.x+=noffset/4;

@@ -1,6 +1,6 @@
 ﻿//////////////////////////////////////////////
-/// 2DxFX - 2D SPRITE FX - by VETASOFT 2016 //
-/// http://unity3D.vetasoft.com/            //
+/// 2DxFX - 2D SPRITE FX - by VETASOFT 2017 //
+/// http://vetasoft.store/2dxfx/            //
 //////////////////////////////////////////////
 
 Shader "2DxFX/Standard/PlasmaRainbow"
@@ -85,10 +85,10 @@ inline float mod(float x,float modu)
   return x - floor(x * (1.0 / modu)) * modu;
 }   
 
-float3 rainbow(float t) {
+float3 rainbow(float t) 
+{
 	t=mod(t,1.0);
 	float tx = t * _Colors;
-	
 	float r = clamp(tx - 4.0, 0.0, 1.0) + clamp(2.0 - tx, 0.0, 1.0);
 	float g = tx < 2.0 ? clamp(tx, 0.0, 1.0) : clamp(4.0 - tx, 0.0, 1.0);
 	float b = tx < 4.0 ? clamp(tx - 2.0, 0.0, 1.0) : clamp(6.0 - tx, 0.0, 1.0);
@@ -97,18 +97,15 @@ float3 rainbow(float t) {
 
 float3 plasma(float2 uv)
 {
-	
-	
 	float a = 1.1 + _TimeX * 2.25+_Offset;
 	float b = 0.5 + _TimeX * 1.77+_Offset;
 	float c = 8.4 + _TimeX * 1.58+_Offset;
 	float d = 610 + _TimeX * 2.03+_Offset;
-	float x1=2.0*uv.x;
+	float x1 = 2.0 * uv.x;
 	float n = sin(a + x1) + sin(b - x1) + sin(c + 2.0 * uv.y) + sin(d + 5.0 * uv.y);
 	n = mod(((5.0 + n) / 5.0), 1.0);
 	float4 nx=tex2D(_MainTex,uv);
 	n += nx.r * 0.2 + nx.g * 0.4 + nx.b * 0.2;
-	
 	return rainbow(n);
 }
 

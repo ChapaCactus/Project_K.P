@@ -1,6 +1,6 @@
 ﻿//////////////////////////////////////////////
-/// 2DxFX - 2D SPRITE FX - by VETASOFT 2015 //
-/// http://unity3D.vetasoft.com/            //
+/// 2DxFX - 2D SPRITE FX - by VETASOFT 2017 //
+/// http://vetasoft.store/2dxfx/            //
 //////////////////////////////////////////////
 
 Shader "2DxFX/Standard/PixelDie"
@@ -88,22 +88,14 @@ float _Value5;
 
 fixed4 frag(v2f IN) : COLOR
 {
-float2 uv=IN.texcoord;
-
-
+float2 uv = IN.texcoord;
 fixed4 t2 = tex2D(_MainTex2, float2(uv.x,uv.y));
-
 t2.rgb= smoothstep(t2.rgb, t2.rgb+0.5, _Value1*1.2);
-
-float r= 1-t2.r;
-
-
+float r= 1 - t2.r;
 fixed4 t = tex2D(_MainTex, float2(uv.x*r,uv.y*r));
 t.a*=r;
 t.b+=t2.g;
-
 t.b+=_Value1*4;
-
 t.rg+=(1-r)*2;
 
 return float4(t.rgb,t.a*(1-_Alpha));

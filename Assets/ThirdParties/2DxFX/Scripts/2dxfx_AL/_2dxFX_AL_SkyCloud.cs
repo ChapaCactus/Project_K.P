@@ -455,8 +455,7 @@ EditorGUI.DrawTextureTransparent(r,icon);
         }
 
         // Mode Blend
-        EditorGUILayout.BeginVertical("Box");
-        string BlendMethode = "Normal";
+         string BlendMethode = "Normal";
 
         if (_2dxScript.BlendMode == 0) BlendMethode = "Normal";
         if (_2dxScript.BlendMode == 1) BlendMethode = "Additive";
@@ -521,13 +520,13 @@ if (_2dxScript._AutoScrollY)
 icone = Resources.Load ("2dxfx-icon-time") as Texture2D;
 EditorGUILayout.PropertyField(m_object.FindProperty("_AutoScrollSpeedY"), new GUIContent("Auto Scroll Speed Y", icone, "Change the speed of the shadow"));
 }
-
-EditorGUILayout.BeginVertical("Box");
+            EditorGUILayout.EndVertical();
+            EditorGUILayout.BeginVertical("Box");
 
 icone = Resources.Load ("2dxfx-icon-fade") as Texture2D;
 EditorGUILayout.PropertyField(m_object.FindProperty("_Alpha"), new GUIContent("Fading", icone, "Fade from nothing to showing"));
 
-EditorGUILayout.EndVertical();
+
 EditorGUILayout.EndVertical();
 
  EditorGUILayout.BeginVertical("Box");

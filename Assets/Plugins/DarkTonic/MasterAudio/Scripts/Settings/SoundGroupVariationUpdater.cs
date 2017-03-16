@@ -52,10 +52,12 @@ namespace DarkTonic.MasterAudio {
 
         private bool _hasStartedNextInChain;
 
+        private bool _isWaitingForQueuedOcclusionRay;
+        private int _framesPlayed = 0;
+
         private static int _maCachedFromFrame = -1;
         private static MasterAudio _maThisFrame;
         private static Transform _listenerThisFrame;
-        private bool _isWaitingForQueuedOcclusionRay;
 
         private enum WaitForSoundFinishMode {
             None,
@@ -196,8 +198,8 @@ namespace DarkTonic.MasterAudio {
         #region Helper methods
 
         private void DisableIfFinished() {
-            if (_isFollowing 
-                || GrpVariation.curDetectEndMode == SoundGroupVariation.DetectEndMode.DetectEnd 
+            if (_isFollowing
+                || GrpVariation.curDetectEndMode == SoundGroupVariation.DetectEndMode.DetectEnd
                 || GrpVariation.curFadeMode != SoundGroupVariation.FadeMode.None) {
 
                 return;
@@ -278,7 +280,7 @@ namespace DarkTonic.MasterAudio {
 
             if (distanceToListener > VarAudio.maxDistance) {
                 // out of hearing range, no reason to calculate occlusion.
-                MasterAudio.AddToOcclusionOutOfRangeSources(GrpVariation.GameObj); 
+                MasterAudio.AddToOcclusionOutOfRangeSources(GrpVariation.GameObj);
                 ResetToNonOcclusionSetting();
                 return false;
             }
@@ -541,6 +543,7 @@ namespace DarkTonic.MasterAudio {
             _hasFadeInOutSetMaxVolume = false;
             _fadeOutStarted = false;
             _hasStartedNextInChain = false;
+            _framesPlayed = 0;
 
             DoneWithOcclusion();
         }
@@ -550,6 +553,8 @@ namespace DarkTonic.MasterAudio {
             if (MasterAudio.AppIsShuttingDown) {
                 return; // do nothing
             }
+
+            _framesPlayed = 0;
 
             DoneWithOcclusion();
         }
@@ -571,6 +576,8 @@ namespace DarkTonic.MasterAudio {
         // ReSharper disable once UnusedMember.Local
         private void LateUpdate() {
             UpdateCachedObjects();
+
+            _framesPlayed++;
 
             if (_isFollowing) { // check for despawned caller and act if so.
                 if (ParentGroup.targetDespawnedBehavior != MasterAudioGroup.TargetDespawnedBehavior.None) {
@@ -648,6 +655,12 @@ namespace DarkTonic.MasterAudio {
 
         #region Properties
 
+        public int FramesPlayed {
+            get {
+                return _framesPlayed;
+            }
+        }
+
         public MasterAudio MAThisFrame {
             get {
                 return _maThisFrame;
@@ -695,7 +708,7 @@ namespace DarkTonic.MasterAudio {
                 }
 
                 _varAudio = GrpVariation.VarAudio;
-           
+
                 return _varAudio;
             }
         }
@@ -707,7 +720,7 @@ namespace DarkTonic.MasterAudio {
                 }
 
                 _parentGrp = GrpVariation.ParentGroup;
-           
+
                 return _parentGrp;
             }
         }
@@ -719,7 +732,7 @@ namespace DarkTonic.MasterAudio {
                 }
 
                 _variation = GetComponent<SoundGroupVariation>();
-         
+
                 return _variation;
             }
         }
@@ -735,7 +748,7 @@ namespace DarkTonic.MasterAudio {
             }
         }
 
-        private bool IsOcclusionMeasuringPaused { 
+        private bool IsOcclusionMeasuringPaused {
             get { return _isWaitingForQueuedOcclusionRay || MasterAudio.IsOcclusionFreqencyTransitioning(GrpVariation); }
         }
 

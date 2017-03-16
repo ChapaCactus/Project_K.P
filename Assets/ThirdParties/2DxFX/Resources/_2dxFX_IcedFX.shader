@@ -1,6 +1,6 @@
 ﻿//////////////////////////////////////////////
-/// 2DxFX - 2D SPRITE FX - by VETASOFT 2016 //
-/// http://unity3D.vetasoft.com/            //
+/// 2DxFX - 2D SPRITE FX - by VETASOFT 2017 //
+/// http://vetasoft.store/2dxfx/            //
 //////////////////////////////////////////////
 
 Shader "2DxFX/Standard/IcedFX"
@@ -80,31 +80,22 @@ return OUT;
 
 float3 Metal(float _t)
 {
-    float u = (0.860117757 + 1.54118254e-4*_t + 1.28641212e-7*_t*_t)
-        / (1.0 + 8.42420235e-4*_t + 7.08145163e-7*_t*_t);
-    
-    float v = (0.317398726 + 2.22806245e-5*_t + 4.20481691e-8*_t*_t)
-        / (1.0 - 2.89741816e-5*_t + 1.61456053e-7*_t*_t);
-    
+    float u = (0.860117757 + 1.54118254e-4*_t + 1.28641212e-7*_t*_t) / (1.0 + 8.42420235e-4*_t + 7.08145163e-7*_t*_t);
+    float v = (0.317398726 + 2.22806245e-5*_t + 4.20481691e-8*_t*_t) / (1.0 - 2.89741816e-5*_t + 1.61456053e-7*_t*_t);
     float x = 3.0 * u / (2.0 * u - 8.0 * v + 4.0);
     float y = 2.0 * v / (2.0 * u - 8.0 * v + 4.0);
     float z = 1.0 - x - y;
-    
     float Y = 1.0;
     float X = (Y/y) * x;
     float Z = (Y/y) * z;
-    
     float3 RGB = float3(Z,Y,X)/_Distortion; 
-    
     RGB.y = RGB.x * pow(0.0006*_t, 2.0);
     RGB.x = RGB.y * pow(0.0004*_t, 6.0);
     RGB.z = RGB.z * pow(0.0004*_t, 2.0);
-    
     return RGB;
 }
 	
-
-	inline float mod(float x,float modu) 
+inline float mod(float x,float modu) 
 {
   return x - floor(x * (1.0 / modu)) * modu;
 }   
@@ -113,9 +104,7 @@ fixed4 rainbow(float t)
 {
 	t=mod(t,1.0);
 	fixed tx = t * 6.0;
-	
 	fixed r = clamp(tx - 2.0, 0.0, 1.0) + clamp(2.0 - tx, 0.0, 1.0);
-	
 	return fixed4(1.0, 1.0, 1.0,r);
 }
 
@@ -127,7 +116,6 @@ float4 plasma(float2 uv)
 	float n = sin(a + 2.0 * uv.x) + sin(a - 2.0 * uv.x) + sin(a + 2.0 * uv.y) + sin(a + 5.0 * uv.y);
 	n = mod(((5.0 + n) / 5.0), 1.0);
 	n += tex2D(_MainTex, tuv).r * 0.2 + tex2D(_MainTex, tuv).g * 0.4 + tex2D(_MainTex, tuv).b * 0.2;
-	
 	return rainbow(n);
 }
 
@@ -135,7 +123,7 @@ float4 plasma(float2 uv)
 
 float4 frag (v2f i) : COLOR
 {
-	float2 uv 		=  i.texcoord.xy ;
+	float2 uv = i.texcoord.xy;
     float4 noise = tex2D(_MainTex, uv);
     float lum = dot(noise.rgb, float3 (0.2126, 0.7152, 0.0722));
     float maxTemp = 4000.0;
