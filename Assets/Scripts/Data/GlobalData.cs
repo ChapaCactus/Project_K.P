@@ -3,13 +3,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using DG.Tweening;
 
 public static class GlobalData
 {
 	#region Enums
 	// ゲーム状態
-    public enum GameState { Title = 0, Game, Num }
+	public enum GameState { Title = 0, Game, Num }
 	#endregion// Enums
 
 	#region Properties
@@ -24,9 +23,11 @@ public static class GlobalData
 
 	public static int basePower { get { return m_BasePower; } private set { m_BasePower = value; } }
 
-	public static int exp {
+	public static int exp
+	{
 		get { return m_Exp; }
-		private set {
+		private set
+		{
 			m_Exp = value;
 			if (m_Exp < 0)
 				m_Exp = 0;
@@ -35,8 +36,7 @@ public static class GlobalData
 	/// <summary>
 	/// 所持金(ReadOnly)
 	/// </summary>
-	public static int gold
-	{
+	public static int gold {
 		get { return m_Gold; }
 		private set
 		{
@@ -55,16 +55,19 @@ public static class GlobalData
 		}
 	}
 
-	public static bool isMenu
-	{
+	public static bool isMenu {
 		get { return m_IsMenu; }
 		set { m_IsMenu = value; }
 	}// メニューを開いているか
 
-	public static Inventory.Item[] inventorySlots
-	{
+	public static Inventory.Item[] inventorySlots {
 		get { return m_InventorySlots; }
 		private set { m_InventorySlots = value; }
+	}
+
+	public static HashSet<int> itemIndex {
+		get { return m_ItemIndex; }
+		private set { m_ItemIndex = value; }
 	}
 	#endregion// Properties
 
@@ -82,6 +85,9 @@ public static class GlobalData
     private static int m_Exp = 0;
     private static int m_Gold = 0;
 
+	// アイテム図鑑データ(アイテム収集済みIDを追加・管理)
+	private static HashSet<int> m_ItemIndex = new HashSet<int>();
+
     public static GameState gameState { get; set; }
 
     private static bool m_IsMenu = false;
@@ -97,6 +103,7 @@ public static class GlobalData
 	private static readonly string SAVE_KEY_GOLD        = "SAVE_KEY_GOLD";
 	private static readonly string SAVE_KEY_EXP         = "SAVE_KEY_EXP";
 	private static readonly string SAVE_KEY_BASE_POWER  = "SAVE_KEY_BASE_POWER";
+	private static readonly string SAVE_KEY_ITEM_INDEX  = "ITEM_INDEX";
     #endregion// Variables
 
     #region PublicMethods
@@ -154,6 +161,16 @@ public static class GlobalData
 			Debug.Log("basePower セーブデータが存在しません。");
 		}
 
+		// アイテム図鑑
+		if (ES2.Exists(SAVE_KEY_ITEM_INDEX))
+		{
+			itemIndex = ES2.Load<HashSet<int>>(SAVE_KEY_ITEM_INDEX);
+		}
+		else {
+			itemIndex = new HashSet<int>();
+			Debug.Log("アイテム図鑑データが存在しません。新規に作成します。");
+		}
+
 		Debug.Log("Loaded");
     }
 
@@ -163,6 +180,8 @@ public static class GlobalData
 
 		ES2.Save(gold, SAVE_KEY_GOLD);
 		ES2.Save(exp, SAVE_KEY_EXP);
+
+		ES2.Save(itemIndex, SAVE_KEY_ITEM_INDEX);
 
         Debug.Log("Saved");
     }
