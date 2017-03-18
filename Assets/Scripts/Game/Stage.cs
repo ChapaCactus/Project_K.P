@@ -12,6 +12,14 @@ public class Stage : SingletonMonoBehaviour<Stage>
 	#region Enums
 	#endregion// Enums
 
+	#region Properties
+	public Platform[] platforms
+	{
+		get { return m_Platforms; }
+		private set { m_Platforms = value; }
+	}
+	#endregion// Properties
+
 	#region Variables
 	[SerializeField, HeaderAttribute("StageID => Inspectorから設定すること")]
 	private int m_StageID = 0;
@@ -23,13 +31,6 @@ public class Stage : SingletonMonoBehaviour<Stage>
 	private Platform[] m_Platforms = new Platform[1];
 	private Dictionary<int, GameObject> m_ItemPrefabDic = null;// Key: ItemID, Value: (GameObject)prefab
 	#endregion// Variables
-
-	#region Properties
-	public Platform[] platforms { 
-		get { return m_Platforms; }
-        private set { m_Platforms = value; }
-    }
-	#endregion// Properties
 
 	#region UnityCallbacks
 	private void Awake()
@@ -46,7 +47,7 @@ public class Stage : SingletonMonoBehaviour<Stage>
 	{
 		///// ステージデータ設定 /////4
 		// IDを0埋めして、ID_000の形に整形する
-		var id = m_StageID.ToString().PadLeft(3, '0');
+		var id = Utilities.ConvertMasterRowID(m_StageID);
 		var idCombine = ("ID_" + id);
 
 		var stageData = StageMaster.Instance.GetRow(id);
@@ -77,7 +78,7 @@ public class Stage : SingletonMonoBehaviour<Stage>
 		// ゲームオブジェクト生成
 		var prefab = GetPrefabInDic(itemID);
 		var parent = platforms[0].transform;
-		var go = GameObject.Instantiate(prefab, parent, false);
+		var go = Instantiate(prefab, parent, false);
 		go.transform.localPosition = masterData._Offset;
 
 		BaseItem baseItem = go.GetComponent<BaseItem>();

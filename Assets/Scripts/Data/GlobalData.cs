@@ -48,8 +48,8 @@ public static class GlobalData
 			goldText.text = m_Gold.ToString();
 
 			var text = FloatingText.Create();
-			text.transform.SetParent(goldText.transform, false);
-			text.transform.localPosition += new Vector3(40, 0, 0);
+			text.transform.SetParent(UIManager.Instance.GetMainCanvas().transform, false);
+			text.transform.localPosition += new Vector3(40, 40, 0);
 			text.SetText("+" + addGold.ToString());
 			text.Show(1f);
 		}

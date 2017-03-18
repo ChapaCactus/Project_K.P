@@ -18,6 +18,8 @@ public class HealthBar : SingletonMonoBehaviour<HealthBar>
 
 	#region Variables
 	private Slider m_Slider = null;
+
+	private Text m_NameText = null;
 	#endregion// Variables
 
 	#region PublicMethods
@@ -31,8 +33,10 @@ public class HealthBar : SingletonMonoBehaviour<HealthBar>
 
 	public void Init()
 	{
-		m_Slider = transform.FindChild("Slider").GetComponent<Slider>();
+		m_Slider = transform.Find("Slider").GetComponent<Slider>();
 		m_Slider.minValue = 0;
+		m_NameText = transform.Find("Name/Text").GetComponent<Text>();
+		m_NameText.text = "";
 	}
 
 	/// <summary>
@@ -42,6 +46,12 @@ public class HealthBar : SingletonMonoBehaviour<HealthBar>
 	{
 		m_Slider.maxValue = _maxHP;
 		m_Slider.value = _maxHP;
+	}
+
+	public void Setup(string _name)
+	{
+		m_NameText.text = _name;
+		Debug.Log("Setup name => " + _name);
 	}
 
 	/// <summary>

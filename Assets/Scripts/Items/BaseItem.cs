@@ -60,7 +60,17 @@ public class BaseItem : MonoBehaviour
 		}
 		public State state { get { return m_State; } set { m_State = value; } }
 		public int id { get { return m_ID; } set { m_ID = value; } }
-		public string name { get { return m_Name; } set { m_Name = value; } }
+		public string name {
+			get 
+			{
+				return m_Name;
+			}
+			set 
+			{
+				m_Name = value;
+				HealthBar.Instance.Setup(value);
+			}
+		}
 		public Type type { get { return m_Type; } set { m_Type = value; } }
 		public int price { get { return m_Price; } set { m_Price = value; } }
 		public int rarity { get { return m_Rarity; } set { m_Rarity = value; } }
@@ -113,24 +123,24 @@ public class BaseItem : MonoBehaviour
         #endregion// Variables
     }
 
-    #region enum
+    #region Enums
 	// ItemType.
 	public enum Type { Crop = 0, Plug, Num }
     // State.
     public enum State { None, Ready, Dead }
-    #endregion// enum
+    #endregion// Enums
 
-    #region variables
+    #region Variables
     [SerializeField] private Data m_Data = new Data ();
 
     [SerializeField] private bool m_IsRunningPopCoroutine = false;
-    #endregion// variables
+    #endregion// Variables
 
-    #region properties
+    #region Properties
     public Data data { get { return m_Data; } private set { m_Data = value; } }
-    #endregion// properties
+    #endregion// Properties
 
-    #region public methods
+    #region PublicMethods
     public virtual void Init()
 	{
 		data.isDead = false;
@@ -231,9 +241,9 @@ public class BaseItem : MonoBehaviour
 		}
 
 	}
-	#endregion// public methods
+	#endregion// PublicMethods
 
-	#region Private methods
+	#region PrivateMethods
 	private void Dead()
 	{
 		if (data.isDead) return;
@@ -272,28 +282,16 @@ public class BaseItem : MonoBehaviour
         }
         m_IsRunningPopCoroutine = true;
 		// 出現待機
-		var wait = new WaitForSeconds (0.3f);
-		yield return wait;
+
+		// リポップ時間を調整したので、とりあえず下の出現時間なし
+//		var wait = new WaitForSeconds (0.3f);
+//		yield return wait;
 
         data.state = State.Ready;
 
         m_IsRunningPopCoroutine = false;
         yield return null;
     }
+    #endregion// PrivateMethods
 
-    protected void PlayAnimation(int _Type)
-    {
-        switch (_Type) {
-        case 0:
-            AnimationTypeA ();
-            break;
-        }
-    }
-
-    protected virtual void AnimationTypeA()
-    {
-        
-    }
-    #endregion
-
-}// Class.
+}// BaseItem

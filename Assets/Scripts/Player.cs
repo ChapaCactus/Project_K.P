@@ -113,30 +113,36 @@ public class Player : SingletonMonoBehaviour<Player>
     #region Private methods
     private void Attack()
     {
-		BaseItem item = Stage.Instance.platforms[0].GetItem();
+		var item = Stage.Instance.platforms[0].GetItem();
 
 		if (item == null)
 		{
-			
+			Debug.Log("Player : Itemがナーイ！");
+
 			return;
 		}
 		else
 		{
-			PlayAnimation("04. Jump", false, 2);
-
 			var state = item.GetState();// 状態
 			int health = item.GetHealth();// 体力
 
 			// 体力があって、かつ準備完了状態なら
-			if (health > 0 && state == BaseItem.State.Ready)
+			if (state == BaseItem.State.Ready)
 			{
-				// ターゲットのHPが残っていれば
-				item.Damage(totalPower);
-			} else {
-				
-			}
+				if (health > 0)
+				{
+					// ターゲットのHPが残っていれば
+					item.Damage(totalPower);
 
-			Debug.Log("Attacked.");
+					PlayAnimation("04. Jump", false, 2);
+				}
+				else
+				{
+					PlayAnimation("05. Attack", false, 2);
+				}
+
+				Debug.Log("Attacked.");
+			}
 		}
     }
 
