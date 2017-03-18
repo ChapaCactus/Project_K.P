@@ -5,6 +5,7 @@ using UnityEngine;
 /// <summary>
 /// アイテム図鑑
 /// アイテムを収集したか、HashSetで登録する
+/// 必要な関数が少なくなりそうなら、GlobalDataに統合してもいいかも。
 /// </summary>
 public static class ItemIndex
 {
@@ -16,18 +17,19 @@ public static class ItemIndex
 	/// <summary>
 	/// 図鑑に追加 [追加成功] return true : [追加失敗] return false
 	/// </summary>
-	public static bool AddIndex(int _itemID)
+	public static bool CheckIsIDInIndex(int _itemID)
 	{
-		if (itemIndex.Add(_itemID))
+		foreach (var check in itemIndex)
 		{
-			Debug.Log("図鑑追加成功 id => " + _itemID);
-			return true;
+			if (check == _itemID)
+			{
+				Debug.Log("図鑑追加失敗 既に登録されています id => " + _itemID);
+				return true;
+			}
 		}
-		else
-		{
-			Debug.Log("図鑑追加失敗 既に登録されています id => " + _itemID);
-			return false;
-		}
+
+		Debug.Log("図鑑に登録されていません id => " + _itemID);
+		return false;
 	}
 	#endregion// PublicMethods
 }
