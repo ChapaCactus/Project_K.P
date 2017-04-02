@@ -11,9 +11,9 @@ namespace AmplifyColor
 	{
 		public const byte Major = 1;
 		public const byte Minor = 6;
-		public const byte Release = 4;
+		public const byte Release = 5;
 
-		private static string StageSuffix = "_dev001";
+		private static string StageSuffix = "_dev002";
 
 	#if TRIAL
 		private static string TrialSuffix = " Trial";

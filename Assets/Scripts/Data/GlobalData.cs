@@ -3,12 +3,25 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Google2u;
+using KP;
 
 public static class GlobalData
 {
 	#region Enums
+	public enum State
+	{
+		NotInitialize, Initialized
+	}
 	// ゲーム状態
 	public enum GameState { Title = 0, Game, Num }
+
+	public enum Equipments
+	{
+		Tool,// 採集道具
+		Boots,// ブーツ
+		Accessory,// アクセサリー
+	}
 	#endregion// Enums
 
 	#region Properties
@@ -16,12 +29,22 @@ public static class GlobalData
 
 	public static string globalID { get { return m_GlobalID; } private set { m_GlobalID = value; } }
 
-	public static int days { get { return m_Days; } private set { m_Days = value; } }
+	public static int days {
+		get { return m_Days; }
+		private set {
+			m_Days = value;
+			Mathf.Clamp(m_Days, 0, 999);// 0 ~ 999の間に収める
+
+			UIManager.Instance.ui.daysText.text = (m_Days + "日目");
+
+			Save();
+		}
+	}
 
 	public static int score { get { return m_Score; } private set { m_Score = value; } }
 	public static int level { get { return m_Level; } private set { m_Level = value; } }// Stage Level
 
-	public static int basePower { get { return m_BasePower; } private set { m_BasePower = value; } }
+	public static int basePower { get { return (m_BasePower + e_Tool.GetTotalPower()); } private set { m_BasePower = value; } }
 
 	public static int exp
 	{
@@ -31,6 +54,7 @@ public static class GlobalData
 			m_Exp = value;
 			if (m_Exp < 0)
 				m_Exp = 0;
+			
 		}
 	}
 	/// <summary>
@@ -49,16 +73,19 @@ public static class GlobalData
 
 			var text = FloatingText.Create();
 			text.transform.SetParent(UIManager.Instance.GetMainCanvas().transform, false);
-			text.transform.localPosition += new Vector3(40, 40, 0);
+			text.transform.localPosition += new Vector3(0, 0, 0);
 			text.SetText("+" + addGold.ToString());
-			text.Show(1f);
+			text.Play(FloatingText.AnimationType.Fade, 1f, 0, 20);
+
+			Debug.Log("gold : " + m_Gold);
 		}
 	}
 
+	// メニューを開いているか
 	public static bool isMenu {
 		get { return m_IsMenu; }
 		set { m_IsMenu = value; }
-	}// メニューを開いているか
+	}
 
 	public static Inventory.Item[] inventorySlots {
 		get { return m_InventorySlots; }
@@ -68,6 +95,38 @@ public static class GlobalData
 	public static HashSet<int> itemIndex {
 		get { return m_ItemIndex; }
 		private set { m_ItemIndex = value; }
+	}
+
+	public static Tool e_Tool {
+		get { return m_E_Tool; }
+		private set {
+			m_E_Tool = value;
+			//string rowKey = Utilities.ConvertMasterRowID(m_E_Glove);
+			//m_E_GloveData = GloveMaster.Instance.GetRow(rowKey);
+		}
+	}
+
+	public static int e_Boots {
+		get { return m_E_Boots; }
+		private set { m_E_Boots = value; }
+	}
+
+	public static int e_Accessory
+	{
+		get { return m_E_Accessory; }
+		private set { m_E_Accessory = value; }
+	}
+
+	public static State state
+	{
+		get
+		{
+			return m_State;
+		}
+		private set
+		{
+			m_State = value;
+		}
 	}
 	#endregion// Properties
 
@@ -85,9 +144,15 @@ public static class GlobalData
     private static int m_Exp = 0;
     private static int m_Gold = 0;
 
+	// Equipments// 装備状態 ID == 0 : 無装備, == 1 ~ : 装備中
+	private static Tool m_E_Tool = null;
+	private static int m_E_Boots = 0;
+	private static int m_E_Accessory = 0;
+
 	// アイテム図鑑データ(アイテム収集済みIDを追加・管理)
 	private static HashSet<int> m_ItemIndex = new HashSet<int>();
 
+	private static State m_State = State.NotInitialize;
     public static GameState gameState { get; set; }
 
     private static bool m_IsMenu = false;
@@ -99,11 +164,16 @@ public static class GlobalData
     public static readonly int MAX_INVENTORY_SIZE = 15;
 	public static readonly int MAX_STACK_SIZE = 99;
     // SAVEDATA KEY
-	private static readonly string SAVE_KEY_PLAYER_NAME = "SAVE_KEY_PLAYER_NAME";
-	private static readonly string SAVE_KEY_GOLD        = "SAVE_KEY_GOLD";
-	private static readonly string SAVE_KEY_EXP         = "SAVE_KEY_EXP";
-	private static readonly string SAVE_KEY_BASE_POWER  = "SAVE_KEY_BASE_POWER";
-	private static readonly string SAVE_KEY_ITEM_INDEX  = "ITEM_INDEX";
+	private static readonly string SAVE_KEY_PLAYER_NAME      = "SAVE_KEY_PLAYER_NAME";
+	private static readonly string SAVE_KEY_GOLD             = "SAVE_KEY_GOLD";
+	private static readonly string SAVE_KEY_EXP              = "SAVE_KEY_EXP";
+	private static readonly string SAVE_KEY_DAYS             = "Days";
+	private static readonly string SAVE_KEY_BASE_POWER       = "SAVE_KEY_BASE_POWER";
+	private static readonly string SAVE_KEY_ITEM_INDEX       = "ITEM_INDEX";// 図鑑
+	private static readonly string SAVE_KEY_EQUIP_TOOL_ID    = "ToolID";
+	private static readonly string SAVE_KEY_EQUIP_TOOL_Level = "ToolLevel";
+	private static readonly string SAVE_KEY_EQUIP_BOOTS      = "Boots";
+	private static readonly string SAVE_KEY_EQUIP_ACCESSORY  = "Accessory";
     #endregion// Variables
 
     #region PublicMethods
@@ -117,16 +187,18 @@ public static class GlobalData
 			inventorySlots[i] = new Inventory.Item(0, 0);
 		}
 		// セーブデータのロード
-		LoadData();
+		Load();
 		Refresh();
         // ステート初期化
         gameState = GameState.Title;
         // フラグ初期化
         isMenu = false;
+
+		m_State = State.Initialized;
     }
 
 	// ES2 Loading
-	public static void LoadData()
+	public static void Load()
     {
 		// Set variables from savedata.
 		if (ES2.Exists(SAVE_KEY_PLAYER_NAME)) {
@@ -145,12 +217,24 @@ public static class GlobalData
 			Debug.Log("gold セーブデータが存在しません。");
 		}
 		// 経験値
-		if (ES2.Exists(SAVE_KEY_EXP)) {
+		if (ES2.Exists(SAVE_KEY_EXP))
+		{
 			exp = ES2.Load<int>(SAVE_KEY_EXP);
 		}
-		else {
+		else
+		{
 			exp = 0;
 			Debug.Log("exp セーブデータが存在しません。");
+		}
+		// 経過日数
+		if (ES2.Exists(SAVE_KEY_DAYS))
+		{
+			days = ES2.Load<int>(SAVE_KEY_DAYS);
+		}
+		else
+		{
+			days = 0;
+			Debug.Log("days セーブデータが存在しません。");
 		}
 		// 基礎攻撃力
 		if (ES2.Exists(SAVE_KEY_BASE_POWER)) {
@@ -164,26 +248,75 @@ public static class GlobalData
 		// アイテム図鑑
 		if (ES2.Exists(SAVE_KEY_ITEM_INDEX))
 		{
-			itemIndex = ES2.Load<HashSet<int>>(SAVE_KEY_ITEM_INDEX);
+			itemIndex = ES2.LoadHashSet<int>(SAVE_KEY_ITEM_INDEX);
 		}
 		else {
 			itemIndex = new HashSet<int>();
 			Debug.Log("アイテム図鑑データが存在しません。新規に作成します。");
 		}
 
+		// Tool装備状態
+		if (ES2.Exists(SAVE_KEY_EQUIP_TOOL_ID) && ES2.Exists(SAVE_KEY_EQUIP_TOOL_Level))
+		{
+			var toolID = ES2.Load<int>(SAVE_KEY_EQUIP_TOOL_ID);
+			var toolLevel = ES2.Load<int>(SAVE_KEY_EQUIP_TOOL_Level);
+			e_Tool = Tool.Create(toolID, toolLevel);
+		}
+		else
+		{
+			e_Tool = Tool.Create(0, 1);
+			Debug.Log("アイテム図鑑データが存在しません。新規に作成します。");
+		}
+
+		// ブーツ装備状態
+		if (ES2.Exists(SAVE_KEY_EQUIP_BOOTS))
+		{
+			e_Boots = ES2.Load<int>(SAVE_KEY_EQUIP_BOOTS);
+		}
+		else
+		{
+			e_Boots = 0;
+			Debug.Log("アイテム図鑑データが存在しません。新規に作成します。");
+		}
+
+		// アクセサリー装備状態
+		if (ES2.Exists(SAVE_KEY_EQUIP_ACCESSORY))
+		{
+			e_Accessory = ES2.Load<int>(SAVE_KEY_EQUIP_ACCESSORY);
+		}
+		else
+		{
+			e_Accessory = 0;
+			Debug.Log("アイテム図鑑データが存在しません。新規に作成します。");
+		}
+
 		Debug.Log("Loaded");
     }
 
-	public static void SaveData()
+	public static void Save()
     {
-		ES2.Save(playerName, SAVE_KEY_PLAYER_NAME);
+		if (m_State == State.Initialized)
+		{
+			ES2.Save(playerName, SAVE_KEY_PLAYER_NAME);
 
-		ES2.Save(gold, SAVE_KEY_GOLD);
-		ES2.Save(exp, SAVE_KEY_EXP);
+			ES2.Save(gold, SAVE_KEY_GOLD);
+			ES2.Save(exp, SAVE_KEY_EXP);
+			ES2.Save(days, SAVE_KEY_DAYS);
 
-		ES2.Save(itemIndex, SAVE_KEY_ITEM_INDEX);
+			ES2.Save(itemIndex, SAVE_KEY_ITEM_INDEX);
 
-        Debug.Log("Saved");
+			if (e_Tool != null)
+			{
+				ES2.Save(e_Tool.toolID, SAVE_KEY_EQUIP_TOOL_ID);
+				ES2.Save(e_Tool.level, SAVE_KEY_EQUIP_TOOL_Level);
+			}
+
+			Debug.Log("Saved");
+		}
+		else
+		{
+			Debug.Log("初期化が完了していないためSave出来ません。");
+		}
     }
 
 	public static void Refresh()
@@ -200,6 +333,27 @@ public static class GlobalData
 
         return days;
     }
+
+	/// <summary>
+	/// 装備変更
+	/// </summary>
+	public static void SetEquip(Equipments _equipments, int _equipID)
+	{
+		Debug.Log("SetEquip()");
+
+		switch (_equipments)
+		{
+			case Equipments.Tool:
+				//e_Glove = _equipID;
+				break;
+			case Equipments.Boots:
+				e_Boots = _equipID;
+				break;
+			case Equipments.Accessory:
+				e_Accessory = _equipID;
+				break;
+		}
+	}
 
 	public static int GetInventorySlotsLength()
 	{

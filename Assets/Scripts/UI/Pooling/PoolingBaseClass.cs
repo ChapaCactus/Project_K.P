@@ -23,9 +23,8 @@ public class PoolingBaseClass : MonoBehaviour
 		//
 	}
 
-	public virtual void Show(float _duration = 1.0f)
+	public virtual void Play()
 	{
-		//
 	}
 	#endregion// PublicMethods
 }

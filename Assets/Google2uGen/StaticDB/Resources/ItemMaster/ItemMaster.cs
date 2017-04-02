@@ -231,11 +231,11 @@ namespace Google2u
 		private ItemMaster()
 		{
 			Rows.Add( new ItemMasterRow("ID_000", "Dummy", "Dummy", "1", "1", "1", "Dummy", "Dummy", "1", "0,1.3,0", "0,0,0"));
-			Rows.Add( new ItemMasterRow("ID_001", "たべかけスイカ", "Crop", "1", "1", "5", "Item/Suica/Suica_D", "Prefabs/Items/Suica1", "3", "0,1.3,0", "0,0,0"));
-			Rows.Add( new ItemMasterRow("ID_002", "ひとくちスイカ", "Crop", "1", "1", "5", "Item/Suica/Suica_C", "Prefabs/Items/Suica2", "4", "0,1.4,0", "0,0,0"));
-			Rows.Add( new ItemMasterRow("ID_003", "たっぷりスイカ", "Crop", "1", "1", "5", "Item/Suica/Suica_B", "Prefabs/Items/Suica3", "7", "0,1.5,0", "0,0,0"));
-			Rows.Add( new ItemMasterRow("ID_004", "ぜいたくスイカ", "Crop", "1", "1", "5", "Item/Suica/Suica_A", "Prefabs/Items/Suica4", "15", "0,1.4,0", "0,0,0"));
-			Rows.Add( new ItemMasterRow("ID_005", "かんぺきスイカ", "Crop", "1", "1", "5", "Daikon", "Prefabs/Items/Suica5", "400", "0,1.4,0", "0,0,0"));
+			Rows.Add( new ItemMasterRow("ID_001", "たべかけスイカ", "Crop", "3", "1", "20", "Item/Suica/Suica_D", "Prefabs/Items/Suica1", "3", "0,1.3,0", "0,0,0"));
+			Rows.Add( new ItemMasterRow("ID_002", "ひとくちスイカ", "Crop", "4", "1", "30", "Item/Suica/Suica_C", "Prefabs/Items/Suica2", "4", "0,1.4,0", "0,0,0"));
+			Rows.Add( new ItemMasterRow("ID_003", "たっぷりスイカ", "Crop", "7", "1", "50", "Item/Suica/Suica_B", "Prefabs/Items/Suica3", "7", "0,1.5,0", "0,0,0"));
+			Rows.Add( new ItemMasterRow("ID_004", "ぜいたくスイカ", "Crop", "15", "1", "100", "Item/Suica/Suica_A", "Prefabs/Items/Suica4", "15", "0,1.4,0", "0,0,0"));
+			Rows.Add( new ItemMasterRow("ID_005", "かんぺきスイカ", "Crop", "400", "1", "500", "Daikon", "Prefabs/Items/Suica5", "400", "0,1.4,0", "0,0,0"));
 			Rows.Add( new ItemMasterRow("ID_006", "ダイコン06", "Crop", "1", "1", "5", "Daikon", "Prefabs/Items/Daikon", "1", "0,1.3,0", "0,0,0"));
 			Rows.Add( new ItemMasterRow("ID_007", "ダイコン07", "Crop", "1", "1", "5", "Daikon", "Prefabs/Items/Daikon", "1", "0,1.3,0", "0,0,0"));
 			Rows.Add( new ItemMasterRow("ID_008", "ダイコン08", "Crop", "1", "1", "5", "Daikon", "Prefabs/Items/Daikon", "1", "0,1.3,0", "0,0,0"));

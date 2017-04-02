@@ -48,12 +48,12 @@ public class UIManager : SingletonMonoBehaviour<UIManager>
 		private RectTransform m_MainCanvasRect = null;
 
 		private Camera m_UICamera = null;
-
 		private Camera m_MainCamera = null;
 
 		// 画面上部UI
 		public HealthBar healthBar = null;
 		public Text goldText = null;
+		public Text daysText = null;
 		// メニュー
 		public Button menuButton = null;// 親
 		public Button itemButton = null;// 子
@@ -70,6 +70,7 @@ public class UIManager : SingletonMonoBehaviour<UIManager>
 			Debug.Log("Updating UI.....");
 
 			goldText.text = GlobalData.gold.ToString();
+			daysText.text = (GlobalData.days + "日目");
 		}
 		#endregion// PublicMethods
 	}
@@ -113,8 +114,10 @@ public class UIManager : SingletonMonoBehaviour<UIManager>
         ui.itemButton.onClick.RemoveAllListeners ();
         ui.itemButton.onClick.AddListener (itemClick);
 
-        ui.goldText = GameObject.Find ("Canvas").transform.FindChild ("StatusBar/GoldIcon/Gold").GetComponent<Text>();
-
+		var canvasTF = GameObject.Find("Canvas").transform;
+		ui.goldText = canvasTF.Find ("StatusBar/GoldIcon/Gold").GetComponent<Text>();
+		ui.daysText = canvasTF.Find("StatusBar/TotalDays/Text").GetComponent<Text>();
+		                             
         m_FloatingTextPooling = new ObjectPooling ();
         m_FloatingTextPooling.Init ("Prefabs/UI/Texts/FloatingText", 10);
 		// HPバーの初期化

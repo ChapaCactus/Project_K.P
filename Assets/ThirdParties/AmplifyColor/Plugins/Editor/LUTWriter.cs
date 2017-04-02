@@ -77,7 +77,7 @@ namespace AmplifyColor
 			{
 				tImporter.mipmapEnabled = false;
 				tImporter.isReadable = false;
-				
+
 				tImporter.filterMode = FilterMode.Bilinear;
 				tImporter.anisoLevel = 0;
 

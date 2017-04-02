@@ -21,22 +21,16 @@ public class FloatingText : PoolingBaseClass
 
 	#region Variables
     private Text m_BodyText = null;
-
-	private CanvasGroup m_CanvasGroup = null;
     #endregion// Variables
 
     #region Properties
 	public Text bodyText {
 		get { return m_BodyText ?? (m_BodyText = transform.FindChild("Text").GetComponent<Text>()); }
 	}
-
-	public CanvasGroup canvasGroup {
-		get { return m_CanvasGroup ?? (m_CanvasGroup = GetComponent<CanvasGroup>()); }
-	}
     #endregion// Properties
 
     #region PublicMethods
-    /// <summary>
+    /// <summary>1
     /// Pickout in Pooling
     /// </summary>
     public static FloatingText Create()
@@ -52,57 +46,68 @@ public class FloatingText : PoolingBaseClass
 
 	public override void Init()
 	{
-		Hide();
-		SetText("");
+	}
+
+	public void SetText(string _str)
+	{
+		bodyText.text = _str;
 	}
 
 	/// <summary>
 	/// 表示 => 一定時間後に非表示
 	/// SetText()で初期化してから呼び出すこと
 	/// </summary>
-	public override void Show(float _duration = 1.0f)
+	public void Play(AnimationType _type, float _duration = 1.0f, float _toX = 0, float _toY = 0)
 	{
-		StartCoroutine(ShowCoroutine(_duration));
+		var toLocalPos = new Vector2(_toX, _toY);
+		
+		StartCoroutine(PlayCoroutine(_type, _duration, toLocalPos));
 	}
 
-	public IEnumerator ShowCoroutine(float _duration)
+	public IEnumerator PlayCoroutine(AnimationType _type, float _duration, Vector2 _toLocalPos)
 	{
 		if (isActive) {
 			yield break;
 		}
 		isActive = true;
 
-		var cg = canvasGroup;
-		cg.alpha = 1;
-		cg.interactable = true;
-		cg.blocksRaycasts = true;
+		Utilities.ToggleCanvasGroup(GetComponent<CanvasGroup>(), true);
 
-		// 指定時間、待機
-		var wait = new WaitForSeconds(_duration);
-		yield return wait;
-		// 一定時間後、非表示
-		Hide();
+		var text = bodyText;
+
+		switch (_type)
+		{
+			case AnimationType.Fade:
+				Sequence sequence = DOTween.Sequence()
+					.OnStart(() => {
+					text.color = Color.white;
+				});
+				sequence.Prepend(transform.DOLocalMove(_toLocalPos, _duration)
+				                 .SetRelative()
+				                 .SetEase(Ease.OutExpo)
+				                 .OnComplete(() => Hide()));
+				sequence.Join(text.DOFade(0, _duration)
+				              .SetEase(Ease.InQuint));
+				sequence.Play();
+				break;
+
+			default:
+				break;
+		}
+
     }
 
     public void Hide()
     {
 		isActive = false;
 
-		var cg = canvasGroup;
-		cg.alpha = 0;
-		cg.interactable = false;
-		cg.blocksRaycasts = false;
+		Utilities.ToggleCanvasGroup(GetComponent<CanvasGroup>(), false);
     }
 
     public string GetText()
     {
 		return bodyText.text;
     }
-
-	public void SetText(string _str)
-	{
-		bodyText.text = _str;
-	}
     #endregion// PublicMethods
 
 }// class

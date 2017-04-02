@@ -39,7 +39,49 @@ public class MenuController : SingletonMonoBehaviour<MenuController>
 			// 全て非表示にしてから
 			m_Menu.HideAllContents();
 			// インベントリ以外であればインベントリを表示
-			m_Menu.ShowInventory();
+			m_Menu.ToggleContent(Menu.State.Inventory, true);
+		}
+		else
+		{
+			// インベントリなら全てを非表示
+			m_Menu.HideAllContents();
+		}
+
+		Debug.Log("OnClickInventory");
+	}
+
+	/// <summary>
+	/// インベントリタブ押下時
+	/// </summary>
+	public void OnClickEquip()
+	{
+		if (m_Menu.state != Menu.State.Equip)
+		{
+			// 全て非表示にしてから
+			m_Menu.HideAllContents();
+			// インベントリ以外であればインベントリを表示
+			m_Menu.ToggleContent(Menu.State.Equip, true);
+		}
+		else
+		{
+			// インベントリなら全てを非表示
+			m_Menu.HideAllContents();
+		}
+
+		Debug.Log("OnClickInventory");
+	}
+
+	/// <summary>
+	/// インベントリタブ押下時
+	/// </summary>
+	public void OnClickHome()
+	{
+		if (m_Menu.state != Menu.State.Home)
+		{
+			// 全て非表示にしてから
+			m_Menu.HideAllContents();
+			// インベントリ以外であればインベントリを表示
+			m_Menu.ToggleContent(Menu.State.Home, true);
 		}
 		else
 		{
@@ -60,7 +102,7 @@ public class MenuController : SingletonMonoBehaviour<MenuController>
 			// 全て非表示にしてから
 			m_Menu.HideAllContents();
 			// コンフィグ以外であればコンフィグを表示
-			m_Menu.ShowConfig();
+			m_Menu.ToggleContent(Menu.State.Config, true);
 		}
 		else
 		{

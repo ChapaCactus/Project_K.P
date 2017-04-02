@@ -178,13 +178,24 @@ public class BaseItem : MonoBehaviour
         StartCoroutine (PopCoroutine ());
     }
 
-    /// <summary>
-    /// パラメータ設定
-    /// </summary>
+	/// <summary>
+	/// パラメータ設定
+	/// </summary>
 	public virtual void SetParams(int _id, ItemMasterRow _row)
-    {
+	{
+		Debug.Log("Setup Items ID... " + _id + ", ItemsName... " + _row._Name);
+		if (ItemIndex.CheckIsIDInIndex(_id))
+		{
+			// 図鑑に既に登録されている場合、名前を表示
+			data.name = _row._Name;
+		}
+		else
+		{
+			/// 図鑑に登録されていない場合、「??????」的な感じで表示
+			data.name = "??????";
+		}
+
 		data.id = _id;// 割り出し用
-		data.name = _row._Name;
 		//data.type = _row._Type;
 		data.price = _row._Price;
 		data.rarity = _row._Rarity;
@@ -197,6 +208,14 @@ public class BaseItem : MonoBehaviour
     public int Damage(int _point)
     {
 		data.health -= _point;
+
+		// Damage量テキスト
+		var floatText = FloatingText.Create();
+		floatText.Init();
+		floatText.transform.localPosition = Utilities.GetScreenPosition(transform.position);
+		var message = _point.ToString();
+		floatText.SetText(message);
+		floatText.Play(FloatingText.AnimationType.Fade, 1, 0, 70);
 
 		// HPが0になっていたら消してインベントリへ移動
 		if (data.health <= 0)
@@ -250,24 +269,29 @@ public class BaseItem : MonoBehaviour
 		data.isDead = true;
 
 		AddInventory();
-
-		//GlobalData.Instance.AddMoney(data.exp);// Test money
-		//GlobalData.Instance.GainExp(data.exp);
+		GlobalData.ToNextDay();
+		GlobalData.AddMoney(data.price);
+		//GlobalData.GainExp(data.exp);
 
 		var message = ("+" + data.exp.ToString());
 		var floatingText = FloatingText.Create();
 		var playerTF = Player.Instance.tf;
 		floatingText.transform.localPosition = Utilities.GetScreenPosition(playerTF.position);
+		floatingText.transform.localPosition += new Vector3(0,210, 0);
 		floatingText.SetText(message);
-		floatingText.Show(1f);
-		Debug.Log("Dead()");
+		floatingText.Play(FloatingText.AnimationType.Fade, 1f, 0, 20);
+		Debug.Log("Dead() => " + data.name);
 	}
 	/// <summary>
 	/// インベントリにアイテムとして追加
 	/// </summary>
 	private void AddInventory()
 	{
+		// 図鑑に登録
+		ItemIndex.AddIndex(data.id);
+		// インベントリに追加
 		GlobalData.AddItem(data.id, 1);
+		// 削除アニメーション
 		Stage.Instance.platforms[0].KillItem();
 		Debug.Log("Trying add item... ID => " + data.id);
 	}

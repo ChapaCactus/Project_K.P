@@ -17,9 +17,8 @@ public class HealthBar : SingletonMonoBehaviour<HealthBar>
 	#endregion// Properties
 
 	#region Variables
-	private Slider m_Slider = null;
-
-	private Text m_NameText = null;
+	private Slider m_Slider = null;// HPバー
+	private Text m_NameText = null;// 名前テキスト
 	#endregion// Variables
 
 	#region PublicMethods

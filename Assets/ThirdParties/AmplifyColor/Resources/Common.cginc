@@ -1,3 +1,5 @@
+// Upgrade NOTE: replaced '_Object2World' with 'unity_ObjectToWorld'
+
 // Amplify Color - Advanced Color Grading for Unity Pro
 // Copyright (c) Amplify Creations, Lda <info@amplify.pt>
 
@@ -13,7 +15,7 @@ uniform sampler2D _LerpRgbTex;
 uniform sampler2D _RgbBlendCacheTex;
 uniform sampler2D _MaskTex;
 uniform float4 _MaskTex_TexelSize;
-uniform sampler2D _CameraDepthTexture;
+uniform sampler2D_float _CameraDepthTexture;
 uniform sampler2D _DepthCurveLut;
 uniform float _LerpAmount;
 uniform float _Exposure;
@@ -26,6 +28,14 @@ uniform float _ToeDenominator;
 uniform float _LinearWhite;
 half4 _MainTex_ST;
 
+inline float4 CustomObjectToClipPos( in float3 pos )
+{
+#if UNITY_VERSION >= 540
+	return UnityObjectToClipPos( pos );
+#else
+	return mul( UNITY_MATRIX_VP, mul( unity_ObjectToWorld, float4( pos, 1.0 ) ) );
+#endif
+}
 
 // Enabling Stereo adjustment in versions prior to 4.5
 #ifndef UnityStereoScreenSpaceUVAdjust
@@ -56,7 +66,7 @@ struct v2f
 v2f vert( appdata_img v )
 {
 	v2f o;
-	o.pos = mul( UNITY_MATRIX_MVP, v.vertex );
+	o.pos = CustomObjectToClipPos( v.vertex );
 	o.screenPos = ComputeScreenPos( o.pos );
 	o.uv01.xy = v.texcoord.xy;
 	o.uv01.zw = v.texcoord.xy;

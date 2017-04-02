@@ -31,5 +31,15 @@ public static class ItemIndex
 		Debug.Log("図鑑に登録されていません id => " + _itemID);
 		return false;
 	}
+
+	/// <summary>
+	/// アイテム図鑑に登録(既に登録されている場合、念のためfalseを返す => 演出表示用等に。
+	/// </summary>
+	/// <returns><c>true</c> 登録成功, <c>false</c> 登録失敗</returns>
+	/// <param name="_itemID">登録するアイテムのID</param>
+	public static bool AddIndex(int _itemID)
+	{
+		return itemIndex.Add(_itemID);
+	}
 	#endregion// PublicMethods
 }

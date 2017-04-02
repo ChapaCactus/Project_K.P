@@ -9,10 +9,6 @@ public class BaseMainMenuContent : MonoBehaviour
 	#endregion// Variables
 
 	#region PublicMethods
-	public virtual void Init()
-	{
-	}
-
 	public virtual void Show()
 	{
 		var canvasGroup = GetComponent<CanvasGroup>();

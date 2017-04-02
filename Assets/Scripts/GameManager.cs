@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using DG.Tweening;
 
 /// <summary>
 /// ゲームの進行管理
@@ -25,7 +26,17 @@ public class GameManager : MonoBehaviour
 	#region PublicMethods
 	public void Init()
 	{
+		DOTween.Init();
 		GlobalData.Init();
+	}
+
+	/// <summary>
+	/// ゲーム終了時
+	/// </summary>
+	public void OnApplicationQuit()
+	{
+		GlobalData.Save();
+		Debug.Log("ゲーム終了");
 	}
 
 	/// <summary>

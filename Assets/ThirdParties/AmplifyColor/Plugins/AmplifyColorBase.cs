@@ -145,7 +145,7 @@ public class AmplifyColorBase : MonoBehaviour
 
 	void ReportNotSupported()
 	{
-		Debug.LogError( "[AmplifyColor] This image effect is not supported on this platform." );	
+		Debug.LogError( "[AmplifyColor] This image effect is not supported on this platform." );
 		enabled = false;
 	}
 
@@ -752,7 +752,11 @@ public class AmplifyColorBase : MonoBehaviour
 	{
 		bool isMobile = ( QualityLevel == AmplifyColor.Quality.Mobile );
 		bool isLinear = ( colorSpace == ColorSpace.Linear );
+	#if UNITY_5_6_OR_NEWER
+		bool isHDR = ownerCamera.allowHDR;
+	#else
 		bool isHDR = ownerCamera.hdr;
+	#endif
 
 		int pass = isMobile ? 18 : 0;
 		if ( isHDR )

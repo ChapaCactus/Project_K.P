@@ -18,7 +18,6 @@ public class Inventory : BaseMainMenuContent
 	#region Variables
 	[SerializeField] private Content[] m_Contents = null;
 
-	// InventoryInfo
 	private InventoryInfo m_InventoryInfo = null;
 
     [SerializeField] private Reference m_Reference;
@@ -29,7 +28,7 @@ public class Inventory : BaseMainMenuContent
     #endregion// UnityCallbacks
 
     #region PublicMethods
-    public override void Init()
+    public void Init()
     {
 		// アイテム詳細パネルの設定
 		var infoTF = transform.Find("InventoryInfo").transform;
@@ -38,8 +37,7 @@ public class Inventory : BaseMainMenuContent
 		var infoIconImage = infoTF.Find("Icon/Image").GetComponent<Image>();
 		var infoExplainText = infoTF.Find("Explain/Text").GetComponent<Text>();
 		var infoCloseButton = infoTF.Find("Close/Button").GetComponent<Button>();
-		m_InventoryInfo = new InventoryInfo(infoCanvasGroup, infoIconImage, infoNameText
-											, infoExplainText, infoCloseButton);
+		m_InventoryInfo = new InventoryInfo(infoCanvasGroup, infoIconImage, infoNameText, infoExplainText, infoCloseButton);
 		// アイテム詳細を非表示にしておく
 		m_InventoryInfo.Hide();
 
@@ -110,13 +108,7 @@ public class Inventory : BaseMainMenuContent
 			// 更新
 			for (int i = 0; i < m_Contents.Length; i++)
 			{
-				Debug.Log("CHKCHKCHK : " + i);
 				m_Contents[i].Update();
-			}
-
-			foreach (var item in m_Contents)
-			{
-				Debug.Log("KKKKKKK : " + GlobalData.inventorySlots[item.invenSlotIndex].id);
 			}
 		}
 		else
