@@ -10,31 +10,42 @@ namespace KP
 	/// </summary>
 	public class Tool
 	{
+		#region Properties
+		public string name
+		{
+			get
+			{
+				return m_Name;
+			}
+		}
+		#endregion// Properties
+
 		#region Variables
 		public int toolID = 0;
-
-		public string name = "";
-
 		public int level = 0;
 		public int maxLevel = 0;
 
-		public int m_Power = 0;
+		private string m_Name = "";
+		private int m_Power = 0;
 		#endregion// Variableas
 
 		#region PublicMethods
 		public static Tool Create(int _toolID, int _level)
 		{
-			Tool tool = new Tool();
 			var master = ToolMaster.Instance.GetRow(Utilities.ConvertMasterRowID(_toolID));
-
-			tool.toolID = _toolID;
-			tool.name = master._Name;
-			tool.level = _level;
-			tool.maxLevel = master._MaxLevel;
-
-			tool.m_Power = master._Power;
+			Tool tool = new Tool(_toolID, _level, master);
 
 			return tool;
+		}
+
+		public Tool(int _toolID, int _level, ToolMasterRow _master)
+		{
+			toolID = _toolID;
+			m_Name = _master._Name;
+			level = _level;
+			maxLevel = _master._MaxLevel;
+
+			m_Power = _master._Power;
 		}
 
 		public int GetTotalPower()

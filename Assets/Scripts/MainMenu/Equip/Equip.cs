@@ -24,6 +24,7 @@ public class Equip : BaseMainMenuContent
 	private Image m_ToolImage = null;
 	private Text m_NameText = null;
 	private Text m_LevelText = null;
+	private Text m_Tool_AtkText = null;
 	#endregion// Variables
 
 	#region UnityCallbacks
@@ -36,6 +37,7 @@ public class Equip : BaseMainMenuContent
 		m_ToolImage = tf.Find("Viewport/Content/Tool/Image").GetComponent<Image>();
 		m_NameText = tf.Find("Viewport/Content/Tool/Name/Text").GetComponent<Text>();
 		m_LevelText = tf.Find("Viewport/Content/Tool/Level/Text").GetComponent<Text>();
+		m_Tool_AtkText = tf.Find("Viewport/Content/Tool/Status/Panel/AtkText").GetComponent<Text>();
 
 		Refresh();
 	}
@@ -51,6 +53,7 @@ public class Equip : BaseMainMenuContent
 		{
 			m_NameText.text = toolData.name;
 			m_LevelText.text = ("Lv " + toolData.level);
+			m_Tool_AtkText.text = ("力+" + toolData.GetTotalPower());
 		}
 	}
 	#endregion// PublicMethods

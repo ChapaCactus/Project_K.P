@@ -237,9 +237,9 @@ public class ObjectPooling
 	public List<PoolingBaseClass> poolingList { get { return m_PoolingList; } private set { m_PoolingList = value; } }
     #region Properties
 
-    #endregion// properties
+    #endregion// Properties
 
-    #region public methods
+    #region PublicMethods
     public void Init(string _prefabPath, int _maxCount)
     {
 		m_PoolingList = new List<PoolingBaseClass> ();
@@ -275,5 +275,5 @@ public class ObjectPooling
 		// 全て使用中の場合
         return null;
     }
-    #endregion// public methods
+    #endregion// PublicMethods
 }// UIObjectPooling

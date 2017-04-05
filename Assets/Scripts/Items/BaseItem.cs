@@ -271,13 +271,11 @@ public class BaseItem : MonoBehaviour
 		AddInventory();
 		GlobalData.ToNextDay();
 		GlobalData.AddMoney(data.price);
-		//GlobalData.GainExp(data.exp);
 
 		var message = ("+" + data.exp.ToString());
 		var floatingText = FloatingText.Create();
 		var playerTF = Player.Instance.tf;
-		floatingText.transform.localPosition = Utilities.GetScreenPosition(playerTF.position);
-		floatingText.transform.localPosition += new Vector3(0,210, 0);
+		floatingText.transform.localPosition = (Utilities.GetScreenPosition(playerTF.position) + new Vector2(0, 210));
 		floatingText.SetText(message);
 		floatingText.Play(FloatingText.AnimationType.Fade, 1f, 0, 20);
 		Debug.Log("Dead() => " + data.name);
